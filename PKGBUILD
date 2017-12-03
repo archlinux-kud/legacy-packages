@@ -77,7 +77,7 @@ package_linux414-vanadium() {
 
   mkdir -p "${pkgdir}"/{boot,usr/lib/modules}
   make LOCALVERSION= INSTALL_MOD_PATH="${pkgdir}/usr" modules_install -j$(nproc --all)
-  cp arch/$KARCH/boot/bzImage "${pkgdir}/boot/vmlinuz-${_basekernel}-${CARCH}"
+  cp arch/$KARCH/boot/bzImage "${pkgdir}/boot/vmlinuz-${_basekernel}${_kernelname}-${CARCH}"
 
   # add kernel version
   echo "${pkgver}-${pkgrel}-MANJARO x64" > "${pkgdir}/boot/${pkgbase}-${CARCH}.kver"
@@ -113,7 +113,7 @@ package_linux414-vanadium() {
   true && install=${install}.pkg
 
   # install mkinitcpio preset file
-  sed "${_subst}" ${srcdir}/linux414.preset |
+  sed "${_subst}" ${srcdir}/${pkgbase}.preset |
     install -Dm644 /dev/stdin "${pkgdir}/etc/mkinitcpio.d/${pkgbase}.preset"
 
   # install pacman hooks
