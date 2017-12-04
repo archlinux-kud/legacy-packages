@@ -12,12 +12,8 @@ _kernelname=-vanadium
 _basekernel=4.14
 _basever=414
 _sub=3
-_rc=
-_shortgit=
-_git=
-#pkgver=${_basekernel}${_shortgit}
 pkgver=${_basekernel}.${_sub}
-pkgrel=0
+pkgrel=0.1
 arch=('x86_64')
 url="http://www.kernel.org/"
 license=('GPL2')
@@ -31,7 +27,7 @@ source=("git://github.com/krasCGQ/linux-vanadium"
 )
 sha256sums=('SKIP'
             'a12bc7a260571688e27e5c33b7c0a9a9f47e8567783e9d8a2f48ed120cd5b569'
-            '43942683a7ff01b180dff7f3de2db4885d43ab3d4e7bd0e1918c3aaf2ee061f4'
+            '5f34413dcae93b3f4fd9efc329a2c7590e6277f5746e1fa79dfb0be47db557ed'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '90831589b7ab43d6fab11bfa3ad788db14ba77ea4dc03d10ee29ad07194691e1')
 
@@ -39,6 +35,9 @@ prepare() {
   cd "${srcdir}/linux${_kernelname}"
 
   cat "${srcdir}/config" > ./.config
+
+  # set extraversion to pkgrel
+  sed -ri "s|^(EXTRAVERSION =).*|\1 -${pkgrel}|" Makefile
 
   # my shits
   [[ ! -z $(command -v ccache) ]] && [[ ! -z $(command -v x86_64-linux-gnu-gcc) ]] && export CROSS_COMPILE="ccache x86_64-linux-gnu-"
@@ -50,7 +49,7 @@ prepare() {
   make prepare -j$(nproc --all)
 
   # rewrite configuration
-  #yes "" | make config -j$(nproc --all) >/dev/null
+  yes "" | make config -j$(nproc --all) >/dev/null
 }
 
 build() {
@@ -80,7 +79,7 @@ package_linux414-vanadium() {
   cp arch/$KARCH/boot/bzImage "${pkgdir}/boot/vmlinuz-${_basekernel}${_kernelname}-${CARCH}"
 
   # add kernel version
-  echo "${pkgver}-${pkgrel}-MANJARO x64" > "${pkgdir}/boot/${pkgbase}-${CARCH}.kver"
+  echo "${pkgver}-${pkgrel}${_kernelname} x64" > "${pkgdir}/boot/${pkgbase}-${CARCH}.kver"
 
   # make room for external modules
   local _extramodules="extramodules-${_basekernel}${_kernelname:--MANJARO}"
