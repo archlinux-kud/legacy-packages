@@ -11,9 +11,9 @@ pkgname=('linux414-vanadium' 'linux414-vanadium-headers')
 _kernelname=-vanadium
 _basekernel=4.14
 _basever=414
-_sub=3
+_sub=4
 pkgver=${_basekernel}.${_sub}
-pkgrel=0.1
+pkgrel=0
 arch=('x86_64')
 url="http://www.kernel.org/"
 license=('GPL2')
@@ -26,7 +26,7 @@ source=("git://github.com/krasCGQ/linux-vanadium"
         '90-linux.hook'     # pacman hook for initramfs regeneration
 )
 sha256sums=('SKIP'
-            'a12bc7a260571688e27e5c33b7c0a9a9f47e8567783e9d8a2f48ed120cd5b569'
+            'f33cc60bb71897d3882d2da31ba24deed84b7df6e4912b1b36ba1e4a021ea4d4'
             '5f34413dcae93b3f4fd9efc329a2c7590e6277f5746e1fa79dfb0be47db557ed'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '90831589b7ab43d6fab11bfa3ad788db14ba77ea4dc03d10ee29ad07194691e1')
