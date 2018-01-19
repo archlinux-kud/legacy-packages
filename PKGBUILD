@@ -2,45 +2,46 @@
 # Tobias Powalowski <tpowa@archlinux.org>
 # Thomas Baechler <thomas@archlinux.org>
 
-# Maintainer: Philip Müller <philm@manjaro.org>
-# Maintainer: Guinux <guillaume@manjaro.org>
-# Maintainer: Rob McCathie <rob@manjaro.org>
+# Author: Albert I <krascgq@outlook.co.id>
 
-pkgbase=linux414-vanadium
-pkgname=('linux414-vanadium' 'linux414-vanadium-headers')
-_kernelname=-vanadium
-_basekernel=4.14
-_basever=414
-_sub=10
-pkgver=${_basekernel}.${_sub}
-pkgrel=0
+pkgbase=linux-vanadium
+_srcname=linux-vanadium
+pkgver=4.14.14
+pkgrel=3
 arch=('x86_64')
-url="http://www.kernel.org/"
+url="https://www.kernel.org/"
 license=('GPL2')
-makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'elfutils')
+makedepends=('xmlto' 'kmod' 'inetutils' 'bc' 'libelf')
 options=('!strip')
 source=("git://github.com/krasCGQ/linux-vanadium"
-        'config'            # the main kernel config files
+        'config'            # the main kernel config file
         "${pkgbase}.preset" # standard config files for mkinitcpio ramdisk
         '60-linux.hook'     # pacman hook for depmod
         '90-linux.hook'     # pacman hook for initramfs regeneration
 )
 sha256sums=('SKIP'
-            '0083d31ad6b4486539e73960b4b28fe50bb66a6c8a343faefed246be7d282532'
-            '5f34413dcae93b3f4fd9efc329a2c7590e6277f5746e1fa79dfb0be47db557ed'
+            'ce7719d5dc33a8415db864561ef9de5fee26a28643111634c7c1267b2d4b4c74'
+            '462e9164e09aeb74cf5fecf6f69b2836a3660543a55a9cb06164501b824f397e'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
-            '90831589b7ab43d6fab11bfa3ad788db14ba77ea4dc03d10ee29ad07194691e1')
+            '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919')
+
+_kernelname=${pkgbase#linux}
 
 prepare() {
-  cd "${srcdir}/linux${_kernelname}"
+  cd ${_srcname}
 
-  cat "${srcdir}/config" > ./.config
+  # my shits
+  [ "$(which ccache > /dev/null 2>&1; echo $?)" == "0" ] && [ "$(which x86_64-linux-gnu-gcc > /dev/null 2>&1; echo $?)" == "0" ] && export CROSS_COMPILE="ccache x86_64-linux-gnu-"
+
+  cp -Tf ../config .config
+
+  if [ "${_kernelname}" != "" ]; then
+    sed -i "s|CONFIG_LOCALVERSION=.*|CONFIG_LOCALVERSION=\"${_kernelname}\"|g" ./.config
+    sed -i "s|CONFIG_LOCALVERSION_AUTO=.*|CONFIG_LOCALVERSION_AUTO=n|" ./.config
+  fi
 
   # set extraversion to pkgrel
   sed -ri "s|^(EXTRAVERSION =).*|\1 -${pkgrel}|" Makefile
-
-  # my shits
-  [[ ! -z $(command -v ccache) ]] && [[ ! -z $(command -v x86_64-linux-gnu-gcc) ]] && export CROSS_COMPILE="ccache x86_64-linux-gnu-"
 
   # don't run depmod on 'make install'. We'll do this ourselves in packaging
   sed -i '2iexit 0' scripts/depmod.sh
@@ -53,36 +54,31 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/linux${_kernelname}"
+  cd ${_srcname}
 
-  # build!
   make ${MAKEFLAGS} LOCALVERSION= bzImage modules -j$(nproc --all)
 }
 
-package_linux414-vanadium() {
+_package() {
   pkgdesc="The ${pkgbase/linux/Linux} kernel and modules"
   depends=('coreutils' 'linux-firmware' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('crda: to set the correct wireless channels of your country')
-  provides=("linux=${pkgver}")
   backup=("etc/mkinitcpio.d/${pkgbase}.preset")
-  install=${pkgname}.install
+  install=${pkgbase}.install
 
-  cd "${srcdir}/linux${_kernelname}"
-
-  KARCH=x86
+  cd ${_srcname}
 
   # get kernel version
   _kernver="$(make LOCALVERSION= kernelrelease)"
+  _basekernel=${_kernver%%-*}
+  _basekernel=${_basekernel%.*}
 
   mkdir -p "${pkgdir}"/{boot,usr/lib/modules}
   make LOCALVERSION= INSTALL_MOD_PATH="${pkgdir}/usr" modules_install -j$(nproc --all)
-  cp arch/$KARCH/boot/bzImage "${pkgdir}/boot/vmlinuz-${_basekernel}${_kernelname}-${CARCH}"
-
-  # add kernel version
-  echo "${pkgver}-${pkgrel}${_kernelname} x64" > "${pkgdir}/boot/${pkgbase}-${CARCH}.kver"
+  cp arch/x86/boot/bzImage "${pkgdir}/boot/vmlinuz-${pkgbase}"
 
   # make room for external modules
-  local _extramodules="extramodules-${_basekernel}${_kernelname:--MANJARO}"
+  local _extramodules="extramodules-${_basekernel}${_kernelname:--ARCH}"
   ln -s "../${_extramodules}" "${pkgdir}/usr/lib/modules/${_kernver}/extramodules"
 
   # add real version for building modules and running depmod from hook
@@ -101,8 +97,6 @@ package_linux414-vanadium() {
   # sed expression for following substitutions
   local _subst="
     s|%PKGBASE%|${pkgbase}|g
-    s|%BASEKERNEL%|${_basekernel}|g
-    s|%ARCH%|${CARCH}|g
     s|%KERNVER%|${_kernver}|g
     s|%EXTRAMODULES%|${_extramodules}|g
   "
@@ -112,21 +106,20 @@ package_linux414-vanadium() {
   true && install=${install}.pkg
 
   # install mkinitcpio preset file
-  sed "${_subst}" ${srcdir}/${pkgbase}.preset |
+  sed "${_subst}" ../${pkgbase}.preset |
     install -Dm644 /dev/stdin "${pkgdir}/etc/mkinitcpio.d/${pkgbase}.preset"
 
   # install pacman hooks
-  sed "${_subst}" ${srcdir}/60-linux.hook |
+  sed "${_subst}" ../60-linux.hook |
     install -Dm644 /dev/stdin "${pkgdir}/usr/share/libalpm/hooks/60-${pkgbase}.hook"
-  sed "${_subst}" ${srcdir}/90-linux.hook |
+  sed "${_subst}" ../90-linux.hook |
     install -Dm644 /dev/stdin "${pkgdir}/usr/share/libalpm/hooks/90-${pkgbase}.hook"
 }
 
-package_linux414-vanadium-headers() {
+_package-headers() {
   pkgdesc="Header files and scripts for building modules for ${pkgbase/linux/Linux} kernel"
-  provides=("linux-headers=$pkgver")
 
-  cd "${srcdir}/linux${_kernelname}"
+  cd ${_srcname}
   local _builddir="${pkgdir}/usr/lib/modules/${_kernver}/build"
 
   install -Dt "${_builddir}" -m644 Makefile .config Module.symvers
@@ -136,10 +129,10 @@ package_linux414-vanadium-headers() {
 
   cp -t "${_builddir}" -a include scripts
 
-  install -Dt "${_builddir}/arch/${KARCH}" -m644 "arch/${KARCH}/Makefile"
-  install -Dt "${_builddir}/arch/${KARCH}/kernel" -m644 "arch/${KARCH}/kernel/asm-offsets.s"
+  install -Dt "${_builddir}/arch/x86" -m644 arch/x86/Makefile
+  install -Dt "${_builddir}/arch/x86/kernel" -m644 arch/x86/kernel/asm-offsets.s
 
-  cp -t "${_builddir}/arch/${KARCH}" -a "arch/${KARCH}/include"
+  cp -t "${_builddir}/arch/x86" -a arch/x86/include
 
   install -Dt "${_builddir}/drivers/md" -m644 drivers/md/*.h
   install -Dt "${_builddir}/net/mac80211" -m644 net/mac80211/*.h
@@ -164,6 +157,19 @@ package_linux414-vanadium-headers() {
   # add objtool for external module building and enabled VALIDATION_STACK option
   install -Dt "${_builddir}/tools/objtool" tools/objtool/objtool
 
+  # remove unneeded architectures
+  local _arch
+  for _arch in "${_builddir}"/arch/*/; do
+    [[ ${_arch} == */x86/ ]] && continue
+    rm -r "${_arch}"
+  done
+
+  # remove files already in linux-docs package
+  rm -r "${_builddir}/Documentation"
+
+  # remove now broken symlinks
+  find -L "${_builddir}" -type l -printf 'Removing %P\n' -delete
+
   # Fix permissions
   chmod -R u=rwX,go=rX "${_builddir}"
 
@@ -176,6 +182,15 @@ package_linux414-vanadium-headers() {
       *application/x-executable*) _strip="${STRIP_BINARIES}" ;; # Binaries
       *) continue ;;
     esac
-    /usr/bin/strip ${_strip} "${_binary}"
+    [ "$(which x86_64-linux-gnu-strip > /dev/null 2>&1; echo $?)" == "0" ] && stripbin="x86_64-linux-gnu-strip" || stripbin="strip"
+    ${stripbin} ${_strip} "${_binary}"
   done < <(find "${_builddir}/scripts" -type f -perm -u+w -print0 2>/dev/null)
 }
+
+pkgname=("${pkgbase}" "${pkgbase}-headers")
+for _p in ${pkgname[@]}; do
+  eval "package_${_p}() {
+    $(declare -f "_package${_p#${pkgbase}}")
+    _package${_p#${pkgbase}}
+  }"
+done

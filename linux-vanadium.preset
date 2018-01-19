@@ -1,0 +1,11 @@
+# mkinitcpio preset file for the '%PKGBASE%' package
+
+ALL_config="/etc/mkinitcpio.conf"
+ALL_kver="/boot/vmlinuz-%PKGBASE%"
+
+PRESETS=('default' 'fallback')
+
+default_image="/boot/initramfs-%PKGBASE%.img"
+
+fallback_image="/boot/initramfs-%PKGBASE%-fallback.img"
+fallback_options="-S autodetect"
