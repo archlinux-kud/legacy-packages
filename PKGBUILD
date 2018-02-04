@@ -6,8 +6,8 @@
 
 pkgbase=linux-vanadium
 _srcname=linux-vanadium
-pkgver=4.14.14
-pkgrel=3
+pkgver=4.15.1
+pkgrel=0
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
@@ -20,7 +20,7 @@ source=("git://github.com/krasCGQ/linux-vanadium"
         '90-linux.hook'     # pacman hook for initramfs regeneration
 )
 sha256sums=('SKIP'
-            'ce7719d5dc33a8415db864561ef9de5fee26a28643111634c7c1267b2d4b4c74'
+            '8c528e7fb2af75b272449aa5b591a8cd3adcf73f810c76c0abdc016643c831aa'
             '462e9164e09aeb74cf5fecf6f69b2836a3660543a55a9cb06164501b824f397e'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919')
