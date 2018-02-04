@@ -26,6 +26,7 @@ sha256sums=('SKIP'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919')
 
 _kernelname=${pkgbase#linux}
+: ${_kernelname:=-vanadium}
 
 prepare() {
   cd ${_srcname}
@@ -33,15 +34,13 @@ prepare() {
   # my shits
   [ "$(which ccache > /dev/null 2>&1; echo $?)" == "0" ] && [ "$(which x86_64-linux-gnu-gcc > /dev/null 2>&1; echo $?)" == "0" ] && export CROSS_COMPILE="ccache x86_64-linux-gnu-"
 
-  cp -Tf ../config .config
-
-  if [ "${_kernelname}" != "" ]; then
-    sed -i "s|CONFIG_LOCALVERSION=.*|CONFIG_LOCALVERSION=\"${_kernelname}\"|g" ./.config
-    sed -i "s|CONFIG_LOCALVERSION_AUTO=.*|CONFIG_LOCALVERSION_AUTO=n|" ./.config
-  fi
+  cat ../config - >.config <<END
+CONFIG_LOCALVERSION="${_kernelname}"
+CONFIG_LOCALVERSION_AUTO=n
+END
 
   # set extraversion to pkgrel
-  sed -ri "s|^(EXTRAVERSION =).*|\1 -${pkgrel}|" Makefile
+  sed -i "/^EXTRAVERSION =/s/=.*/= -${pkgrel}/" Makefile
 
   # don't run depmod on 'make install'. We'll do this ourselves in packaging
   sed -i '2iexit 0' scripts/depmod.sh
@@ -78,7 +77,7 @@ _package() {
   cp arch/x86/boot/bzImage "${pkgdir}/boot/vmlinuz-${pkgbase}"
 
   # make room for external modules
-  local _extramodules="extramodules-${_basekernel}${_kernelname:--ARCH}"
+  local _extramodules="extramodules-${_basekernel}${_kernelname}"
   ln -s "../${_extramodules}" "${pkgdir}/usr/lib/modules/${_kernver}/extramodules"
 
   # add real version for building modules and running depmod from hook
