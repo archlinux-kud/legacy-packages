@@ -1,4 +1,5 @@
 # Kernel source
+linux/
 linux-vanadium/
 
 # Build folders

@@ -5,22 +5,22 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vanadium
-_srcname=linux-vanadium
-pkgver=4.15.15
+_srcname=linux
+pkgver=4.16.2
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
 makedepends=('xmlto' 'kmod' 'inetutils' 'bc' 'libelf')
 options=('!strip')
-source=("git://github.com/krasCGQ/linux-vanadium"
+source=("git://github.com/krasCGQ/linux"
         'config'            # the main kernel config file
         "${pkgbase}.preset" # standard config files for mkinitcpio ramdisk
         '60-linux.hook'     # pacman hook for depmod
         '90-linux.hook'     # pacman hook for initramfs regeneration
 )
 sha256sums=('SKIP'
-            'a2c0ab4e81ea4b3c8ab56d116c241970e4d75cc491941cbdd3a112da61a37d21'
+            '4b4227c1b38dc2a8a5303d6c0843825a0c7e86a7e3180340e810777944c19792'
             '462e9164e09aeb74cf5fecf6f69b2836a3660543a55a9cb06164501b824f397e'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919')
@@ -137,9 +137,6 @@ _package-headers() {
 
   install -Dt "${_builddir}/drivers/md" -m644 drivers/md/*.h
   install -Dt "${_builddir}/net/mac80211" -m644 net/mac80211/*.h
-
-  # http://bugs.archlinux.org/task/9912
-  install -Dt "${_builddir}/drivers/media/dvb-core" -m644 drivers/media/dvb-core/*.h
 
   # http://bugs.archlinux.org/task/13146
   install -Dt "${_builddir}/drivers/media/i2c" -m644 drivers/media/i2c/msp3400-driver.h
