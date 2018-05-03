@@ -6,8 +6,8 @@
 
 pkgbase=linux-vanadium
 _srcname=linux
-pkgver=4.16.5
-pkgrel=2
+pkgver=4.16.6
+pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
@@ -19,11 +19,11 @@ source=("git://github.com/krasCGQ/linux"
         '60-linux.hook'     # pacman hook for depmod
         '90-linux.hook'     # pacman hook for initramfs regeneration
 )
-sha256sums=('SKIP'
-            'e9e6274f446584a7d54d8f477d39e0423f94c3c8d2f3cdef592090fc7a868ad7'
-            '462e9164e09aeb74cf5fecf6f69b2836a3660543a55a9cb06164501b824f397e'
-            'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
-            '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919')
+sha512sums=('SKIP'
+            'c1c546c95c3084ea0bb57bca410f80c4dce56f58c3977a94afe6856e09953ae217bccedb3bc632b2c45fb2d2a76cbeb9dd51ba07eba3bed3b4f1c0b290178527'
+            'f046141838bfead947ef6435dd6284f55b9315beeee6d73cd1c314269471477ac742b48e561a3bb4fa2b63fe4506fea3d72708cbc5fcc6c9a116951918f51f4c'
+            '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
+            '4a8b324aee4cccf3a512ad04ce1a272d14e5b05c8de90feb82075f55ea3845948d817e1b0c6f298f5816834ddd3e5ce0a0e2619866289f3c1ab8fd2f35f04f44')
 
 _kernelname=${pkgbase#linux}
 : ${_kernelname:=-vanadium}
