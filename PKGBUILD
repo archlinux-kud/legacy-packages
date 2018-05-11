@@ -31,6 +31,8 @@ prepare() {
   # my shits
   [ "$(which ccache > /dev/null 2>&1; echo $?)" == "0" ] && [ "$(which x86_64-linux-gnu-gcc > /dev/null 2>&1; echo $?)" == "0" ] && export CROSS_COMPILE="ccache x86_64-linux-gnu-"
 
+  cp -Tf ../config .config
+
   # set extraversion to pkgrel and empty localversion
   sed -e "/^EXTRAVERSION =/s/=.*/= -${pkgrel}/" \
       -e "/^EXTRAVERSION =/aLOCALVERSION =" \
