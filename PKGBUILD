@@ -25,19 +25,11 @@ sha512sums=('SKIP'
             '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
             '4a8b324aee4cccf3a512ad04ce1a272d14e5b05c8de90feb82075f55ea3845948d817e1b0c6f298f5816834ddd3e5ce0a0e2619866289f3c1ab8fd2f35f04f44')
 
-_kernelname=${pkgbase#linux}
-: ${_kernelname:=-vanadium}
-
 prepare() {
   cd ${_srcname}
 
   # my shits
   [ "$(which ccache > /dev/null 2>&1; echo $?)" == "0" ] && [ "$(which x86_64-linux-gnu-gcc > /dev/null 2>&1; echo $?)" == "0" ] && export CROSS_COMPILE="ccache x86_64-linux-gnu-"
-
-  cat ../config - >.config <<END
-CONFIG_LOCALVERSION="${_kernelname}"
-CONFIG_LOCALVERSION_AUTO=n
-END
 
   # set extraversion to pkgrel and empty localversion
   sed -e "/^EXTRAVERSION =/s/=.*/= -${pkgrel}/" \
