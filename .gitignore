@@ -1,11 +1,7 @@
-# Kernel source
-linux/
-linux-vanadium/
-
-# Build folders
-pkg/
-src/
-temp/
-
-# Package files
+.buildconfig
+build.sh
+linux
+pkg
+src
+temp
 *.pkg*
