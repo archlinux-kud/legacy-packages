@@ -6,21 +6,21 @@
 
 pkgbase=linux-vanadium
 _srcname=linux
-pkgver=4.16.13
+pkgver=4.17
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
 makedepends=('xmlto' 'kmod' 'inetutils' 'bc' 'libelf')
 options=('!strip')
-source=("git://github.com/krasCGQ/linux"
+source=("git+ssh://git@gitlab.com/krasCGQ/linux"
         'config'            # the main kernel config file
         "${pkgbase}.preset" # standard config files for mkinitcpio ramdisk
         '60-linux.hook'     # pacman hook for depmod
         '90-linux.hook'     # pacman hook for initramfs regeneration
 )
 sha512sums=('SKIP'
-            'fe229c96cf94ac3e5293be542e70b8526a1ca291da30d1a8d7b2b053ae1b2677c9713d0de853763a5765f7823b59da69426f429a9b2b9c78ba32eec4d592f429'
+            '764aee12da9e45d06de7d85ac05b0912a949d61fb54cffb48be66b06352fa921a2eadccba8a909f7ed63b12e648976dd5628992a01d3a3a3a6d6dfee3e488e82'
             'f046141838bfead947ef6435dd6284f55b9315beeee6d73cd1c314269471477ac742b48e561a3bb4fa2b63fe4506fea3d72708cbc5fcc6c9a116951918f51f4c'
             '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
             '4a8b324aee4cccf3a512ad04ce1a272d14e5b05c8de90feb82075f55ea3845948d817e1b0c6f298f5816834ddd3e5ce0a0e2619866289f3c1ab8fd2f35f04f44')
@@ -29,7 +29,9 @@ prepare() {
   cd ${_srcname}
 
   # my shits
-  [ "$(which ccache > /dev/null 2>&1; echo $?)" == "0" ] && [ "$(which x86_64-linux-gnu-gcc > /dev/null 2>&1; echo $?)" == "0" ] && export CROSS_COMPILE="ccache x86_64-linux-gnu-"
+  [ "$(which ccache > /dev/null 2>&1; echo $?)" == "0" ] && \
+      [ "$(find /opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-gcc > /dev/null 2>&1; echo $?)" == "0" ] && \
+      export CROSS_COMPILE="ccache /opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-"
 
   cp -Tf ../config .config
 
