@@ -6,7 +6,7 @@
 
 pkgbase=linux-vanadium
 _srcname=linux
-pkgver=4.17
+pkgver=4.17.4
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -20,7 +20,7 @@ source=("git+ssh://git@gitlab.com/krasCGQ/linux"
         '90-linux.hook'     # pacman hook for initramfs regeneration
 )
 sha512sums=('SKIP'
-            '764aee12da9e45d06de7d85ac05b0912a949d61fb54cffb48be66b06352fa921a2eadccba8a909f7ed63b12e648976dd5628992a01d3a3a3a6d6dfee3e488e82'
+            '4622a920e1a877953cc7e804f5c56bc369f9fc91c6feed1e6d060f210c0e7a59e46f24580cdea9fdc2c6ed71b4b0717234eddd41dc6612e1dab231bb7eaa1f7a'
             'f046141838bfead947ef6435dd6284f55b9315beeee6d73cd1c314269471477ac742b48e561a3bb4fa2b63fe4506fea3d72708cbc5fcc6c9a116951918f51f4c'
             '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
             '4a8b324aee4cccf3a512ad04ce1a272d14e5b05c8de90feb82075f55ea3845948d817e1b0c6f298f5816834ddd3e5ce0a0e2619866289f3c1ab8fd2f35f04f44')
