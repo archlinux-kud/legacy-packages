@@ -1,39 +1,36 @@
-# $Id$
-# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
-# Maintainer: Tobias Powalowski <tpowa@archlinux.org>
-# Maintainer: Thomas Baechler <thomas@archlinux.org>
+# Based on PKGBUILD created for Arch Linux by:
+# Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Tobias Powalowski <tpowa@archlinux.org>
+# Thomas Baechler <thomas@archlinux.org>
 
-pkgbase=linux               # Build stock -ARCH kernel
-#pkgbase=linux-custom       # Build kernel with a different name
-_srcver=4.17.11-arch1
-pkgver=${_srcver//-/.}
+# Author: Albert I <krascgq@outlook.co.id>
+
+pkgbase=linux-vk
+pkgver=4.17.11
 pkgrel=2
 arch=(x86_64)
-url="https://github.com/archlinux/linux/commits/v$_srcver"
+url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
 makedepends=(xmlto kmod inetutils bc libelf git)
 options=('!strip')
-_srcname=archlinux-linux
+_srcname=${pkgbase/-*}
 source=(
-  "$_srcname::git+https://github.com/archlinux/linux?signed#tag=v$_srcver"
+  "$_srcname::git+$url"
   config         # the main kernel config file
   60-linux.hook  # pacman hook for depmod
   90-linux.hook  # pacman hook for initramfs regeneration
-  linux.preset   # standard config files for mkinitcpio ramdisk
+  linux.install  # standard config file for post (un)install
+  linux.preset   # standard config file for mkinitcpio ramdisk
 )
-validpgpkeys=(
-  'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
-  '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
-  '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
-)
-sha256sums=('SKIP'
-            'aa7b6756f193f3b3a3fc4947e7a77b09e249df2e345e6495292055d757ba8be6'
-            '36e326d8a88b4087a3a0ee0d47643fc03baeda487659980d0e9d08791e4c729c'
-            '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
-            'ad6344badc91ad0630caacde83f7f9b97276f80d26a20619a87952be65492c65')
+sha512sums=('SKIP'
+            'c7fcf7194e4935ce86bdc6a890f69a7efc24c13542977fc36ed42410dc4f8cbbe1cc6b642305e2b12d77c16fd7a069379f6764a8a3510b6668a19b81892606ef'
+            '3a6b1c49da50f5324b78d87bcc7084e34f8e79d9c15a82e4cc93d9f2a6e3f032dbe6eb349e4d56d75bfb8598818fbd34998963e8d4ca53d2a4a4b2e17584c221'
+            '4a8b324aee4cccf3a512ad04ce1a272d14e5b05c8de90feb82075f55ea3845948d817e1b0c6f298f5816834ddd3e5ce0a0e2619866289f3c1ab8fd2f35f04f44'
+            'a80becfb4d2b1714d86fa97e18f3ba54156b53725dfd4336964f2f3cd2ff175ef988d917c8abdfb27eb4e33668e635f58b961ff264d0a4d00818cba5e46143e7'
+            '0a52a7352490de9d0202c777a45ab33e85e98d5c5ef9e5edf2dd6461f410a6232313d4239bdad8dd769c585b815d8f7c9941ead81b88928ec6e2cc4c849673c8')
 
 _kernelname=${pkgbase#linux}
-: ${_kernelname:=-ARCH}
+_codename=HackaDoll
 
 prepare() {
   cd $_srcname
@@ -41,20 +38,11 @@ prepare() {
   msg2 "Setting version..."
   scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
-  echo "$_kernelname" > localversion.20-pkgname
-
-  local src
-  for src in "${source[@]}"; do
-    src="${src%%::*}"
-    src="${src##*/}"
-    [[ $src = *.patch ]] || continue
-    msg2 "Applying patch $src..."
-    patch -Np1 < "../$src"
-  done
+  echo "${_kernelname^^}.$_codename" > localversion.20-pkgname
 
   msg2 "Setting config..."
   cp ../config .config
-  make olddefconfig
+  make olddefconfig > /dev/null
 
   make -s kernelrelease > ../version
   msg2 "Prepared %s version %s" "$pkgbase" "$(<../version)"
@@ -62,14 +50,20 @@ prepare() {
 
 build() {
   cd $_srcname
-  make bzImage modules
+
+  if [ "$(which ccache > /dev/null 2>&1; echo $?)" == "0" ] && [ "$(find /opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-gcc > /dev/null 2>&1; echo $?)" == "0" ]; then
+     compiler=( "CROSS_COMPILE=ccache /opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-" )
+  fi
+
+  make "${compiler[@]}" bzImage modules -j$(nproc --all) > /dev/null
 }
 
 _package() {
   pkgdesc="The ${pkgbase/linux/Linux} kernel and modules"
-  [[ $pkgbase = linux ]] && groups=(base)
   depends=(coreutils linux-firmware kmod mkinitcpio)
   optdepends=('crda: to set the correct wireless channels of your country')
+  replaces=(linux-vanadium)
+  conflicts=(linux-vanadium)
   backup=("etc/mkinitcpio.d/$pkgbase.preset")
   install=linux.install
 
@@ -83,7 +77,7 @@ _package() {
   msg2 "Installing modules..."
   local modulesdir="$pkgdir/usr/lib/modules/$kernver"
   mkdir -p "$modulesdir"
-  make INSTALL_MOD_PATH="$pkgdir/usr" DEPMOD=/doesnt/exist modules_install
+  make INSTALL_MOD_PATH="$pkgdir/usr" DEPMOD=/dev/null modules_install
 
   # a place for external modules,
   # with version file for building modules and running depmod from hook
@@ -125,6 +119,8 @@ _package() {
 
 _package-headers() {
   pkgdesc="Header files and scripts for building modules for ${pkgbase/linux/Linux} kernel"
+  replaces=(linux-vanadium-headers)
+  conflicts=(linux-vanadium-headers)
 
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
 
@@ -200,22 +196,7 @@ _package-headers() {
   chmod -Rc u=rwX,go=rX "$pkgdir"
 }
 
-_package-docs() {
-  pkgdesc="Kernel hackers manual - HTML documentation that comes with the ${pkgbase/linux/Linux} kernel"
-
-  local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
-
-  cd $_srcname
-
-  msg2 "Installing documentation..."
-  mkdir -p "$builddir"
-  cp -t "$builddir" -a Documentation
-
-  msg2 "Fixing permissions..."
-  chmod -Rc u=rwX,go=rX "$pkgdir"
-}
-
-pkgname=("$pkgbase" "$pkgbase-headers" "$pkgbase-docs")
+pkgname=("$pkgbase" "$pkgbase-headers")
 for _p in "${pkgname[@]}"; do
   eval "package_$_p() {
     $(declare -f "_package${_p#$pkgbase}")
