@@ -6,12 +6,12 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=4.17.11
-pkgrel=2
+pkgver=4.17.12
+pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
-makedepends=(xmlto kmod inetutils bc libelf git)
+makedepends=(kmod inetutils bc libelf git)
 options=('!strip')
 _srcname=${pkgbase/-*}
 source=(
