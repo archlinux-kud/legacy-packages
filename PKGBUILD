@@ -6,7 +6,7 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=4.17.12
+pkgver=4.17.14
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -77,7 +77,7 @@ _package() {
   msg2 "Installing modules..."
   local modulesdir="$pkgdir/usr/lib/modules/$kernver"
   mkdir -p "$modulesdir"
-  make INSTALL_MOD_PATH="$pkgdir/usr" DEPMOD=/dev/null modules_install
+  make INSTALL_MOD_PATH="$pkgdir/usr" DEPMOD=/dev/null modules_install > /dev/null
 
   # a place for external modules,
   # with version file for building modules and running depmod from hook
@@ -164,7 +164,6 @@ _package-headers() {
   local arch
   for arch in "$builddir"/arch/*/; do
     [[ $arch = */x86/ ]] && continue
-    echo "Removing $(basename "$arch")"
     rm -r "$arch"
   done
 
@@ -172,10 +171,10 @@ _package-headers() {
   rm -r "$builddir/Documentation"
 
   msg2 "Removing broken symlinks..."
-  find -L "$builddir" -type l -printf 'Removing %P\n' -delete
+  find -L "$builddir" -type l -delete
 
   msg2 "Removing loose objects..."
-  find "$builddir" -type f -name '*.o' -printf 'Removing %P\n' -delete
+  find "$builddir" -type f -name '*.o' -delete
 
   msg2 "Stripping build tools..."
   local file
@@ -190,7 +189,7 @@ _package-headers() {
       application/x-pie-executable\;*) # Relocatable binaries
         strip -v $STRIP_SHARED "$file" ;;
     esac
-  done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
+  done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux)
 
   msg2 "Fixing permissions..."
   chmod -Rc u=rwX,go=rX "$pkgdir"
