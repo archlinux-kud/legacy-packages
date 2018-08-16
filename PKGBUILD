@@ -6,7 +6,7 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=4.17.14
+pkgver=4.18.1
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -23,14 +23,14 @@ source=(
   linux.preset   # standard config file for mkinitcpio ramdisk
 )
 sha512sums=('SKIP'
-            'c7fcf7194e4935ce86bdc6a890f69a7efc24c13542977fc36ed42410dc4f8cbbe1cc6b642305e2b12d77c16fd7a069379f6764a8a3510b6668a19b81892606ef'
-            '3a6b1c49da50f5324b78d87bcc7084e34f8e79d9c15a82e4cc93d9f2a6e3f032dbe6eb349e4d56d75bfb8598818fbd34998963e8d4ca53d2a4a4b2e17584c221'
+            '45f1f02c84f911c565ede02ecb55f02f15d4e9430daa1e248d278c7f3ecd5aaa2ce6e33d997bd2c2cd97e62ce5bd0e4aa392b3019c41513cfc324be26f7a6162'
+            '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
             '4a8b324aee4cccf3a512ad04ce1a272d14e5b05c8de90feb82075f55ea3845948d817e1b0c6f298f5816834ddd3e5ce0a0e2619866289f3c1ab8fd2f35f04f44'
             'a80becfb4d2b1714d86fa97e18f3ba54156b53725dfd4336964f2f3cd2ff175ef988d917c8abdfb27eb4e33668e635f58b961ff264d0a4d00818cba5e46143e7'
             '0a52a7352490de9d0202c777a45ab33e85e98d5c5ef9e5edf2dd6461f410a6232313d4239bdad8dd769c585b815d8f7c9941ead81b88928ec6e2cc4c849673c8')
 
 _kernelname=${pkgbase#linux}
-_codename=HackaDoll
+_codename=CebongKampret
 
 prepare() {
   cd $_srcname
