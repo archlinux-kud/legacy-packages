@@ -6,7 +6,7 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=4.18.6
+pkgver=4.18.7
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -52,7 +52,7 @@ build() {
   cd $_srcname
 
   if [ "$(which ccache > /dev/null 2>&1; echo $?)" == "0" ] && [ "$(find /opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-gcc > /dev/null 2>&1; echo $?)" == "0" ]; then
-     compiler=( "CROSS_COMPILE=ccache /opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-" )
+     local compiler=( "CROSS_COMPILE=ccache /opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-" )
   fi
 
   make "${compiler[@]}" bzImage modules -j$(nproc --all) > /dev/null
@@ -72,6 +72,8 @@ _package() {
   cd $_srcname
 
   msg2 "Installing boot image..."
+  # FIXME: install: cannot stat '*'$'\n''* Restart config...'$'\n''*'$'\n''*'$'\n''* GCC plugins'$'\n''*'$'\n''GCC plugins (GCC_PLUGINS) [N/y/?] (NEW) ': No such file or directory
+  echo "# CONFIG_GCC_PLUGINS is not set" >> .config
   install -Dm644 "$(make -s image_name)" "$pkgdir/boot/vmlinuz-$pkgbase"
 
   msg2 "Installing modules..."
