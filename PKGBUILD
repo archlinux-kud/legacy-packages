@@ -6,8 +6,8 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=4.19.1
-pkgrel=2
+pkgver=4.19.8
+pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
@@ -23,10 +23,10 @@ source=(
   linux.preset   # standard config file for mkinitcpio ramdisk
 )
 sha512sums=('SKIP'
-            'a3cb7af16dea6feedb2e7a61f1780d1cbccda86e1898465d2ff9ef1e3646c671389efae89162eba56609bd552918b81bf037c0a47953f0a038edb4ee17f5c077'
+            '4f9609e499ab2fbdec9bbcf316d7aaac85f0b1d98e00a8759b5834fd36f5b6c1de0647f585c5ca498f1c1066b6928f9a1bd0b9b5248233038f44eadda64d8a12'
             '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
-            '4a8b324aee4cccf3a512ad04ce1a272d14e5b05c8de90feb82075f55ea3845948d817e1b0c6f298f5816834ddd3e5ce0a0e2619866289f3c1ab8fd2f35f04f44'
-            'a80becfb4d2b1714d86fa97e18f3ba54156b53725dfd4336964f2f3cd2ff175ef988d917c8abdfb27eb4e33668e635f58b961ff264d0a4d00818cba5e46143e7'
+            '2718b58dbbb15063bacb2bde6489e5b3c59afac4c0e0435b97fe720d42c711b6bcba926f67a8687878bd51373c9cf3adb1915a11666d79ccb220bf36e0788ab7'
+            'b2a4d48144cd8585a90397b5d99e6d062c627fb0d752db7e599b8aa16cec3e7a1f2c4804db1ba806ac5d122fa71d533f302abc2f57fdf76cc7218cfb53ae1d79'
             '0a52a7352490de9d0202c777a45ab33e85e98d5c5ef9e5edf2dd6461f410a6232313d4239bdad8dd769c585b815d8f7c9941ead81b88928ec6e2cc4c849673c8')
 
 _kernelname=${pkgbase#linux}
@@ -68,17 +68,19 @@ _package() {
   install=linux.install
 
   local kernver="$(<version)"
+  local modulesdir="$pkgdir/usr/lib/modules/$kernver"
 
   cd $_srcname
 
   msg2 "Installing boot image..."
   # FIXME: install: cannot stat '*'$'\n''* Restart config...'$'\n''*'$'\n''*'$'\n''* GCC plugins'$'\n''*'$'\n''GCC plugins (GCC_PLUGINS) [N/y/?] (NEW) ': No such file or directory
   echo "# CONFIG_GCC_PLUGINS is not set" >> .config
-  install -Dm644 "$(make -s image_name)" "$pkgdir/boot/vmlinuz-$pkgbase"
+  # systemd expects to find the kernel here to allow hibernation
+  # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
+  install -Dm644 "$(make -s image_name)" "$modulesdir/vmlinuz"
+  install -Dm644 "$modulesdir/vmlinuz" "$pkgdir/boot/vmlinuz-$pkgbase"
 
   msg2 "Installing modules..."
-  local modulesdir="$pkgdir/usr/lib/modules/$kernver"
-  mkdir -p "$modulesdir"
   make INSTALL_MOD_PATH="$pkgdir/usr" modules_install > /dev/null
 
   # a place for external modules,

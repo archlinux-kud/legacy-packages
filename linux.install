@@ -7,3 +7,5 @@ post_upgrade() {
 post_remove() {
   rm -f boot/initramfs-%PKGBASE%.img
 }
+
+# vim:set ft=sh ts=8 sts=2 sw=2 et:
