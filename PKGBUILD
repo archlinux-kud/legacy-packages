@@ -7,7 +7,7 @@
 
 pkgbase=linux-vk
 pkgver=4.20.0
-pkgrel=2
+pkgrel=4
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
@@ -23,7 +23,7 @@ source=(
   linux.preset   # standard config file for mkinitcpio ramdisk
 )
 sha512sums=('SKIP'
-            'f41edbb45ff19538476e40232ebf7fed58edb337dade3814545c5c2b33029f6af024e739c3abe190383dfdb7e98fa918382ab29a0101560cca75ac4d4eed22bb'
+            '933b1371da359ac55eff8a652a185a6bb82a1d8c4f7429c3c366a4c14fb9c782366610a207672f50af5efd47f25e411a9cd7d0241192f610c7922b1d9e9629c8'
             '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
             '2718b58dbbb15063bacb2bde6489e5b3c59afac4c0e0435b97fe720d42c711b6bcba926f67a8687878bd51373c9cf3adb1915a11666d79ccb220bf36e0788ab7'
             'b2a4d48144cd8585a90397b5d99e6d062c627fb0d752db7e599b8aa16cec3e7a1f2c4804db1ba806ac5d122fa71d533f302abc2f57fdf76cc7218cfb53ae1d79'
@@ -49,11 +49,57 @@ prepare() {
 }
 
 build() {
-  cd $_srcname
+  # mark variables as local
+  local CC ccache_exist clang_exist clang_path compiler CROSS_COMPILE gcc_path
 
-  if [ "$(which ccache > /dev/null 2>&1; echo $?)" == "0" ] && [ "$(find /opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-gcc > /dev/null 2>&1; echo $?)" == "0" ]; then
-     local compiler=( "CROSS_COMPILE=ccache /opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-" )
+  # is ccache exist?
+  ccache_exist="$(which ccache &> /dev/null && echo 1 || echo 0)"
+
+  # custom clang and gcc paths
+  clang_path="/opt/kud/clang-8.x/bin/clang"
+  gcc_path="/opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-"
+
+  # assuming clang doesn't exist
+  clang_exist=0
+
+  # custom clang
+  if [ "$(find ${clang_path} &> /dev/null; echo ${?})" == "0" ]; then
+    msg2 "Custom built Clang detected! Building with Clang..."
+    # use ccache if exist
+    [ "${ccache_exist}" == "1" ] && CC+="ccache "
+    CC+="${clang_path}"
+    clang_exist=1
+  # clang installed on system
+  elif [ "$(which clang &> /dev/null; echo ${?})" == "0" ]; then
+    msg2 "Clang detected! Building with Clang..."
+    CC=clang
+    clang_exist=1
   fi
+
+  # custom gcc if exist
+  if [ "$(find ${gcc_path}gcc &> /dev/null; echo ${?})" == "0" ]; then
+    msg2 "Custom built GCC detected!"
+    # use ccache if exist and clang is absent
+    if [ "${clang_exist}" == "0" ] && [ "${ccache_exist}" == "1" ]; then
+      CROSS_COMPILE+="ccache "
+    fi
+    CROSS_COMPILE+="${gcc_path}"
+  fi
+
+  # custom compiler string for clang
+  # todo: gcc?
+  if [ "${clang_exist}" == "1" ]; then
+    # from github.com/nathanchance/scripts, slightly edited
+    KBUILD_COMPILER_STRING="$(${CC} --version | head -n 1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
+    export KBUILD_COMPILER_STRING
+    msg2 "Using ${KBUILD_COMPILER_STRING}..."
+  fi
+
+  # set CROSS_COMPILE and CC if declared via compiler array
+  [ -n "${CROSS_COMPILE}" ] && compiler+=( "CROSS_COMPILE=${CROSS_COMPILE}" )
+  [ -n "${CC}" ] && compiler+=( "CC=${CC}" )
+
+  cd $_srcname
 
   make "${compiler[@]}" bzImage modules -j$(nproc --all) > /dev/null
 }
