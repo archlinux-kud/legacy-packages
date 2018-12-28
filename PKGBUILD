@@ -7,7 +7,7 @@
 
 pkgbase=linux-vk
 pkgver=4.20.0
-pkgrel=1
+pkgrel=2
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
@@ -23,7 +23,7 @@ source=(
   linux.preset   # standard config file for mkinitcpio ramdisk
 )
 sha512sums=('SKIP'
-            '222262d6982de21a44924c658512c38d8bbefc8d36197ff376bd51474e99e93a50ad4c90b2fefc9f318420bb33df56180d3a005882c3ed7c73d13861ffa06557'
+            'f41edbb45ff19538476e40232ebf7fed58edb337dade3814545c5c2b33029f6af024e739c3abe190383dfdb7e98fa918382ab29a0101560cca75ac4d4eed22bb'
             '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
             '2718b58dbbb15063bacb2bde6489e5b3c59afac4c0e0435b97fe720d42c711b6bcba926f67a8687878bd51373c9cf3adb1915a11666d79ccb220bf36e0788ab7'
             'b2a4d48144cd8585a90397b5d99e6d062c627fb0d752db7e599b8aa16cec3e7a1f2c4804db1ba806ac5d122fa71d533f302abc2f57fdf76cc7218cfb53ae1d79'
