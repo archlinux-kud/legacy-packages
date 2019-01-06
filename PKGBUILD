@@ -34,18 +34,20 @@ check() {
 package() {
   cd ${srcdir}/ccache
 
-  install -Dm 755 ccache ${pkgdir}/usr/bin/ccache
-  install -Dm 644 ccache.1 ${pkgdir}/usr/share/man/man1/ccache.1
+  local _prog
+
+  install -Dm 755 ccache "${pkgdir}/usr/bin/ccache"
+  install -Dm 644 doc/ccache.1 -t "${pkgdir}/usr/share/man/man1/ccache.1"
+  for _prog in AUTHORS MANUAL NEWS; do 
+    install -Dm 644 doc/${_prog}.adoc "${pkgdir}/usr/share/doc/${pkgname}/${_prog}.adoc"
+  done
 
   install -d ${pkgdir}/usr/lib/ccache/bin
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/cc 
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/gcc
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/g++
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/cpp
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/c++
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/${CHOST}-cc
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/${CHOST}-gcc
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/${CHOST}-g++
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/${CHOST}-cpp
-  ln -sf /usr/bin/ccache ${pkgdir}/usr/lib/ccache/bin/${CHOST}-c++
+  for _prog in gcc g++ c++; do
+    ln -sf /usr/bin/ccache "${pkgdir}/usr/lib/ccache/bin/$_prog" 
+    ln -sf /usr/bin/ccache "${pkgdir}/usr/lib/ccache/bin/${CHOST}-$_prog" 
+  done
+  for _prog in cc clang clang++; do
+    ln -sf /usr/bin/ccache "${pkgdir}/usr/lib/ccache/bin/$_prog"
+  done
 }
