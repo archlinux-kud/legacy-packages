@@ -39,7 +39,7 @@ package() {
   install -Dm 755 ccache "${pkgdir}/usr/bin/ccache"
   install -Dm 644 doc/ccache.1 -t "${pkgdir}/usr/share/man/man1/ccache.1"
   for _prog in AUTHORS MANUAL NEWS; do 
-    install -Dm 644 doc/${_prog}.adoc "${pkgdir}/usr/share/doc/${pkgname}/${_prog}.adoc"
+    install -Dm 644 doc/${_prog}.adoc "${pkgdir}/usr/share/doc/${pkgname/-git}/${_prog}.adoc"
   done
 
   install -d ${pkgdir}/usr/lib/ccache/bin
