@@ -9,7 +9,7 @@ depends=('zlib')
 makedepends=('git' 'asciidoc')
 conflicts=('ccache')
 provides=('ccache')
-source=("git://git.samba.org/ccache.git")
+source=("git://github.com/ccache/ccache")
 sha256sums=('SKIP')
 
 pkgver() {
