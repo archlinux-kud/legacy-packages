@@ -34,16 +34,13 @@ check() {
 package() {
   cd ${srcdir}/ccache
 
-  local _prog
-
-  install -Dm 755 ccache "${pkgdir}/usr/bin/ccache"
-  install -Dm 644 doc/ccache.1 -t "${pkgdir}/usr/share/man/man1/ccache.1"
-  for _prog in AUTHORS MANUAL NEWS; do 
-    install -Dm 644 doc/${_prog}.adoc "${pkgdir}/usr/share/doc/${pkgname/-git}/${_prog}.adoc"
-  done
+  install -Dm 755 ccache -t "${pkgdir}/usr/bin"
+  install -Dm 644 doc/ccache.1 -t "${pkgdir}/usr/share/man/man1"
+  install -Dm 644 doc/{AUTHORS,MANUAL,NEWS}.adoc README.md -t "${pkgdir}/usr/share/doc/${pkgname/-git}"
 
   install -d ${pkgdir}/usr/lib/ccache/bin
-  for _prog in gcc g++ c++; do
+  local _prog
+  for _prog in c++ gcc g++; do
     ln -sf /usr/bin/ccache "${pkgdir}/usr/lib/ccache/bin/$_prog" 
     ln -sf /usr/bin/ccache "${pkgdir}/usr/lib/ccache/bin/${CHOST}-$_prog" 
   done
