@@ -1,5 +1,5 @@
 pkgname=ccache-git
-pkgver=v3.5.1_48_g059aa1b
+pkgver=v3.6
 pkgrel=1
 pkgdesc="A compiler cache"
 arch=('x86_64')
