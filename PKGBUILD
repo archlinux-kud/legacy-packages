@@ -6,7 +6,7 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=4.20.3
+pkgver=4.20.4
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -23,7 +23,7 @@ source=(
   linux.preset   # standard config file for mkinitcpio ramdisk
 )
 sha512sums=('SKIP'
-            'c25110ed364b7d402645b83b8b5dda80f1cb2e5113a7c7d6fb556f4294741e1d0e369191d1c6def6b23b1688517c90cdadcf44f70f83640dc0cdf64017e463e0'
+            'bcb2b507ea450653c07a7e862192bba08bb13043c4d41b9a976eaea3e19d43c1dee0fba583f01ee1cd32c42d00f54cbce7e11e7bb4242a8195b989ca8d2a5fba'
             '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
             '2718b58dbbb15063bacb2bde6489e5b3c59afac4c0e0435b97fe720d42c711b6bcba926f67a8687878bd51373c9cf3adb1915a11666d79ccb220bf36e0788ab7'
             'b2a4d48144cd8585a90397b5d99e6d062c627fb0d752db7e599b8aa16cec3e7a1f2c4804db1ba806ac5d122fa71d533f302abc2f57fdf76cc7218cfb53ae1d79'
