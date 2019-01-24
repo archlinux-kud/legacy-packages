@@ -56,7 +56,7 @@ build() {
   ccache_exist="$(which ccache &> /dev/null && echo 1 || echo 0)"
 
   # custom clang and gcc paths
-  clang_path="/opt/kud/clang-8.x/bin/clang"
+  clang_path="/opt/kud/clang-9.x/bin/clang"
   gcc_path="/opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-"
 
   # assuming clang doesn't exist
