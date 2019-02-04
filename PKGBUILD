@@ -6,7 +6,7 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=4.20.4
+pkgver=4.20.6
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -23,14 +23,19 @@ source=(
   linux.preset   # standard config file for mkinitcpio ramdisk
 )
 sha512sums=('SKIP'
-            'bcb2b507ea450653c07a7e862192bba08bb13043c4d41b9a976eaea3e19d43c1dee0fba583f01ee1cd32c42d00f54cbce7e11e7bb4242a8195b989ca8d2a5fba'
+            '2b679d40b0d542159b7b36ae9da7d07b0eb11d5139132d2d4a9b22dba0625028ca87fd250870a2b883024174ec5220b80fc46b26dc0432736efff4f07ac6bcef'
             '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
             '2718b58dbbb15063bacb2bde6489e5b3c59afac4c0e0435b97fe720d42c711b6bcba926f67a8687878bd51373c9cf3adb1915a11666d79ccb220bf36e0788ab7'
             'b2a4d48144cd8585a90397b5d99e6d062c627fb0d752db7e599b8aa16cec3e7a1f2c4804db1ba806ac5d122fa71d533f302abc2f57fdf76cc7218cfb53ae1d79'
             '0a52a7352490de9d0202c777a45ab33e85e98d5c5ef9e5edf2dd6461f410a6232313d4239bdad8dd769c585b815d8f7c9941ead81b88928ec6e2cc4c849673c8')
 
 _kernelname=${pkgbase#linux}
-_codename=Sub2PewDiePie
+_codename=AtomicPeacock
+
+pkgver() {
+  cd $_srcname
+  git describe --tags | sed -e 's/-/_/g'
+}
 
 prepare() {
   cd $_srcname
@@ -62,6 +67,8 @@ build() {
   # assuming clang doesn't exist
   clang_exist=0
 
+  msg2 "NOT using Clang for now due to floating point issues with AMDGPU."
+  if false; then
   # custom clang
   if [ "$(find ${clang_path} &> /dev/null; echo ${?})" == "0" ]; then
     msg2 "Custom built Clang detected! Building with Clang..."
@@ -74,6 +81,7 @@ build() {
     msg2 "Clang detected! Building with Clang..."
     CC=clang
     clang_exist=1
+  fi
   fi
 
   # custom gcc if exist
