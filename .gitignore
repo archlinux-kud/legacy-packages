@@ -1,5 +1,5 @@
-build.sh
 linux
+linux-vk.*
 pkg
 src
 temp

@@ -7,7 +7,7 @@
 
 pkgbase=linux-vk
 pkgver=4.20.6
-pkgrel=1
+pkgrel=3
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
@@ -16,28 +16,36 @@ options=('!strip')
 _srcname=${pkgbase/-*}
 source=(
   "$_srcname::git+$url"
-  config         # the main kernel config file
-  60-linux.hook  # pacman hook for depmod
-  90-linux.hook  # pacman hook for initramfs regeneration
-  linux.install  # standard config file for post (un)install
-  linux.preset   # standard config file for mkinitcpio ramdisk
+  config          # the main kernel config file
+  60-linux.hook   # pacman hook for depmod
+  90-linux.hook   # pacman hook for initramfs regeneration
+  linux.install   # standard config file for post (un)install
+  linux.preset    # standard config file for mkinitcpio ramdisk
+  sign_modules.sh # script to sign out-of-tree kernel modules
+  x509.genkey     # preset for generating module signing key
 )
-sha512sums=('SKIP'
-            '2b679d40b0d542159b7b36ae9da7d07b0eb11d5139132d2d4a9b22dba0625028ca87fd250870a2b883024174ec5220b80fc46b26dc0432736efff4f07ac6bcef'
-            '7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a'
-            '2718b58dbbb15063bacb2bde6489e5b3c59afac4c0e0435b97fe720d42c711b6bcba926f67a8687878bd51373c9cf3adb1915a11666d79ccb220bf36e0788ab7'
-            'b2a4d48144cd8585a90397b5d99e6d062c627fb0d752db7e599b8aa16cec3e7a1f2c4804db1ba806ac5d122fa71d533f302abc2f57fdf76cc7218cfb53ae1d79'
-            '0a52a7352490de9d0202c777a45ab33e85e98d5c5ef9e5edf2dd6461f410a6232313d4239bdad8dd769c585b815d8f7c9941ead81b88928ec6e2cc4c849673c8')
+sha384sums=('SKIP'
+            '97d69eea036dc8fd5c68ed315749e1eda287359e1fe57d0808e870ad5b2cbe566233511a3089f5e3c3ecb2dfb583430e'
+            'f7c95513e185393a526043eb0f5ecf1f800840ab3b2ed223532bb9d40ddcce44c5fab5f4b528cfd2a89bf67ad764751d'
+            '01a9570c0907fa9a11ee1c384248fdf9b83de4fc2fe65cbc53446d9711aee9b148faa29a2e6449ca1a9d7b7f4cbe6c7c'
+            '5b9cfec7a4e1829bd89e32c5ac3aa4f983c77dffbdedde848d305068b70ae2fee51a9d9351c6b4cb917f556db0b0f622'
+            'd11ffe6e88adbcf59ca02c9481af7f7897e494eddc2345cb08ae093bf48f32ef48932fcd85224e1bfaa3db42042a6afb'
+            'SKIP'
+            '4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de')
 
 _kernelname=${pkgbase#linux}
 _codename=AtomicPeacock
 
-pkgver() {
-  cd $_srcname
-  git describe --tags | sed -e 's/-/_/g'
-}
-
 prepare() {
+  if [ ! -f "../${pkgbase}.pem" ]; then
+    # We're using SHA-384 since it's invulnerable to length extension attacks
+    msg2 "Generating an SHA-384 public/private key pair..."
+    openssl req -new -nodes -utf8 -sha384 -days 3650 -batch -x509 \
+      -config x509.genkey -outform PEM -out ../${pkgbase}.pem \
+      -keyout ../${pkgbase}.pem 2> /dev/null
+    cp -f ../${pkgbase}.pem $_srcname/${pkgbase}.pem
+  fi
+
   cd $_srcname
 
   msg2 "Setting version..."
@@ -50,6 +58,7 @@ prepare() {
   make olddefconfig > /dev/null
 
   make -s kernelrelease > ../version
+  sed -i "4s/.*/KERNVER=\"$(<../version)\"/" ../../sign_modules.sh
   msg2 "Prepared %s version %s" "$pkgbase" "$(<../version)"
 }
 
@@ -113,7 +122,7 @@ build() {
 }
 
 _package() {
-  pkgdesc="The ${pkgbase/linux/Linux} kernel and modules"
+  pkgdesc="The Linux-VK kernel and modules"
   depends=(coreutils linux-firmware kmod mkinitcpio)
   optdepends=('crda: to set the correct wireless channels of your country')
   replaces=(linux-vanadium)
@@ -124,11 +133,12 @@ _package() {
   local kernver="$(<version)"
   local modulesdir="$pkgdir/usr/lib/modules/$kernver"
 
+  # Copy signing_key.x509 to PKGBUILD location
+  cp -f ${_srcname}/certs/signing_key.x509 ../linux-vk.x509
+
   cd $_srcname
 
   msg2 "Installing boot image..."
-  # FIXME: install: cannot stat '*'$'\n''* Restart config...'$'\n''*'$'\n''*'$'\n''* GCC plugins'$'\n''*'$'\n''GCC plugins (GCC_PLUGINS) [N/y/?] (NEW) ': No such file or directory
-  echo "# CONFIG_GCC_PLUGINS is not set" >> .config
   # systemd expects to find the kernel here to allow hibernation
   # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
   install -Dm644 "$(make -s image_name)" "$modulesdir/vmlinuz"
@@ -172,7 +182,7 @@ _package() {
 }
 
 _package-headers() {
-  pkgdesc="Header files and scripts for building modules for ${pkgbase/linux/Linux} kernel"
+  pkgdesc="Header files and scripts for building modules for Linux-VK kernel"
   replaces=(linux-vanadium-headers)
   conflicts=(linux-vanadium-headers)
 
