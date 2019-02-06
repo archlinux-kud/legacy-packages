@@ -1,6 +1,6 @@
 pkgbase = linux-vk
 	pkgver = 4.20.6
-	pkgrel = 1
+	pkgrel = 3
 	url = https://github.com/krasCGQ/linux-vk
 	arch = x86_64
 	license = GPL2
@@ -16,15 +16,19 @@ pkgbase = linux-vk
 	source = 90-linux.hook
 	source = linux.install
 	source = linux.preset
-	sha512sums = SKIP
-	sha512sums = 2b679d40b0d542159b7b36ae9da7d07b0eb11d5139132d2d4a9b22dba0625028ca87fd250870a2b883024174ec5220b80fc46b26dc0432736efff4f07ac6bcef
-	sha512sums = 7ad5be75ee422dda3b80edd2eb614d8a9181e2c8228cd68b3881e2fb95953bf2dea6cbe7900ce1013c9de89b2802574b7b24869fc5d7a95d3cc3112c4d27063a
-	sha512sums = 2718b58dbbb15063bacb2bde6489e5b3c59afac4c0e0435b97fe720d42c711b6bcba926f67a8687878bd51373c9cf3adb1915a11666d79ccb220bf36e0788ab7
-	sha512sums = b2a4d48144cd8585a90397b5d99e6d062c627fb0d752db7e599b8aa16cec3e7a1f2c4804db1ba806ac5d122fa71d533f302abc2f57fdf76cc7218cfb53ae1d79
-	sha512sums = 0a52a7352490de9d0202c777a45ab33e85e98d5c5ef9e5edf2dd6461f410a6232313d4239bdad8dd769c585b815d8f7c9941ead81b88928ec6e2cc4c849673c8
+	source = sign_modules.sh
+	source = x509.genkey
+	sha384sums = SKIP
+	sha384sums = 97d69eea036dc8fd5c68ed315749e1eda287359e1fe57d0808e870ad5b2cbe566233511a3089f5e3c3ecb2dfb583430e
+	sha384sums = f7c95513e185393a526043eb0f5ecf1f800840ab3b2ed223532bb9d40ddcce44c5fab5f4b528cfd2a89bf67ad764751d
+	sha384sums = 01a9570c0907fa9a11ee1c384248fdf9b83de4fc2fe65cbc53446d9711aee9b148faa29a2e6449ca1a9d7b7f4cbe6c7c
+	sha384sums = 5b9cfec7a4e1829bd89e32c5ac3aa4f983c77dffbdedde848d305068b70ae2fee51a9d9351c6b4cb917f556db0b0f622
+	sha384sums = d11ffe6e88adbcf59ca02c9481af7f7897e494eddc2345cb08ae093bf48f32ef48932fcd85224e1bfaa3db42042a6afb
+	sha384sums = SKIP
+	sha384sums = 4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de
 
 pkgname = linux-vk
-	pkgdesc = The Linux-vk kernel and modules
+	pkgdesc = The Linux-VK kernel and modules
 	install = linux.install
 	depends = coreutils
 	depends = linux-firmware
@@ -36,7 +40,7 @@ pkgname = linux-vk
 	backup = etc/mkinitcpio.d/linux-vk.preset
 
 pkgname = linux-vk-headers
-	pkgdesc = Header files and scripts for building modules for Linux-vk kernel
+	pkgdesc = Header files and scripts for building modules for Linux-VK kernel
 	conflicts = linux-vanadium-headers
 	replaces = linux-vanadium-headers
 
