@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86 4.20.6 Kernel Configuration
+# Linux/x86 4.20.7 Kernel Configuration
 #
 
 #
@@ -203,7 +203,7 @@ CONFIG_SIGNALFD=y
 CONFIG_TIMERFD=y
 CONFIG_EVENTFD=y
 CONFIG_SHMEM=y
-# CONFIG_AIO is not set
+CONFIG_AIO=y
 CONFIG_ADVISE_SYSCALLS=y
 CONFIG_MEMBARRIER=y
 CONFIG_KALLSYMS=y

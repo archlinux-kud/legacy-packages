@@ -6,8 +6,8 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=4.20.6
-pkgrel=3
+pkgver=4.20.7
+pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
@@ -25,7 +25,7 @@ source=(
   x509.genkey     # preset for generating module signing key
 )
 sha384sums=('SKIP'
-            '97d69eea036dc8fd5c68ed315749e1eda287359e1fe57d0808e870ad5b2cbe566233511a3089f5e3c3ecb2dfb583430e'
+            '1ff1b69b296e202b864d4d9a7c4aab930f8db60bb61f7f5ff620893fff62ce7c8356f2b6105e4a63ebc27589e996c325'
             'f7c95513e185393a526043eb0f5ecf1f800840ab3b2ed223532bb9d40ddcce44c5fab5f4b528cfd2a89bf67ad764751d'
             '01a9570c0907fa9a11ee1c384248fdf9b83de4fc2fe65cbc53446d9711aee9b148faa29a2e6449ca1a9d7b7f4cbe6c7c'
             '5b9cfec7a4e1829bd89e32c5ac3aa4f983c77dffbdedde848d305068b70ae2fee51a9d9351c6b4cb917f556db0b0f622'
@@ -43,8 +43,10 @@ prepare() {
     openssl req -new -nodes -utf8 -sha384 -days 3650 -batch -x509 \
       -config x509.genkey -outform PEM -out ../${pkgbase}.pem \
       -keyout ../${pkgbase}.pem 2> /dev/null
-    cp -f ../${pkgbase}.pem $_srcname/${pkgbase}.pem
   fi
+
+  msg2 "Copying key pair into source folder..."
+  cp -f ../${pkgbase}.pem $_srcname/${pkgbase}.pem
 
   cd $_srcname
 
