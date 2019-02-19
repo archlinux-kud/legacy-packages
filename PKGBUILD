@@ -6,7 +6,7 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=4.20.7
+pkgver=4.20.10
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -115,7 +115,7 @@ build() {
   fi
 
   # set CROSS_COMPILE and CC if declared via compiler array
-  [ -n "${CROSS_COMPILE}" ] && compiler+=( "CROSS_COMPILE=${CROSS_COMPILE}" )
+  [ -n "${CROSS_COMPILE}" ] && compiler+=( "CROSS_COMPILE=${CROSS_COMPILE}" "LD=${CROSS_COMPILE}ld.gold" ) || compiler+=( "LD=ld.gold" )
   [ -n "${CC}" ] && compiler+=( "CC=${CC}" )
 
   cd $_srcname
