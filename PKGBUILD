@@ -1,6 +1,6 @@
 # Maintainer: aksr <aksr at t-com dot me>
 pkgname=mujs-git
-pkgver=r583.28643e6
+pkgver=r595.2c24e19
 pkgrel=1
 epoch=
 pkgdesc="A lightweight Javascript interpreter designed for embedding in other software to extend them with scripting capabilities."
@@ -31,7 +31,9 @@ pkgver() {
 
 prepare() {
   cd "$srcdir/$pkgname"
-  patch -Np1 < ../../0001-fPIC.patch
+  for i in ../../*.patch; do
+    patch -Np1 < $i
+  done
 }
 
 build() {
