@@ -1,6 +1,6 @@
 pkgbase = mujs-git
 	pkgdesc = A lightweight Javascript interpreter designed for embedding in other software to extend them with scripting capabilities.
-	pkgver = r595.2c24e19
+	pkgver = r596.269904f
 	pkgrel = 1
 	url = http://mujs.com/
 	arch = i686
