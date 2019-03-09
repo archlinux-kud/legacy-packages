@@ -2,7 +2,7 @@
 
 # AUR dependencies
 # ----------------
-# libilbc kvazaar chromaprint-fftw libbs2b openh264 shine vo-amrwbenc
+# libilbc kvazaar chromaprint-fftw libbs2b shine vo-amrwbenc
 # nut-multimedia-git xavs libmfx-git libopenmpt-svn zimg-git
 
 # AUR make dependencies
@@ -10,7 +10,7 @@
 # flite1
 
 pkgname=ffmpeg-semifull-git
-pkgver=N.87636.g9e271e3fa3
+pkgver=N.93302.g147ef1d947
 pkgrel=1
 pkgdesc="Record, convert and stream audio and video (Git version with all possible libs)"
 arch=('i686' 'x86_64')
@@ -21,8 +21,8 @@ depends=(
     'libgcrypt' 'gmp' 'glibc' 'ladspa' 'libass' 'libbluray' 'libbs2b' 'libcaca' 'celt'
     'libcdio-paranoia' 'libdc1394' 'libfdk-aac' 'freetype2' 'fribidi' 'libgme' 'gsm'
     'libiec61883' 'libilbc' 'kvazaar' 'libmodplug' 'lame' 'nut-multimedia-git'
-    'opencore-amr' 'opencv' 'openh264' 'openjpeg2' 'libopenmpt-svn' 'opus' 'pulseaudio'
-    'rubberband' 'rtmpdump' 'shine' 'smbclient' 'libavc1394' 'snappy' 'libsoxr'
+    'opencore-amr' 'opencv2' 'openjpeg2' 'libopenmpt-svn' 'opus' 'pulseaudio'
+    'rubberband' 'rtmpdump' 'shine' 'libavc1394' 'snappy' 'libsoxr'
     'speex' 'libssh' 'tesseract' 'libtheora' 'twolame' 'v4l-utils' 'vid.stab' 'vo-amrwbenc'
     'libvorbis' 'libvpx' 'wavpack' 'libwebp' 'libx264.so' 'x265' 'libxcb' 'xvidcore' 'zimg-git'
     'zeromq' 'zvbi' 'openal' 'libva' 'libdrm' 'libva-intel-driver' 'opencl-icd-loader'
@@ -116,7 +116,6 @@ build() {
 	        --enable-libopencore-amrnb \
 	        --enable-libopencore-amrwb \
 	        --enable-libopencv \
-	        --enable-libopenh264 \
 	        --enable-libopenjpeg \
 	        --enable-libopenmpt \
 	        --enable-libopus \
@@ -124,7 +123,6 @@ build() {
 	        --enable-librubberband \
 	        --enable-librtmp  \
 	        --enable-libshine \
-	        --enable-libsmbclient \
 	        --enable-libsnappy \
 	        --enable-libsoxr \
 	        --enable-libspeex \
@@ -163,7 +161,6 @@ build() {
 	        $_cuvid \
 	        --enable-libmfx \
 	        $_libnpp \
-	        --enable-nvenc \
 	        --enable-omx \
 	        --enable-omx-rpi \
 	        --enable-vaapi \
