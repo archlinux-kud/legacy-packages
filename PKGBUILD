@@ -6,7 +6,7 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=5.0.2
+pkgver=5.0.3
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -25,7 +25,7 @@ source=(
   x509.genkey     # preset for generating module signing key
 )
 sha384sums=('SKIP'
-            '820e908417de6ce0aa789f81bbf049e03f8d66b84684cc101fad4e4b0eebb7fdcb89d30d0c7a828e46ea167b9310f805'
+            '38e0c3fbc6ba03a1e34ecf2f63766f34aebe8bf184bac5034c2c44d755f854f42426f0e70717f7c4eb2f70da46138aa3'
             'f7c95513e185393a526043eb0f5ecf1f800840ab3b2ed223532bb9d40ddcce44c5fab5f4b528cfd2a89bf67ad764751d'
             '01a9570c0907fa9a11ee1c384248fdf9b83de4fc2fe65cbc53446d9711aee9b148faa29a2e6449ca1a9d7b7f4cbe6c7c'
             '5b9cfec7a4e1829bd89e32c5ac3aa4f983c77dffbdedde848d305068b70ae2fee51a9d9351c6b4cb917f556db0b0f622'
