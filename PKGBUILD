@@ -6,8 +6,8 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=5.0.3
-pkgrel=2
+pkgver=5.0.4
+pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
@@ -154,7 +154,6 @@ _package() {
     for i in GCC_PLUGINS JUMP_LABEL; do
       echo "# CONFIG_$i is not set" >> .config
     done
-    unset clang_exist
   fi
 
   msg2 "Installing boot image..."
@@ -240,6 +239,11 @@ _package-headers() {
   install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
   install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
 
+  if $clang_exist; then
+    msg2 "Workarounding lack of asm goto support for Clang..."
+    sed -i '143s/.*/#if 1/' "$builddir"/arch/x86/include/asm/cpufeature.h
+  fi
+
   msg2 "Installing KConfig files..."
   find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
 
@@ -289,5 +293,6 @@ for _p in "${pkgname[@]}"; do
     _package${_p#$pkgbase}
   }"
 done
+unset clang_exist
 
 # vim:set ts=8 sts=2 sw=2 et:
