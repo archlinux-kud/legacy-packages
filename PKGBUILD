@@ -6,8 +6,8 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=5.0.4
-pkgrel=1
+pkgver=5.0.5
+pkgrel=2
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
@@ -293,6 +293,5 @@ for _p in "${pkgname[@]}"; do
     _package${_p#$pkgbase}
   }"
 done
-unset clang_exist
 
 # vim:set ts=8 sts=2 sw=2 et:
