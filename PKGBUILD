@@ -6,8 +6,8 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=5.0.8
-pkgrel=1
+pkgver=5.0.9
+pkgrel=2
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
@@ -25,7 +25,7 @@ source=(
   x509.genkey     # preset for generating module signing key
 )
 sha384sums=('SKIP'
-            '632713841317bf8c0a0f15c7459b63d7c508e3b546c39e044d901c12c60bcfe776cbd809238889a095a16c8d0a918496'
+            '836e901cbc411841a743359a30848b9af9765c4cc9bb833a3e1957b5a0ad0fa398889aab16a48eac6d1ce1d2f8b76013'
             'f7c95513e185393a526043eb0f5ecf1f800840ab3b2ed223532bb9d40ddcce44c5fab5f4b528cfd2a89bf67ad764751d'
             '01a9570c0907fa9a11ee1c384248fdf9b83de4fc2fe65cbc53446d9711aee9b148faa29a2e6449ca1a9d7b7f4cbe6c7c'
             '5b9cfec7a4e1829bd89e32c5ac3aa4f983c77dffbdedde848d305068b70ae2fee51a9d9351c6b4cb917f556db0b0f622'
@@ -69,27 +69,30 @@ prepare() {
 
 build() {
   # mark variables as local
-  local CC ccache_exist clang_path compiler CROSS_COMPILE gcc_path
+  local CC binutils_exist ccache_exist clang_path compiler CROSS_COMPILE gcc_path
 
   # is ccache exist?
   ccache_exist="$(which ccache &> /dev/null && echo true || echo false)"
 
-  # custom clang and gcc paths
-  clang_path="/opt/kud/clang-9.x/bin/clang"
-  gcc_path="/opt/kud/x86_64-linux-gnu/bin/x86_64-linux-gnu-"
+  # custom binutils, clang and gcc paths
+  binutils_path="/opt/kud/binutils"
+  clang_path="/opt/kud/clang"
+  gcc_path="/opt/kud/x86_64-linux-gnu/bin"
 
   if $amdgpu_dc_enabled; then
     warning "Incompatible configuration detected! NOT using Clang."
   else
     # custom clang
-    if [ "$(find $clang_path &> /dev/null; echo ${?})" == "0" ]; then
+    if find "$clang_path/bin/clang" &> /dev/null; then
       msg2 "Custom built Clang detected! Building with Clang..."
       # use ccache if exist
       $ccache_exist && CC+="ccache "
-      CC+="${clang_path}"
+      export PATH="$clang_dir/bin:$PATH"
+      export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+      CC+="$clang_path/bin/clang"
       export clang_exist=true
     # clang installed on system
-    elif [ "$(which clang &> /dev/null; echo ${?})" == "0" ]; then
+    elif which clang &> /dev/null; then
       msg2 "Clang detected! Building with Clang..."
       # use ccache if exist
       $ccache_exist && CC+="ccache "
@@ -99,13 +102,14 @@ build() {
   fi
 
   # custom gcc if exist
-  if [ "$(find ${gcc_path}gcc &> /dev/null; echo ${?})" == "0" ]; then
+  if find "${gcc_path}/x86_64-linux-gnu-gcc" &> /dev/null; then
     msg2 "Custom built GCC detected!"
     # use ccache if exist and clang is absent
     if [ -z "$clang_exist" ] && $ccache_exist; then
       CROSS_COMPILE+="ccache "
     fi
-    CROSS_COMPILE+="${gcc_path}"
+    export PATH="$gcc_path:$PATH"
+    CROSS_COMPILE+="x86_64-linux-gnu-"
   else
     # opt in for possibility of building with ccache
     if [ -z "$clang_exist" ] && $ccache_exist; then
@@ -113,12 +117,15 @@ build() {
     fi
   fi
 
-  # custom compiler string for clang
-  # todo: gcc?
   if [ -n "$clang_exist" ]; then
+    # required for LTO
+    if find "$binutils_dir/bin/ld" &> /dev/null; then
+      export LD_LIBRARY_PATH="$binutils_dir/lib:${LD_LIBRARY_PATH:+:LD_LIBRARY_PATH}"
+    fi
+    # custom compiler string for clang
+    # todo: gcc?
     # from github.com/nathanchance/scripts, slightly edited
     KBUILD_COMPILER_STRING="$(${CC} --version | head -n 1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
-    export KBUILD_COMPILER_STRING
     msg2 "Using ${KBUILD_COMPILER_STRING}..."
   fi
 
