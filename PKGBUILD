@@ -6,8 +6,8 @@
 # Author: Albert I <krascgq@outlook.co.id>
 
 pkgbase=linux-vk
-pkgver=5.0.9
-pkgrel=2
+pkgver=5.0.12
+pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
@@ -249,6 +249,7 @@ _package-headers() {
   if $clang_exist; then
     msg2 "Workarounding lack of asm goto support for Clang..."
     sed -i '143s/.*/#if 1/' "$builddir"/arch/x86/include/asm/cpufeature.h
+    sed -i '14s/.*/#if 0/' "$builddir"/arch/x86/include/asm/rmwcc.h
   fi
 
   msg2 "Installing KConfig files..."
