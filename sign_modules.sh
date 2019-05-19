@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 PKGBASE=linux-vk
-KERNVER=""
 AURROOT=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+KERNVER=$(< ${AURROOT}/src/version)
 MODROOT=/usr/lib/modules/${KERNVER}
 SIGN_FILE=${MODROOT}/build/scripts/sign-file
 

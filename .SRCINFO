@@ -1,5 +1,5 @@
 pkgbase = linux-vk
-	pkgver = 5.0.12
+	pkgver = 5.1.3
 	pkgrel = 1
 	url = https://github.com/krasCGQ/linux-vk
 	arch = x86_64
@@ -11,20 +11,20 @@ pkgbase = linux-vk
 	makedepends = git
 	options = !strip
 	source = linux::git+https://github.com/krasCGQ/linux-vk
-	source = config
 	source = 60-linux.hook
 	source = 90-linux.hook
+	source = config.compilers
 	source = linux.install
 	source = linux.preset
 	source = sign_modules.sh
 	source = x509.genkey
 	sha384sums = SKIP
-	sha384sums = 836e901cbc411841a743359a30848b9af9765c4cc9bb833a3e1957b5a0ad0fa398889aab16a48eac6d1ce1d2f8b76013
 	sha384sums = f7c95513e185393a526043eb0f5ecf1f800840ab3b2ed223532bb9d40ddcce44c5fab5f4b528cfd2a89bf67ad764751d
 	sha384sums = 01a9570c0907fa9a11ee1c384248fdf9b83de4fc2fe65cbc53446d9711aee9b148faa29a2e6449ca1a9d7b7f4cbe6c7c
+	sha384sums = SKIP
 	sha384sums = 5b9cfec7a4e1829bd89e32c5ac3aa4f983c77dffbdedde848d305068b70ae2fee51a9d9351c6b4cb917f556db0b0f622
 	sha384sums = d11ffe6e88adbcf59ca02c9481af7f7897e494eddc2345cb08ae093bf48f32ef48932fcd85224e1bfaa3db42042a6afb
-	sha384sums = SKIP
+	sha384sums = d14d3e4d8f8a12b5e375ae6a99f93d73906551c10dc96bb0f57b9978355c2a4d8cba46cdb227eea3059ed3aceba77c7c
 	sha384sums = 4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de
 
 pkgname = linux-vk
@@ -35,12 +35,8 @@ pkgname = linux-vk
 	depends = kmod
 	depends = mkinitcpio
 	optdepends = crda: to set the correct wireless channels of your country
-	conflicts = linux-vanadium
-	replaces = linux-vanadium
 	backup = etc/mkinitcpio.d/linux-vk.preset
 
 pkgname = linux-vk-headers
 	pkgdesc = Header files and scripts for building modules for Linux-VK kernel
-	conflicts = linux-vanadium-headers
-	replaces = linux-vanadium-headers
 
