@@ -84,7 +84,7 @@ prepare() {
 
 build() {
   # mark variables as local
-  local amdgpu_dc_enabled CC ccache_exist compiler CROSS_COMPILE
+  local amdgpu_dc_enabled CC cc_temp ccache_exist compiler CROSS_COMPILE
 
   # is ccache exist?
   ccache_exist="$(which ccache &> /dev/null && echo true || echo false)"
@@ -119,14 +119,21 @@ build() {
   fi
 
   # custom gcc if exist
-  if find "${gcc_path}/bin/x86_64-linux-gnu-gcc" &> /dev/null; then
+  if gcc_path="$(find "$gcc_path/bin" -name '*gcc' 2> /dev/null | sort -n | head -1)"; then
     msg2 "Custom built GCC detected!"
+    export PATH="$(dirname "$gcc_path"):$PATH"
+    # meant for checking whether the custom gcc has prefix or not
+    cc_temp="$(basename "$gcc_path" | sed -e s/gcc//)"
+  fi
+
+  # the custom gcc has prefix
+  if [ -n "$cc_temp" ]; then
     # use ccache if exist and clang is absent
     if [ -z "$clang_exist" ] && $ccache_exist; then
       CROSS_COMPILE+="ccache "
     fi
-    export PATH="$gcc_path/bin:$PATH"
-    CROSS_COMPILE+="x86_64-linux-gnu-"
+    CROSS_COMPILE+="$cc_temp"
+  # or... it doesn't
   else
     # opt in for possibility of building with ccache
     if [ -z "$clang_exist" ] && $ccache_exist; then
