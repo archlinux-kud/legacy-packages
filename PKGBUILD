@@ -6,7 +6,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-vk
-pkgver=5.1.3
+pkgver=5.1.4
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -30,7 +30,7 @@ sha384sums=('SKIP'
             'SKIP'
             '5b9cfec7a4e1829bd89e32c5ac3aa4f983c77dffbdedde848d305068b70ae2fee51a9d9351c6b4cb917f556db0b0f622'
             'd11ffe6e88adbcf59ca02c9481af7f7897e494eddc2345cb08ae093bf48f32ef48932fcd85224e1bfaa3db42042a6afb'
-            'd14d3e4d8f8a12b5e375ae6a99f93d73906551c10dc96bb0f57b9978355c2a4d8cba46cdb227eea3059ed3aceba77c7c'
+            'd5dcc15254f4ff2ac545aabf6971bd19389f89d18130bed08177721fc799ebc7d39d395366743e0d93202fc29afe7a6d'
             '4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de')
 
 _kernelname=${pkgbase#linux-}
