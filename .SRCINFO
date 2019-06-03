@@ -1,5 +1,5 @@
 pkgbase = linux-vk
-	pkgver = 5.1.4
+	pkgver = 5.1.6
 	pkgrel = 1
 	url = https://github.com/krasCGQ/linux-vk
 	arch = x86_64
@@ -18,6 +18,8 @@ pkgbase = linux-vk
 	source = linux.preset
 	source = sign_modules.sh
 	source = x509.genkey
+	source = https://raw.githubusercontent.com/nathanchance/patches/master/linux/stable/0001-DO-NOT-UPSTREAM-x86-Revert-two-commits-that-break-th.patch
+	source = https://raw.githubusercontent.com/nathanchance/patches/master/linux/stable/0002-DO-NOT-UPSTREAM-x86-Avoid-warnings-errors-due-to-lac.patch
 	sha384sums = SKIP
 	sha384sums = f7c95513e185393a526043eb0f5ecf1f800840ab3b2ed223532bb9d40ddcce44c5fab5f4b528cfd2a89bf67ad764751d
 	sha384sums = 01a9570c0907fa9a11ee1c384248fdf9b83de4fc2fe65cbc53446d9711aee9b148faa29a2e6449ca1a9d7b7f4cbe6c7c
@@ -26,6 +28,8 @@ pkgbase = linux-vk
 	sha384sums = d11ffe6e88adbcf59ca02c9481af7f7897e494eddc2345cb08ae093bf48f32ef48932fcd85224e1bfaa3db42042a6afb
 	sha384sums = d5dcc15254f4ff2ac545aabf6971bd19389f89d18130bed08177721fc799ebc7d39d395366743e0d93202fc29afe7a6d
 	sha384sums = 4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de
+	sha384sums = SKIP
+	sha384sums = SKIP
 
 pkgname = linux-vk
 	pkgdesc = The Linux-VK kernel and modules

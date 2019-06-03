@@ -6,7 +6,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-vk
-pkgver=5.1.4
+pkgver=5.1.6
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -23,6 +23,9 @@ source=(
   linux.preset     # standard config file for mkinitcpio ramdisk
   sign_modules.sh  # script to sign out-of-tree kernel modules
   x509.genkey      # preset for generating module signing key
+  # for Clang asm goto hacks
+  https://raw.githubusercontent.com/nathanchance/patches/master/linux/stable/0001-DO-NOT-UPSTREAM-x86-Revert-two-commits-that-break-th.patch
+  https://raw.githubusercontent.com/nathanchance/patches/master/linux/stable/0002-DO-NOT-UPSTREAM-x86-Avoid-warnings-errors-due-to-lac.patch
 )
 sha384sums=('SKIP'
             'f7c95513e185393a526043eb0f5ecf1f800840ab3b2ed223532bb9d40ddcce44c5fab5f4b528cfd2a89bf67ad764751d'
@@ -31,7 +34,9 @@ sha384sums=('SKIP'
             '5b9cfec7a4e1829bd89e32c5ac3aa4f983c77dffbdedde848d305068b70ae2fee51a9d9351c6b4cb917f556db0b0f622'
             'd11ffe6e88adbcf59ca02c9481af7f7897e494eddc2345cb08ae093bf48f32ef48932fcd85224e1bfaa3db42042a6afb'
             'd5dcc15254f4ff2ac545aabf6971bd19389f89d18130bed08177721fc799ebc7d39d395366743e0d93202fc29afe7a6d'
-            '4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de')
+            '4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de'
+            'SKIP'
+            'SKIP')
 
 _kernelname=${pkgbase#linux-}
 _codename=PhantomOddysey
@@ -159,6 +164,14 @@ build() {
 
   cd $_srcname
 
+  if [ -n "$clang_exist" ]; then
+    # build hax due to lack of asm goto support
+    msg2 "Applying asm goto build hacks..."
+    for i in ../*.patch; do
+       patch -sNp1 < $i
+    done
+  fi
+
   make "${compiler[@]}" bzImage modules -j${_threads} > /dev/null
 }
 
@@ -174,12 +187,12 @@ _package() {
   local kernver="$(<version)"
   local modulesdir="$pkgdir/usr/lib/modules/$kernver"
 
-  # Copy signing_key.x509 to PKGBUILD location
+  # copy signing_key.x509 to PKGBUILD location
   cp -f ${_srcname}/certs/signing_key.x509 ../linux-vk.x509
 
   cd $_srcname
 
-  # Workaround as the CROSS_COMPILE path changes fron now on
+  # workaround as the CROSS_COMPILE path changes from now on
   if [ -n "$clang_exist" ]; then
     for i in GCC_PLUGINS JUMP_LABEL; do
       echo "# CONFIG_$i is not set" >> .config
@@ -268,6 +281,7 @@ _package-headers() {
   install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
 
   if $clang_exist; then
+    # make the condition absolute for DKMS
     msg2 "Workarounding lack of asm goto support for Clang..."
     sed -i '144s/.*/#if 1/' "$builddir"/arch/x86/include/asm/cpufeature.h
     sed -i '14s/.*/#if 0/' "$builddir"/arch/x86/include/asm/rmwcc.h
