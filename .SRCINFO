@@ -1,6 +1,6 @@
 pkgbase = ffmpeg-semifull-git
 	pkgdesc = Record, convert and stream audio and video (Git version with all possible libs)
-	pkgver = N.93302.g147ef1d947
+	pkgver = N.94062.g09a4853930
 	pkgrel = 1
 	url = http://www.ffmpeg.org/
 	arch = i686
@@ -36,7 +36,6 @@ pkgbase = ffmpeg-semifull-git
 	depends = gsm
 	depends = libiec61883
 	depends = libilbc
-	depends = kvazaar
 	depends = libmodplug
 	depends = lame
 	depends = nut-multimedia-git

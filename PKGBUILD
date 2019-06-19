@@ -2,7 +2,7 @@
 
 # AUR dependencies
 # ----------------
-# libilbc kvazaar chromaprint-fftw libbs2b shine vo-amrwbenc
+# libilbc chromaprint-fftw libbs2b shine vo-amrwbenc
 # nut-multimedia-git xavs libmfx-git libopenmpt-svn zimg-git
 
 # AUR make dependencies
@@ -10,7 +10,7 @@
 # flite1
 
 pkgname=ffmpeg-semifull-git
-pkgver=N.93302.g147ef1d947
+pkgver=N.94062.g09a4853930
 pkgrel=1
 pkgdesc="Record, convert and stream audio and video (Git version with all possible libs)"
 arch=('i686' 'x86_64')
@@ -20,7 +20,7 @@ depends=(
     'alsa-lib' 'zlib' 'bzip2' 'xz' 'libpng' 'chromaprint-fftw' 'fontconfig' 'frei0r-plugins'
     'libgcrypt' 'gmp' 'glibc' 'ladspa' 'libass' 'libbluray' 'libbs2b' 'libcaca' 'celt'
     'libcdio-paranoia' 'libdc1394' 'libfdk-aac' 'freetype2' 'fribidi' 'libgme' 'gsm'
-    'libiec61883' 'libilbc' 'kvazaar' 'libmodplug' 'lame' 'nut-multimedia-git'
+    'libiec61883' 'libilbc' 'libmodplug' 'lame' 'nut-multimedia-git'
     'opencore-amr' 'opencv2' 'openjpeg2' 'libopenmpt-svn' 'opus' 'pulseaudio'
     'rubberband' 'rtmpdump' 'shine' 'libavc1394' 'snappy' 'libsoxr'
     'speex' 'libssh' 'tesseract' 'libtheora' 'twolame' 'v4l-utils' 'vid.stab' 'vo-amrwbenc'
@@ -44,8 +44,6 @@ sha256sums=('SKIP')
 pkgver() {
 	cd "${srcdir}/${pkgname}"
 	
-	# Git, tags available
-	        
 	# Method showing version based on FFmpeg Git versioning system
 	printf "%s" "$(git describe --tags --match N | tr '-' '.')"
 }
@@ -53,30 +51,10 @@ pkgver() {
 build() {
 	cd "${srcdir}/${pkgname}"
 	
-	# Add x86_64 depends and optdepends to the build if architecture is x86_64
-	#if [ "$CARCH" = "x86_64" ]; then
-	#    _cuda="--enable-cuda"
-	#    _cudainc="-I/opt/cuda/include"
-	#    _cudalib="-L/opt/cuda/lib64"
-	#    _cuvid="--enable-cuvid"
-	#    _libnpp="--enable-libnpp"
-	#    _intelsdklib="-Wl,-rpath -Wl,/opt/intel/mediasdk/lib64"
-	#else
-	    _cuda=""
-	    _cudainc=""
-	    _cudalib=""
-	    _cuvid=""
-	    _libnpp=""
-	    _intelsdklib=""
-	#fi
-	
 	msg2 "Running ffmpeg configure script. Please wait..."
 	
 	./configure \
 	        --prefix=/usr \
-	        --extra-cflags="${_cudainc}" \
-	        --extra-ldflags="${_cudalib} ${_intelsdklib}" \
-	        \
 	        --enable-rpath \
 	        --enable-gpl \
 	        --enable-version3 \
@@ -85,14 +63,12 @@ build() {
 	        --disable-static \
 	        --enable-gray \
 	        --enable-avresample \
-	        \
 	        --enable-avisynth \
 	        --enable-bzlib \
 	        --enable-chromaprint \
 	        --enable-frei0r \
 	        --enable-gcrypt \
 	        --enable-gmp \
-	        \
 	        --enable-iconv \
 	        --enable-ladspa \
 	        --enable-libass \
@@ -110,7 +86,6 @@ build() {
 	        --enable-libgsm \
 	        --enable-libiec61883 \
 	        --enable-libilbc \
-	        --enable-libkvazaar \
 	        --enable-libmodplug \
 	        --enable-libmp3lame \
 	        --enable-libopencore-amrnb \
@@ -156,11 +131,7 @@ build() {
 	        --enable-sdl2 \
 	        --enable-xlib \
 	        --enable-zlib \
-	        \
-	        $_cuda \
-	        $_cuvid \
 	        --enable-libmfx \
-	        $_libnpp \
 	        --enable-omx \
 	        --enable-omx-rpi \
 	        --enable-vaapi \
