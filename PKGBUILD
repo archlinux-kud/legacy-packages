@@ -1,9 +1,9 @@
 pkgname=ccache-git
-pkgver=v3.6
+pkgver=v3.7.1_62_g3d05ccd
 pkgrel=1
 pkgdesc="A compiler cache"
 arch=('x86_64')
-url="http://ccache.samba.org/"
+url="https://ccache.dev/"
 license=('GPL3')
 depends=('zlib')
 makedepends=('git' 'asciidoc' 'gperf')

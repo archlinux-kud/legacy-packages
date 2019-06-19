@@ -1,12 +1,13 @@
 pkgbase = ccache-git
 	pkgdesc = A compiler cache
-	pkgver = v3.6
+	pkgver = v3.7.1_62_g3d05ccd
 	pkgrel = 1
-	url = http://ccache.samba.org/
+	url = https://ccache.dev/
 	arch = x86_64
 	license = GPL3
 	makedepends = git
 	makedepends = asciidoc
+	makedepends = gperf
 	depends = zlib
 	provides = ccache
 	conflicts = ccache
