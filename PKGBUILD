@@ -4,7 +4,7 @@
 
 _pkgname=repo
 pkgname=repo-git
-pkgver=1.13.2.r0.g13f323b2
+pkgver=1.13.3.r19.g490e1638
 pkgrel=1
 pkgdesc="The Multiple Git Repository Tool"
 arch=('any')
@@ -16,7 +16,7 @@ conflicts=("$_pkgname")
 source=("$_pkgname::git+https://gerrit.googlesource.com/git-repo"
         "python2.patch")
 sha256sums=('SKIP'
-            'bdb224e0e04060d6ec7e2fcc95bcf09ad46585e0ff65d914050192b60ce990d4')
+            '2277f9bdfc3524ca4f4ff8b9c55b2f46f37481818fa6cb774b02ecf016eab3c4')
 
 pkgver() {
   cd "$srcdir/$_pkgname"
