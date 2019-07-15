@@ -1,5 +1,5 @@
 pkgbase = linux-vk
-	pkgver = 5.1.6
+	pkgver = 5.2.1
 	pkgrel = 1
 	url = https://github.com/krasCGQ/linux-vk
 	arch = x86_64

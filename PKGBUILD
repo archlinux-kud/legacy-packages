@@ -6,7 +6,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-vk
-pkgver=5.1.6
+pkgver=5.2.1
 pkgrel=1
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
@@ -39,7 +39,7 @@ sha384sums=('SKIP'
             'SKIP')
 
 _kernelname=${pkgbase#linux-}
-_codename=PhantomOddysey
+_codename=TheElegant
 _defconfig=$_srcname/arch/x86/configs/${_kernelname}_defconfig
 _threads=$(nproc --all)
 
@@ -106,26 +106,29 @@ build() {
   else
     # custom clang
     if find "$clang_path/bin/clang" &> /dev/null; then
-      msg2 "Custom built Clang detected! Building with Clang..."
-      # use ccache if exist
-      $ccache_exist && CC+="ccache "
-      export PATH="$clang_dir/bin:$PATH"
+      msg2 "Custom Clang detected! Building with Clang..."
+      export PATH="$clang_path/bin:$PATH"
       export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
-      CC+="$clang_path/bin/clang"
-      export clang_exist=true
+      clang_exist=true
+      clang_custom=true
     # clang installed on system
     elif which clang &> /dev/null; then
       msg2 "Clang detected! Building with Clang..."
+      clang_exist=true
+    fi
+    if [ -n "$clang_exist" ]; then
       # use ccache if exist
       $ccache_exist && CC+="ccache "
       CC+=clang
-      export clang_exist=true
+      # clang < 9 doesn't support asm goto
+      [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && export no_asmgoto=true
     fi
   fi
 
   # custom gcc if exist
-  if gcc_path="$(find "$gcc_path/bin" -name '*gcc' 2> /dev/null | sort -n | head -1)"; then
-    msg2 "Custom built GCC detected!"
+  gcc_path="$(find "$gcc_path/bin" -name '*gcc' 2> /dev/null | sort -n | head -1)"
+  if [ -n "$gcc_path" ]; then
+    msg2 "Custom GCC detected!"
     export PATH="$(dirname "$gcc_path"):$PATH"
     # meant for checking whether the custom gcc has prefix or not
     cc_temp="$(basename "$gcc_path" | sed -e s/gcc//)"
@@ -147,32 +150,62 @@ build() {
   fi
 
   if [ -n "$clang_exist" ]; then
-    # required for LTO
-    if find "$binutils_path/bin/ld" &> /dev/null; then
+    if [ -n "$clang_custom" ] && find "$binutils_path/bin/ld" &> /dev/null; then
+      export PATH="$binutils_path/bin:$PATH"
+      # required for LTO
       export LD_LIBRARY_PATH="$binutils_path/lib:${LD_LIBRARY_PATH:+:LD_LIBRARY_PATH}"
+      binutils_exist=true
     fi
     # custom compiler string for clang
     # todo: gcc?
     # from github.com/nathanchance/scripts, slightly edited
-    KBUILD_COMPILER_STRING="$(${CC} --version | head -n 1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
-    msg2 "Using ${KBUILD_COMPILER_STRING}..."
+    clang_version="$($CC --version | head -1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
+    binutils_version="$(${cc_temp}ld --version | head -1 | cut -d ' ' -f 3-5 | sed -e 's/[\(|\)]//g')"
+    msg2 "Using $clang_version, $binutils_version..."
   fi
 
   # set CROSS_COMPILE and CC if declared via compiler array
-  [ -n "${CROSS_COMPILE}" ] && compiler+=( "CROSS_COMPILE=${CROSS_COMPILE}" "LD=${CROSS_COMPILE}ld.gold" ) || compiler+=( "LD=ld.gold" )
-  [ -n "${CC}" ] && compiler+=( "CC=${CC}" )
+  if [ -n "$CROSS_COMPILE" ] && [ -z "$binutils_exist" ]; then
+    compiler+=( "CROSS_COMPILE=$CROSS_COMPILE" "LD=${CROSS_COMPILE}ld.gold" )
+  else
+    compiler+=( "LD=ld.gold" )
+  fi
+  [ -n "$CC" ] && compiler+=( "CC=$CC" )
+  # this is harmless on unaffected compilers
+  [ -n "$clang_exist" ] && compiler+=( "CLANG_TRIPLE=$($CC -dumpmachine)" )
 
   cd $_srcname
 
+  msg2 "Applying compiler sanitization features..."
   if [ -n "$clang_exist" ]; then
-    # build hax due to lack of asm goto support
-    msg2 "Applying asm goto build hacks..."
-    for i in ../*.patch; do
-       patch -sNp1 < $i
-    done
-  fi
+    # apply init stack sanitizer for clang 8+
+    [ "$(echo __clang_major__ | clang -E -x c - | tail -1)" -ge 8 ] && scripts/config -e INIT_STACK_ALL
 
+    if [ -n "$no_asmgoto" ]; then
+      # build hax due to lack of asm goto support
+      msg2 "Applying asm goto build hacks..."
+      for i in ../*.patch; do
+         patch -sNp1 < $i
+      done
+    fi
+  else
+    # apply certain sanitizer features
+    scripts/config -e GCC_PLUGIN_STRUCTLEAK_BYREF_ALL \
+                   -d GCC_PLUGIN_STRUCTLEAK_VERBOSE \
+                   -e GCC_PLUGIN_STACKLEAK \
+                   --set-val STACKLEAK_TRACK_MIN_SIZE 100 \
+                   -d STACKLEAK_METRICS \
+                   -d STACKLEAK_RUNTIME_DISABLE
+  fi
+  # enable JUMP_LABEL for supported toolchains
+  # we need to keep it disabled for Clang as asm goto support is in early stage
+  [ -z "$clang_exist" ] && scripts/config -e JUMP_LABEL -d STATIC_KEYS_SELFTEST
+  # refresh the config just in case
+  make "${compiler[@]}" oldconfig -j${_threads}
+
+  msg2 "Building kernel and modules..."
   make "${compiler[@]}" bzImage modules -j${_threads} > /dev/null
+  export image_name=$(make "${compiler[@]}" -s image_name)
 }
 
 _package() {
@@ -192,17 +225,10 @@ _package() {
 
   cd $_srcname
 
-  # workaround as the CROSS_COMPILE path changes from now on
-  if [ -n "$clang_exist" ]; then
-    for i in GCC_PLUGINS JUMP_LABEL; do
-      echo "# CONFIG_$i is not set" >> .config
-    done
-  fi
-
   msg2 "Installing boot image..."
   # systemd expects to find the kernel here to allow hibernation
   # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
-  install -Dm644 "$(make -s image_name)" "$modulesdir/vmlinuz"
+  install -Dm644 "$image_name" "$modulesdir/vmlinuz"
   install -Dm644 "$modulesdir/vmlinuz" "$pkgdir/boot/vmlinuz-$pkgbase"
 
   msg2 "Installing modules..."
@@ -280,7 +306,7 @@ _package-headers() {
   install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
   install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
 
-  if $clang_exist; then
+  if [ -n "$no_asmgoto" ]; then
     # make the condition absolute for DKMS
     msg2 "Workarounding lack of asm goto support for Clang..."
     sed -i '144s/.*/#if 1/' "$builddir"/arch/x86/include/asm/cpufeature.h
