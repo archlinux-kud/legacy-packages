@@ -2,10 +2,10 @@
 # Contributor: Ionut Biru <ibiru@archlinux.org>
 # Contributor: Hugo Doria <hugo@archlinux.org>
 
-pkgname=deluge
-pkgver=1.3.15+18+ge050905b2
+pkgname=deluge-legacy
+pkgver=1.3.15+19+gd62987089
 pkgrel=1
-pkgdesc="A BitTorrent client with multiple user interfaces in a client/server model"
+pkgdesc="A BitTorrent client with multiple user interfaces in a client/server model (version 1.3.x)"
 arch=(any)
 url="https://deluge-torrent.org/"
 license=(GPL3)
@@ -18,8 +18,11 @@ optdepends=('python2-notify: libnotify notifications'
             'pygtk: needed for gtk ui'
             'librsvg: needed for gtk ui'
             'python2-mako: needed for web ui')
-_commit=e050905b291f4d9b417270e38f2aa04366057919  # 1.3-stable
-source=("git://git.deluge-torrent.org/deluge.git#commit=$_commit"
+_srcname=${pkgname/-legacy}
+provides=($_srcname)
+conflicts=($_srcname)
+_srcver=$(echo "$pkgver" | cut -d '.' -f 1,2)
+source=("$_srcname::git://git.deluge-torrent.org/deluge.git#branch=${_srcver}-stable"
         untag-build.patch
         deluged.service deluge-web.service)
 sha256sums=('SKIP'
@@ -28,7 +31,7 @@ sha256sums=('SKIP'
             'c3f2d6ad5bc9de5ffd9973d92badbe04a9ecf12c0c575e13d505a96add03275a')
 
 prepare() {
-  cd $pkgname
+  cd $_srcname
   patch -Np1 -i ../untag-build.patch
   sed -i '1s/python$/&2/' \
     deluge/ui/Win32IconImagePlugin.py \
@@ -36,17 +39,17 @@ prepare() {
 }
 
 pkgver() {
-  cd $pkgname
+  cd $_srcname
   git describe | sed 's/^deluge-//;s/-/+/g'
 }
 
 build() {
-  cd $pkgname
+  cd $_srcname
   python2 setup.py build
 }
 
 package() {
-  cd $pkgname
+  cd $_srcname
   python2 setup.py install --prefix=/usr --root="$pkgdir" --optimize=1
   install -Dt "$pkgdir/usr/lib/systemd/system" -m644 ../*.service
   echo 'u deluge - "Deluge BitTorrent daemon" /srv/deluge' |

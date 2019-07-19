@@ -1,0 +1,37 @@
+pkgbase = deluge-legacy
+	pkgdesc = A BitTorrent client with multiple user interfaces in a client/server model (version 1.3.x)
+	pkgver = 1.3.15+19+gd62987089
+	pkgrel = 1
+	url = https://deluge-torrent.org/
+	arch = any
+	license = GPL3
+	makedepends = intltool
+	makedepends = pygtk
+	makedepends = librsvg
+	makedepends = python2-mako
+	makedepends = git
+	depends = python2-xdg
+	depends = libtorrent-rasterbar
+	depends = python2-twisted
+	depends = python2-pyopenssl
+	depends = python2-chardet
+	depends = python2-setuptools
+	optdepends = python2-notify: libnotify notifications
+	optdepends = python2-pygame: audible notifications
+	optdepends = python2-libappindicator: appindicator notifications
+	optdepends = pygtk: needed for gtk ui
+	optdepends = librsvg: needed for gtk ui
+	optdepends = python2-mako: needed for web ui
+	provides = deluge
+	conflicts = deluge
+	source = deluge::git://git.deluge-torrent.org/deluge.git#branch=1.3-stable
+	source = untag-build.patch
+	source = deluged.service
+	source = deluge-web.service
+	sha256sums = SKIP
+	sha256sums = fbd17f13765f5560bab01a81a42aff0f2f757a4a6fa29379ae31d95b9721e4f2
+	sha256sums = 58a451bb6cf4fe6ff78a4fb71d51c5910340a2de032ff435c3c7365015ab538f
+	sha256sums = c3f2d6ad5bc9de5ffd9973d92badbe04a9ecf12c0c575e13d505a96add03275a
+
+pkgname = deluge-legacy
+
