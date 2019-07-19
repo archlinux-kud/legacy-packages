@@ -22,6 +22,7 @@ pkgbase = deluge-legacy
 	optdepends = pygtk: needed for gtk ui
 	optdepends = librsvg: needed for gtk ui
 	optdepends = python2-mako: needed for web ui
+	optdepends = python2-service-identity: for ssl verification
 	provides = deluge
 	conflicts = deluge
 	source = deluge::git://git.deluge-torrent.org/deluge.git#branch=1.3-stable

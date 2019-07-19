@@ -20,7 +20,8 @@ optdepends=('python2-notify: libnotify notifications'
             'python2-libappindicator: appindicator notifications'
             'pygtk: needed for gtk ui'
             'librsvg: needed for gtk ui'
-            'python2-mako: needed for web ui')
+            'python2-mako: needed for web ui'
+            'python2-service-identity: for ssl verification')
 _srcname=${pkgname/-legacy}
 provides=($_srcname)
 conflicts=($_srcname)
