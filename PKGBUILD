@@ -1,6 +1,9 @@
-# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 # Contributor: Ionut Biru <ibiru@archlinux.org>
 # Contributor: Hugo Doria <hugo@archlinux.org>
+
+# Package branching
+# Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=deluge-legacy
 pkgver=1.3.15+19+gd62987089
