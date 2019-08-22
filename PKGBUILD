@@ -33,10 +33,11 @@ prepare() {
     cd "SPIRV-Cross"
     
     mkdir -p build external/{glslang,spirv-tools}-build
-    
-    ln -s "${srcdir}/glslang"       external/glslang
-    ln -s "${srcdir}/SPIRV-Tools"   external/spirv-tools
-    ln -s "${srcdir}/SPIRV-Headers" "${srcdir}/SPIRV-Tools/external/spirv-headers"
+
+    for i in glslang SPIRV-Tools; do
+        ln -sf "${srcdir}/${i}"       external/
+    done
+    ln -sf "${srcdir}/SPIRV-Headers" "${srcdir}/SPIRV-Tools/external/spirv-headers"
 }
 
 build() {
