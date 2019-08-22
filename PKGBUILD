@@ -4,14 +4,14 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=spirv-cross-git
-pkgver=r1985.4c20c941
+pkgver=r2144.4ce04480
 pkgrel=1
 pkgdesc='A tool and library for parsing and converting SPIR-V to other shader languages (git version)'
 arch=('x86_64')
 url='https://github.com/KhronosGroup/SPIRV-Cross/'
 license=('Apache')
 depends=('gcc-libs')
-makedepends=('git' 'cmake' 'python')
+makedepends=('git' 'cmake' 'python' 'python-nose')
 provides=("${pkgname/-git}")
 conflicts=("${pkgname/-git}")
 source=("git+https://github.com/KhronosGroup/SPIRV-Cross.git"
@@ -40,32 +40,36 @@ prepare() {
 }
 
 build() {
+    # NOTE (1): test suite fails when using 'None' build type
+    # NOTE (2): test suite fails when using glslang and spirv-tools from the repos
+    #           (probably because spirv-tools is outdated at the time of writing)
+
     # glslang (required for tests)
     printf '%s\n' '  -> Building glslang...'
     cd "SPIRV-Cross/external/glslang-build"
     cmake \
-        -DCMAKE_BUILD_TYPE:STRING='None' \
+        -DCMAKE_BUILD_TYPE:STRING='Release' \
         -DCMAKE_INSTALL_PREFIX:PATH='output' \
         -Wno-dev \
         ../glslang
-    cmake --build . --config None --target install
+    cmake --build . --config Release --target install
     
     # spirv-tools (required for tests)
     printf '%s\n' '  -> Building SPIRV-Tools...'
     cd "${srcdir}/SPIRV-Cross/external/spirv-tools-build"
     cmake \
-        -DCMAKE_BUILD_TYPE:STRING='None' \
+        -DCMAKE_BUILD_TYPE:STRING='Release' \
         -DSPIRV_WERROR:BOOL='OFF' \
         -DCMAKE_INSTALL_PREFIX:PATH='output' \
         -Wno-dev \
         ../spirv-tools
-    cmake --build . --config None --target install
+    cmake --build . --config Release --target install
     
     # spirv-cross
     printf '%s\n' '  -> Building SPIRV-Cross...'
     cd "${srcdir}/SPIRV-Cross/build"
     cmake \
-        -DCMAKE_BUILD_TYPE:STRING='None' \
+        -DCMAKE_BUILD_TYPE:STRING='Release' \
         -DCMAKE_INSTALL_PREFIX:PATH='/usr' \
         -DSPIRV_CROSS_SHARED:BOOL='ON' \
         -Wno-dev \
