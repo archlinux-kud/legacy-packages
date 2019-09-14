@@ -10,7 +10,7 @@
 # flite1
 
 pkgname=ffmpeg-semifull-git
-pkgver=N.94062.g09a4853930
+pkgver=N.94905.g8efc9fcc56
 pkgrel=1
 pkgdesc="Record, convert and stream audio and video (Git version with all possible libs)"
 arch=('i686' 'x86_64')
@@ -27,7 +27,7 @@ depends=(
     'libvorbis' 'libvpx' 'wavpack' 'libwebp' 'libx264.so' 'x265' 'libxcb' 'xvidcore' 'zimg-git'
     'zeromq' 'zvbi' 'openal' 'libva' 'libdrm' 'libva-intel-driver' 'opencl-icd-loader'
     'libvdpau' 'mesa' 'openssl' 'xavs' 'sdl2' 'libmfx-git'
-    'libomxil-bellagio'
+    'libomxil-bellagio' 'davs2'
 )
 makedepends=('git' 'yasm' 'opencl-headers' 'flite')
 provides=(
@@ -77,6 +77,7 @@ build() {
 	        --enable-libcaca \
 	        --enable-libcelt \
 	        --enable-libcdio \
+	        --enable-libdavs2 \
 	        --enable-libdc1394 \
 	        --enable-libfdk-aac \
 	        --enable-fontconfig \
@@ -133,7 +134,6 @@ build() {
 	        --enable-zlib \
 	        --enable-libmfx \
 	        --enable-omx \
-	        --enable-omx-rpi \
 	        --enable-vaapi \
 	        --enable-vdpau 
 	

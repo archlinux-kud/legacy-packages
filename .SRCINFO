@@ -1,6 +1,6 @@
 pkgbase = ffmpeg-semifull-git
 	pkgdesc = Record, convert and stream audio and video (Git version with all possible libs)
-	pkgver = N.94062.g09a4853930
+	pkgver = N.94905.g8efc9fcc56
 	pkgrel = 1
 	url = http://www.ffmpeg.org/
 	arch = i686
@@ -82,6 +82,7 @@ pkgbase = ffmpeg-semifull-git
 	depends = sdl2
 	depends = libmfx-git
 	depends = libomxil-bellagio
+	depends = davs2
 	provides = ffmpeg
 	provides = qt-faststart
 	provides = ffmpeg-git
