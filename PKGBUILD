@@ -4,7 +4,7 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=spirv-cross-git
-pkgver=r2144.4ce04480
+pkgver=r2197.c13e9516
 pkgrel=1
 pkgdesc='A tool and library for parsing and converting SPIR-V to other shader languages (git version)'
 arch=('x86_64')
@@ -35,7 +35,7 @@ prepare() {
     mkdir -p build external/{glslang,spirv-tools}-build
 
     for i in glslang SPIRV-Tools; do
-        ln -sf "${srcdir}/${i}"       external/
+        ln -sf "${srcdir}/${i}"       "external/${i,,}"
     done
     ln -sf "${srcdir}/SPIRV-Headers" "${srcdir}/SPIRV-Tools/external/spirv-headers"
 }
