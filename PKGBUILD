@@ -7,9 +7,9 @@ pkgdesc="XAVS is to implement high quality encoder and decoder of the Audio Vide
 arch=(i686 x86_64 arm)
 url="http://xavs.sourceforge.net/"
 license=(GPL)
-depends=()
+provides=(xavs)
+conflicts=(xavs)
 makedepends=(yasm)
-#options=(!strip)
 
 source=(
     "${pkgname}::svn+http://svn.code.sf.net/p/xavs/code/trunk"
