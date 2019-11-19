@@ -3,7 +3,7 @@
 # Careful when upgrading this package! It usually breaks ABI without bumping soname.
 pkgname=glslang
 pkgver=7.13.3496
-pkgrel=1
+pkgrel=2
 pkgdesc='OpenGL and OpenGL ES shader front end and validator'
 arch=('x86_64')
 url='https://github.com/KhronosGroup/glslang'
@@ -43,6 +43,8 @@ package() {
   for lib in *.so; do
     ln -sf "${lib}" "${lib}.0"
   done
+  # copy /usr/include/glslang/SPIRV to /usr/include/SPIRV for backward compatibility
+  cp -r "${pkgdir}"/usr/include/glslang/SPIRV "${pkgdir}"/usr/include/SPIRV
 }
 
 # vim: ts=2 sw=2 et:
