@@ -1,0 +1,18 @@
+pkgbase = glslang
+	pkgdesc = OpenGL and OpenGL ES shader front end and validator
+	pkgver = 7.13.3496
+	pkgrel = 2
+	url = https://github.com/KhronosGroup/glslang
+	arch = x86_64
+	license = BSD
+	makedepends = cmake
+	makedepends = ninja
+	depends = gcc-libs
+	depends = spirv-tools
+	depends = python
+	options = staticlibs
+	source = glslang-7.13.3496.tar.gz::https://github.com/KhronosGroup/glslang/archive/7.13.3496.tar.gz
+	sha256sums = 170d1538a670af4cae300e875d7cda9744b1acee1ab7252ecf7c4004186bb922
+
+pkgname = glslang
+
