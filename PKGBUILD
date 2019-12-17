@@ -18,16 +18,12 @@ source=(
   config.compilers # configuration for custom compiler paths
   sign_modules.sh  # script to sign out-of-tree kernel modules
   x509.genkey      # preset for generating module signing key
-  # for Clang asm goto hacks
-  https://raw.githubusercontent.com/nathanchance/patches/master/linux/stable/0001-DO-NOT-UPSTREAM-x86-Revert-two-commits-that-break-th.patch
-  https://raw.githubusercontent.com/nathanchance/patches/master/linux/stable/0002-DO-NOT-UPSTREAM-x86-Avoid-warnings-errors-due-to-lac.patch
 )
 sha384sums=('SKIP'
             'SKIP'
             'd5dcc15254f4ff2ac545aabf6971bd19389f89d18130bed08177721fc799ebc7d39d395366743e0d93202fc29afe7a6d'
             '4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de'
-            'SKIP'
-            'SKIP')
+)
 
 _kernelname=${pkgbase#linux-}
 _codename=TheElegant
@@ -107,9 +103,11 @@ build() {
       clang_exist=true
     fi
     if [ -n "$clang_exist" ]; then
-      CC=clang
       # clang < 9 doesn't support asm goto
-      [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && export no_asmgoto=true
+      [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && \
+        error "Detected Clang doesn't support asm goto."
+
+      CC=clang
     fi
   fi
 
@@ -152,16 +150,8 @@ build() {
 
   msg2 "Applying compiler sanitization features..."
   if [ -n "$clang_exist" ]; then
-    # apply init stack sanitizer for clang 8+
-    [ "$(echo __clang_major__ | clang -E -x c - | tail -1)" -ge 8 ] && scripts/config -e INIT_STACK_ALL
-
-    if [ -n "$no_asmgoto" ]; then
-      # build hax due to lack of asm goto support
-      msg2 "Applying asm goto build hacks..."
-      for i in ../*.patch; do
-         patch -sNp1 < $i
-      done
-    fi
+    # apply init stack sanitizer
+    scripts/config -e INIT_STACK_ALL
   else
     # apply certain sanitizer features
     scripts/config -e GCC_PLUGIN_STRUCTLEAK_BYREF_ALL \
@@ -251,13 +241,6 @@ _package-headers() {
   install -Dt "$builddir/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
   install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
   install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
-
-  if [ -n "$no_asmgoto" ]; then
-    # make the condition absolute for DKMS
-    msg2 "Workarounding lack of asm goto support for Clang..."
-    sed -i '144s/.*/#if 1/' "$builddir"/arch/x86/include/asm/cpufeature.h
-    sed -i '14s/.*/#if 0/' "$builddir"/arch/x86/include/asm/rmwcc.h
-  fi
 
   msg2 "Installing KConfig files..."
   find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
