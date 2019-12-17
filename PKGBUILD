@@ -1,26 +1,21 @@
 # Based on PKGBUILD created for Arch Linux by:
 # Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
-# Tobias Powalowski <tpowa@archlinux.org>
-# Thomas Baechler <thomas@archlinux.org>
 
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-vk
 pkgver=5.2.1
 pkgrel=1
+pkgdesc='Linux-VK'
 arch=(x86_64)
 url="https://github.com/krasCGQ/linux-vk"
 license=(GPL2)
-makedepends=(kmod inetutils bc libelf git)
+makedepends=(bc kmod libelf git)
 options=('!strip')
 _srcname=${pkgbase/-*}
 source=(
   "$_srcname::git+$url"
-  60-linux.hook    # pacman hook for depmod
-  90-linux.hook    # pacman hook for initramfs regeneration
   config.compilers # configuration for custom compiler paths
-  linux.install    # standard config file for post (un)install
-  linux.preset     # standard config file for mkinitcpio ramdisk
   sign_modules.sh  # script to sign out-of-tree kernel modules
   x509.genkey      # preset for generating module signing key
   # for Clang asm goto hacks
@@ -28,11 +23,7 @@ source=(
   https://raw.githubusercontent.com/nathanchance/patches/master/linux/stable/0002-DO-NOT-UPSTREAM-x86-Avoid-warnings-errors-due-to-lac.patch
 )
 sha384sums=('SKIP'
-            'f7c95513e185393a526043eb0f5ecf1f800840ab3b2ed223532bb9d40ddcce44c5fab5f4b528cfd2a89bf67ad764751d'
-            '01a9570c0907fa9a11ee1c384248fdf9b83de4fc2fe65cbc53446d9711aee9b148faa29a2e6449ca1a9d7b7f4cbe6c7c'
             'SKIP'
-            '5b9cfec7a4e1829bd89e32c5ac3aa4f983c77dffbdedde848d305068b70ae2fee51a9d9351c6b4cb917f556db0b0f622'
-            'd11ffe6e88adbcf59ca02c9481af7f7897e494eddc2345cb08ae093bf48f32ef48932fcd85224e1bfaa3db42042a6afb'
             'd5dcc15254f4ff2ac545aabf6971bd19389f89d18130bed08177721fc799ebc7d39d395366743e0d93202fc29afe7a6d'
             '4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de'
             'SKIP'
@@ -47,6 +38,9 @@ _threads=$(nproc --all)
 binutils_path="$(grep binutils config.compilers 2> /dev/null | cut -d '=' -f 2)"
 clang_path="$(grep clang config.compilers 2> /dev/null | cut -d '=' -f 2)"
 gcc_path="$(grep gcc config.compilers 2> /dev/null | cut -d '=' -f 2)"
+
+export KBUILD_BUILD_HOST=archlinux
+export KBUILD_BUILD_USER=$pkgbase
 
 prepare() {
   local hash
@@ -83,8 +77,8 @@ prepare() {
   msg2 "Generating defconfig..."
   make -s ${_kernelname}_defconfig -j${_threads}
 
-  make -s kernelrelease > ../version
-  msg2 "Prepared %s version %s" "$pkgbase" "$(<../version)"
+  make -s kernelrelease > version
+  msg2 "Prepared %s version %s" "$pkgbase" "$(<version)"
 }
 
 build() {
@@ -209,74 +203,49 @@ build() {
 }
 
 _package() {
-  pkgdesc="The Linux-VK kernel and modules"
-  depends=(coreutils linux-firmware kmod mkinitcpio)
-  optdepends=('crda: to set the correct wireless channels of your country')
-  backup=("etc/mkinitcpio.d/$pkgbase.preset")
-  install=linux.install
+  pkgdesc="The $pkgdesc kernel and modules"
+  depends=(coreutils kmod initramfs)
+  optdepends=('crda: to set the correct wireless channels of your country'
+              'linux-firmware: firmware images needed for some devices')
   # conflicts with r8168-dkms
   $r8168_enabled && conflicts+=(r8168-dkms)
-
-  local kernver="$(<version)"
-  local modulesdir="$pkgdir/usr/lib/modules/$kernver"
 
   # copy signing_key.x509 to PKGBUILD location
   cp -f ${_srcname}/certs/signing_key.x509 ../linux-vk.x509
 
   cd $_srcname
 
+  local kernver="$(<version)"
+  local modulesdir="$pkgdir/usr/lib/modules/$kernver"
+
   msg2 "Installing boot image..."
   # systemd expects to find the kernel here to allow hibernation
   # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
   install -Dm644 "$image_name" "$modulesdir/vmlinuz"
-  install -Dm644 "$modulesdir/vmlinuz" "$pkgdir/boot/vmlinuz-$pkgbase"
+
+  # Used by mkinitcpio to name the kernel
+  echo "$pkgbase" | install -Dm644 /dev/stdin "$modulesdir/pkgbase"
 
   msg2 "Installing modules..."
   make INSTALL_MOD_PATH="$pkgdir/usr" modules_install > /dev/null
 
-  # a place for external modules,
-  # with version file for building modules and running depmod from hook
-  local extramodules="extramodules$_kernelname"
-  local extradir="$pkgdir/usr/lib/modules/$extramodules"
-  install -Dt "$extradir" -m644 ../version
-  ln -sr "$extradir" "$modulesdir/extramodules"
-
   # remove build and source links
   rm "$modulesdir"/{source,build}
-
-  msg2 "Installing hooks..."
-  # sed expression for following substitutions
-  local subst="
-    s|%PKGBASE%|$pkgbase|g
-    s|%KERNVER%|$kernver|g
-    s|%EXTRAMODULES%|$extramodules|g
-  "
-
-  # hack to allow specifying an initially nonexisting install file
-  sed "$subst" "$startdir/$install" > "$startdir/$install.pkg"
-  true && install=$install.pkg
-
-  # fill in mkinitcpio preset and pacman hooks
-  sed "$subst" ../linux.preset | install -Dm644 /dev/stdin \
-    "$pkgdir/etc/mkinitcpio.d/$pkgbase.preset"
-  sed "$subst" ../60-linux.hook | install -Dm644 /dev/stdin \
-    "$pkgdir/usr/share/libalpm/hooks/60-$pkgbase.hook"
-  sed "$subst" ../90-linux.hook | install -Dm644 /dev/stdin \
-    "$pkgdir/usr/share/libalpm/hooks/90-$pkgbase.hook"
 
   msg2 "Fixing permissions..."
   chmod -Rc u=rwX,go=rX "$pkgdir"
 }
 
 _package-headers() {
-  pkgdesc="Header files and scripts for building modules for Linux-VK kernel"
-
-  local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
+  pkgdesc="Header and scripts for building modules for the $pkgdesc kernel"
 
   cd $_srcname
 
+  local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
+
   msg2 "Installing build files..."
-  install -Dt "$builddir" -m644 Makefile .config Module.symvers System.map vmlinux
+  install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map \
+    localversion.* version vmlinux
   install -Dt "$builddir/kernel" -m644 kernel/Makefile
   install -Dt "$builddir/arch/x86" -m644 arch/x86/Makefile
   cp -t "$builddir" -a scripts
@@ -286,9 +255,6 @@ _package-headers() {
 
   # add xfs and shmem for aufs building
   mkdir -p "$builddir"/{fs/xfs,mm}
-
-  # ???
-  mkdir "$builddir/.tmp_versions"
 
   msg2 "Installing headers..."
   cp -t "$builddir" -a include
@@ -349,7 +315,7 @@ _package-headers() {
 
   msg2 "Adding symlink..."
   mkdir -p "$pkgdir/usr/src"
-  ln -sr "$builddir" "$pkgdir/usr/src/$pkgbase-$pkgver"
+  ln -sr "$builddir" "$pkgdir/usr/src/$pkgbase"
 
   msg2 "Fixing permissions..."
   chmod -Rc u=rwX,go=rX "$pkgdir"
