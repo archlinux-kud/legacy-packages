@@ -32,7 +32,6 @@ sha384sums=('SKIP'
 _kernelname=${pkgbase#linux-}
 _codename=TheElegant
 _defconfig=$_srcname/arch/x86/configs/${_kernelname}_defconfig
-_threads=$(nproc --all)
 
 # custom binutils, clang and gcc paths
 binutils_path="$(grep binutils config.compilers 2> /dev/null | cut -d '=' -f 2)"
@@ -75,7 +74,7 @@ prepare() {
   echo "-${_kernelname^^}.$_codename" > localversion.20-pkgname
 
   msg2 "Generating defconfig..."
-  make -s ${_kernelname}_defconfig -j${_threads}
+  make -s ${_kernelname}_defconfig
 
   make -s kernelrelease > version
   msg2 "Prepared %s version %s" "$pkgbase" "$(<version)"
@@ -83,10 +82,7 @@ prepare() {
 
 build() {
   # mark variables as local
-  local amdgpu_dc_enabled CC cc_temp ccache_exist compiler CROSS_COMPILE
-
-  # is ccache exist?
-  ccache_exist="$(which ccache &> /dev/null && echo true || echo false)"
+  local amdgpu_dc_enabled CC cc_temp compiler CROSS_COMPILE
 
   # enabled features determine how kernel and package will be treated
   # DRM_AMD_DC defaults to true in Kconfig
@@ -111,9 +107,7 @@ build() {
       clang_exist=true
     fi
     if [ -n "$clang_exist" ]; then
-      # use ccache if exist
-      $ccache_exist && CC+="ccache "
-      CC+=clang
+      CC=clang
       # clang < 9 doesn't support asm goto
       [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && export no_asmgoto=true
     fi
@@ -124,23 +118,9 @@ build() {
   if [ -n "$gcc_path" ]; then
     msg2 "Custom GCC detected!"
     export PATH="$(dirname "$gcc_path"):$PATH"
-    # meant for checking whether the custom gcc has prefix or not
+    # the custom gcc has prefix
     cc_temp="$(basename "$gcc_path" | sed -e s/gcc//)"
-  fi
-
-  # the custom gcc has prefix
-  if [ -n "$cc_temp" ]; then
-    # use ccache if exist and clang is absent
-    if [ -z "$clang_exist" ] && $ccache_exist; then
-      CROSS_COMPILE+="ccache "
-    fi
-    CROSS_COMPILE+="$cc_temp"
-  # or... it doesn't
-  else
-    # opt in for possibility of building with ccache
-    if [ -z "$clang_exist" ] && $ccache_exist; then
-      CC="ccache gcc"
-    fi
+    [ -n "$cc_temp" ] && CROSS_COMPILE="$cc_temp"
   fi
 
   if [ -n "$clang_exist" ]; then
@@ -195,10 +175,10 @@ build() {
   # we need to keep it disabled for Clang as asm goto support is in early stage
   [ -z "$clang_exist" ] && scripts/config -e JUMP_LABEL -d STATIC_KEYS_SELFTEST
   # refresh the config just in case
-  make "${compiler[@]}" oldconfig -j${_threads}
+  make "${compiler[@]}" oldconfig
 
   msg2 "Building kernel and modules..."
-  make "${compiler[@]}" bzImage modules -j${_threads} > /dev/null
+  make "${compiler[@]}" bzImage modules > /dev/null
   export image_name=$(make "${compiler[@]}" -s image_name)
 }
 
