@@ -92,14 +92,12 @@ build() {
   else
     # custom clang
     if find "$clang_path/bin/clang" &> /dev/null; then
-      msg2 "Custom Clang detected! Building with Clang..."
       export PATH="$clang_path/bin:$PATH"
       export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
       clang_exist=true
       clang_custom=true
     # clang installed on system
     elif which clang &> /dev/null; then
-      msg2 "Clang detected! Building with Clang..."
       clang_exist=true
     fi
     if [ -n "$clang_exist" ]; then
@@ -107,6 +105,7 @@ build() {
       [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && \
         error "Detected Clang doesn't support asm goto."
 
+      msg2 "${clang_custom:+Custom }Clang detected! Building with Clang..."
       CC=clang
     fi
   fi
