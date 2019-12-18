@@ -78,36 +78,29 @@ prepare() {
 
 build() {
   # mark variables as local
-  local amdgpu_dc_enabled CC cc_temp compiler CROSS_COMPILE
+  local CC cc_temp compiler CROSS_COMPILE
 
   # enabled features determine how kernel and package will be treated
-  # DRM_AMD_DC defaults to true in Kconfig
-  amdgpu_dc_enabled=$(test -n "$(grep DRM_AMD_DC $_defconfig)" && echo false || echo true)
-  msg2 "AMDGPU DC enabled: $amdgpu_dc_enabled"
   export r8168_enabled=$(test -n "$(grep R8168 $_defconfig)" && echo true || echo false)
   msg2 "R8168 enabled: $r8168_enabled"
 
-  if $amdgpu_dc_enabled; then
-    warning "Incompatible configuration detected! NOT using Clang."
-  else
-    # custom clang
-    if find "$clang_path/bin/clang" &> /dev/null; then
-      export PATH="$clang_path/bin:$PATH"
-      export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
-      clang_exist=true
-      clang_custom=true
-    # clang installed on system
-    elif which clang &> /dev/null; then
-      clang_exist=true
-    fi
-    if [ -n "$clang_exist" ]; then
-      # clang < 9 doesn't support asm goto
-      [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && \
-        error "Detected Clang doesn't support asm goto."
+  # custom clang
+  if find "$clang_path/bin/clang" &> /dev/null; then
+    export PATH="$clang_path/bin:$PATH"
+    export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+    clang_exist=true
+    clang_custom=true
+  # clang installed on system
+  elif which clang &> /dev/null; then
+    clang_exist=true
+  fi
+  if [ -n "$clang_exist" ]; then
+    # clang < 9 doesn't support asm goto
+    [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && \
+      error "Detected Clang doesn't support asm goto."
 
-      msg2 "${clang_custom:+Custom }Clang detected! Building with Clang..."
-      CC=clang
-    fi
+    msg2 "${clang_custom:+Custom }Clang detected! Building with Clang..."
+    CC=clang
   fi
 
   # custom gcc if exist
