@@ -156,6 +156,8 @@ build() {
   # enable JUMP_LABEL for supported toolchains
   # we need to keep it disabled for Clang as asm goto support is in early stage
   [ -z "$clang_exist" ] && scripts/config -e JUMP_LABEL -d STATIC_KEYS_SELFTEST
+  # lol?
+  [ -z "$clang_exist" ] && scripts/config -m REGULATOR_DA903X
   # refresh the config just in case
   make "${compiler[@]}" oldconfig
 
