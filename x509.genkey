@@ -5,9 +5,9 @@ prompt = no
 x509_extensions = myexts
 
 [ req_distinguished_name ]
-O = WafuuID Network
-CN = Linux-VK module signing key
-emailAddress = hello@wafuu.id
+O = The Kud Network
+CN = MoeSyndrome Kernel module signing key
+emailAddress = layanan@kud.my.id
 
 [ myexts ]
 basicConstraints=critical,CA:FALSE

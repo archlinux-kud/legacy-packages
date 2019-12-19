@@ -3,12 +3,12 @@
 
 # Author: Albert I <kras@raphielgang.org>
 
-pkgbase=linux-vk
-pkgver=5.2.1
+pkgbase=linux-moesyndrome
+pkgver=5.4.5
 pkgrel=1
-pkgdesc='Linux-VK'
+pkgdesc='MoeSyndrome'
 arch=(x86_64)
-url="https://github.com/krasCGQ/linux-vk"
+url="https://github.com/krasCGQ/moesyndrome-kernel"
 license=(GPL2)
 makedepends=(bc kmod libelf git)
 options=('!strip')
@@ -22,7 +22,7 @@ source=(
 sha384sums=('SKIP'
             'SKIP'
             'd5dcc15254f4ff2ac545aabf6971bd19389f89d18130bed08177721fc799ebc7d39d395366743e0d93202fc29afe7a6d'
-            '4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de'
+            '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da'
 )
 
 # import custom clang and gcc properties
@@ -30,12 +30,10 @@ source config.compilers
 # add clang, lld and llvm 9+ into build dependencies if requested
 $use_clang && makedepends+=( 'clang>=9.0.0' 'lld>=9.0.0' 'llvm>=9.0.0' )
 
-_kernelname=${pkgbase#linux-}
-_codename=TheElegant
-_defconfig=$_srcname/arch/x86/configs/${_kernelname}_defconfig
+_defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
 
 export KBUILD_BUILD_HOST=archlinux
-export KBUILD_BUILD_USER=$pkgbase
+export KBUILD_BUILD_USER=${pkgbase#linux-}
 
 prepare() {
   local hash
@@ -67,10 +65,10 @@ prepare() {
   msg2 "Setting version..."
   scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
-  echo "-${_kernelname^^}.$_codename" > localversion.20-pkgname
+  echo "-$pkgdesc" > localversion.20-pkgname
 
   msg2 "Generating defconfig..."
-  make -s ${_kernelname}_defconfig
+  make -s "$(basename $_defconfig)"
 
   make -s kernelrelease > version
   msg2 "Prepared %s version %s" "$pkgbase" "$(<version)"
@@ -159,13 +157,13 @@ build() {
 }
 
 _package() {
-  pkgdesc="The $pkgdesc kernel and modules"
+  pkgdesc="$pkgdesc kernel and modules"
   depends=(coreutils kmod initramfs)
   optdepends=('crda: to set the correct wireless channels of your country'
               'linux-firmware: firmware images needed for some devices')
 
   # copy signing_key.x509 to PKGBUILD location
-  cp -f ${_srcname}/certs/signing_key.x509 ../linux-vk.x509
+  cp -f ${_srcname}/certs/signing_key.x509 ../$pkgbase.x509
 
   cd $_srcname
 
@@ -191,7 +189,7 @@ _package() {
 }
 
 _package-headers() {
-  pkgdesc="Header and scripts for building modules for the $pkgdesc kernel"
+  pkgdesc="Header and scripts for building modules for $pkgdesc kernel"
   [ -n "$clang_exist" ] && depends=( "clang>=9.0.0" "lld>=9.0.0" "llvm>=9.0.0" )
 
   cd $_srcname
