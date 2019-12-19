@@ -1,4 +1,3 @@
 # configuration for custom compiler paths
-binutils=
 clang=
 gcc=

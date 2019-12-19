@@ -29,8 +29,7 @@ _kernelname=${pkgbase#linux-}
 _codename=TheElegant
 _defconfig=$_srcname/arch/x86/configs/${_kernelname}_defconfig
 
-# custom binutils, clang and gcc paths
-binutils_path="$(grep binutils config.compilers 2> /dev/null | cut -d '=' -f 2)"
+# custom clang and gcc paths
 clang_path="$(grep clang config.compilers 2> /dev/null | cut -d '=' -f 2)"
 gcc_path="$(grep gcc config.compilers 2> /dev/null | cut -d '=' -f 2)"
 
@@ -87,6 +86,7 @@ build() {
   # custom clang
   if find "$clang_path/bin/clang" &> /dev/null; then
     export PATH="$clang_path/bin:$PATH"
+    # required for LTO
     export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
     clang_exist=true
     clang_custom=true
@@ -114,29 +114,26 @@ build() {
   fi
 
   if [ -n "$clang_exist" ]; then
-    if [ -n "$clang_custom" ] && find "$binutils_path/bin/ld" &> /dev/null; then
-      export PATH="$binutils_path/bin:$PATH"
-      # required for LTO
-      export LD_LIBRARY_PATH="$binutils_path/lib:${LD_LIBRARY_PATH:+:LD_LIBRARY_PATH}"
-      binutils_exist=true
-    fi
     # custom compiler string for clang
     # todo: gcc?
     # from github.com/nathanchance/scripts, slightly edited
     clang_version="$($CC --version | head -1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
-    binutils_version="$(${cc_temp}ld --version | head -1 | cut -d ' ' -f 3-5 | sed -e 's/[\(|\)]//g')"
-    msg2 "Using $clang_version, $binutils_version..."
+    msg2 "Using $clang_version..."
   fi
 
-  # set CROSS_COMPILE and CC if declared via compiler array
-  if [ -n "$CROSS_COMPILE" ] && [ -z "$binutils_exist" ]; then
-    compiler+=( "CROSS_COMPILE=$CROSS_COMPILE" "LD=${CROSS_COMPILE}ld.gold" )
+  # set certain variables if declared via compiler array
+  if [ -n "$clang_exist" ]; then
+    # go full LLVM! - setting clang triple is harmless on unaffected compilers
+    compiler+=( "AS=llvm-as" "LD=ld.lld" "CC=$CC" "AR=llvm-ar" "NM=llvm-nm"
+                "STRIP=llvm-strip" "OBJCOPY=llvm-objcopy" "OBJDUMP=llvm-objdump"
+                "OBJSIZE=llvm-objsize" "CLANG_TRIPLE=$($CC -dumpmachine)" )
   else
-    compiler+=( "LD=ld.gold" )
+    if [ -n "$CROSS_COMPILE" ]; then
+      compiler+=( "CROSS_COMPILE=$CROSS_COMPILE" "LD=${CROSS_COMPILE}ld.gold" )
+    else
+      compiler+=( "LD=ld.gold" )
+    fi
   fi
-  [ -n "$CC" ] && compiler+=( "CC=$CC" )
-  # this is harmless on unaffected compilers
-  [ -n "$clang_exist" ] && compiler+=( "CLANG_TRIPLE=$($CC -dumpmachine)" )
 
   cd $_srcname
 
