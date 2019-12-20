@@ -81,54 +81,52 @@ build() {
   local CC cc_temp clang_custom clang_exist clang_version compiler CROSS_COMPILE
 
   # custom clang
-  if find "$clang_path/bin/clang" &> /dev/null; then
+  if [ -n "$clang_path" ] && find "$clang_path"/bin/clang &> /dev/null; then
     export PATH="$clang_path/bin:$PATH"
     # required for LTO
     export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
     clang_exist=true
     clang_custom=true
+
   # clang installed on system
-  elif which clang &> /dev/null; then
+  elif $use_clang && which clang &> /dev/null; then
     clang_exist=true
+
+  # custom gcc if exist, otherwise fallback
+  elif [ -n "$gcc_path" ]; then
+    export PATH="$gcc_path/bin:$PATH"
+    # check whether the custom gcc has prefix
+    cc_temp="$(basename "$(find "$gcc_path/bin/*gcc" 2> /dev/null)" | sed -e 's/gcc//')"
+    # bail out if prefix is x86_64-pc-linux-gnu-; it's for host
+    if [ -n "$cc_temp" ] && [ "$cc_temp" != "x86_64-pc-linux-gnu-" ]; then
+      CROSS_COMPILE="$cc_temp"
+    fi
+    msg2 "Custom GCC detected!"
   fi
+
   if [ -n "$clang_exist" ]; then
     # clang < 9 doesn't support asm goto
     [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && \
       error "Detected Clang doesn't support asm goto."
 
-    msg2 "${clang_custom:+Custom }Clang detected! Building with Clang..."
+    msg2 "${clang_custom:+Custom }Clang detected!"
     CC=clang
-  fi
 
-  # custom gcc if exist
-  gcc_path="$(find "$gcc_path/bin" -name '*gcc' 2> /dev/null | sort -n | head -1)"
-  if [ -n "$gcc_path" ]; then
-    msg2 "Custom GCC detected!"
-    export PATH="$(dirname "$gcc_path"):$PATH"
-    # the custom gcc has prefix
-    cc_temp="$(basename "$gcc_path" | sed -e s/gcc//)"
-    [ -n "$cc_temp" ] && CROSS_COMPILE="$cc_temp"
-  fi
-
-  if [ -n "$clang_exist" ]; then
-    # custom compiler string for clang
-    # todo: gcc?
+    # custom compiler string
     # from github.com/nathanchance/scripts, slightly edited
     clang_version="$($CC --version | head -1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
     msg2 "Using $clang_version..."
-  fi
 
-  # set certain variables if declared via compiler array
-  if [ -n "$clang_exist" ]; then
     # go full LLVM! - setting clang triple is harmless on unaffected compilers
-    compiler+=( "AS=llvm-as" "LD=ld.lld" "CC=$CC" "AR=llvm-ar" "NM=llvm-nm"
+    compiler=( "AS=llvm-as" "LD=ld.lld" "CC=$CC" "AR=llvm-ar" "NM=llvm-nm"
                 "STRIP=llvm-strip" "OBJCOPY=llvm-objcopy" "OBJDUMP=llvm-objdump"
                 "OBJSIZE=llvm-objsize" "CLANG_TRIPLE=$($CC -dumpmachine)" )
   else
+    # set compiler variables
     if [ -n "$CROSS_COMPILE" ]; then
-      compiler+=( "CROSS_COMPILE=$CROSS_COMPILE" "LD=${CROSS_COMPILE}ld.gold" )
+      compiler=( "CROSS_COMPILE=$CROSS_COMPILE" "LD=${CROSS_COMPILE}ld.gold" )
     else
-      compiler+=( "LD=ld.gold" )
+      compiler=( "LD=ld.gold" )
     fi
   fi
 
