@@ -122,12 +122,8 @@ build() {
                 "STRIP=llvm-strip" "OBJCOPY=llvm-objcopy" "OBJDUMP=llvm-objdump"
                 "OBJSIZE=llvm-objsize" "CLANG_TRIPLE=$($CC -dumpmachine)" )
   else
-    # set compiler variables
-    if [ -n "$CROSS_COMPILE" ]; then
-      compiler=( "CROSS_COMPILE=$CROSS_COMPILE" "LD=${CROSS_COMPILE}ld.gold" )
-    else
-      compiler=( "LD=ld.gold" )
-    fi
+    # set cross compile prefix
+    [ -n "$CROSS_COMPILE" ] && compiler=( "CROSS_COMPILE=$CROSS_COMPILE" )
   fi
 
   cd $_srcname
