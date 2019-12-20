@@ -78,7 +78,8 @@ prepare() {
 
 build() {
   # mark variables as local
-  local CC cc_temp clang_custom clang_exist clang_version compiler CROSS_COMPILE
+  local CC cc_temp clang_custom clang_exist clang_version compiler \
+    CROSS_COMPILE gcc_version
 
   # custom clang
   if [ -n "$clang_path" ] && find "$clang_path"/bin/clang &> /dev/null; then
@@ -122,6 +123,10 @@ build() {
                 "STRIP=llvm-strip" "OBJCOPY=llvm-objcopy" "OBJDUMP=llvm-objdump"
                 "OBJSIZE=llvm-objsize" "CLANG_TRIPLE=$($CC -dumpmachine)" )
   else
+    # custom compiler string
+    gcc_version="$(${CROSS_COMPILE}gcc --version | head -1 | sed -e 's/(.*.)[[:space:]]//')"
+    msg2 "Using $gcc_version..."
+
     # set cross compile prefix
     [ -n "$CROSS_COMPILE" ] && compiler=( "CROSS_COMPILE=$CROSS_COMPILE" )
   fi
