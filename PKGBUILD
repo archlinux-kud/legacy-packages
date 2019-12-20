@@ -152,11 +152,11 @@ build() {
   # lol?
   [ -z "$clang_exist" ] && scripts/config -m REGULATOR_DA903X
   # refresh the config just in case
-  make "${compiler[@]}" oldconfig
+  make -s "${compiler[@]}" oldconfig
 
   msg2 "Building kernel and modules..."
-  make "${compiler[@]}" bzImage modules > /dev/null
-  export image_name=$(make "${compiler[@]}" -s image_name)
+  make -s "${compiler[@]}" bzImage modules
+  export image_name=$(make -s "${compiler[@]}" image_name)
 }
 
 _package() {
@@ -182,7 +182,7 @@ _package() {
   echo "$pkgbase" | install -Dm644 /dev/stdin "$modulesdir/pkgbase"
 
   msg2 "Installing modules..."
-  make INSTALL_MOD_PATH="$pkgdir/usr" modules_install > /dev/null
+  make -s INSTALL_MOD_PATH="$pkgdir/usr" modules_install
 
   # remove build and source links
   rm "$modulesdir"/{source,build}
