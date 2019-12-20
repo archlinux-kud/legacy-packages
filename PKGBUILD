@@ -25,13 +25,14 @@ sha384sums=('SKIP'
             '4399cc1b697b95bb92e0c10e7dbd5fa6c52612aafeb8d6fb829d20bbc341fc1a6f6ef8a0c57a9509ca9f319eb34c80de'
 )
 
+# import custom clang and gcc properties
+source config.compilers
+# add clang, lld and llvm 9+ into build dependencies if requested
+$use_clang && makedepends+=( 'clang>=9.0.0' 'lld>=9.0.0' 'llvm>=9.0.0' )
+
 _kernelname=${pkgbase#linux-}
 _codename=TheElegant
 _defconfig=$_srcname/arch/x86/configs/${_kernelname}_defconfig
-
-# custom clang and gcc paths
-clang_path="$(grep clang config.compilers 2> /dev/null | cut -d '=' -f 2)"
-gcc_path="$(grep gcc config.compilers 2> /dev/null | cut -d '=' -f 2)"
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase

@@ -1,3 +1,6 @@
-# configuration for custom compiler paths
-clang=
-gcc=
+# use clang and llvm; default is false and will be overriden by clang_path below
+use_clang=false
+
+# custom path to clang/gcc (without /bin); clang takes precedence
+clang_path=
+gcc_path=
