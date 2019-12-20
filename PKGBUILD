@@ -79,10 +79,6 @@ build() {
   # mark variables as local
   local CC cc_temp compiler CROSS_COMPILE
 
-  # enabled features determine how kernel and package will be treated
-  export r8168_enabled=$(test -n "$(grep R8168 $_defconfig)" && echo true || echo false)
-  msg2 "R8168 enabled: $r8168_enabled"
-
   # custom clang
   if find "$clang_path/bin/clang" &> /dev/null; then
     export PATH="$clang_path/bin:$PATH"
@@ -168,8 +164,6 @@ _package() {
   depends=(coreutils kmod initramfs)
   optdepends=('crda: to set the correct wireless channels of your country'
               'linux-firmware: firmware images needed for some devices')
-  # conflicts with r8168-dkms
-  $r8168_enabled && conflicts+=(r8168-dkms)
 
   # copy signing_key.x509 to PKGBUILD location
   cp -f ${_srcname}/certs/signing_key.x509 ../linux-vk.x509
