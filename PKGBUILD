@@ -78,7 +78,7 @@ prepare() {
 
 build() {
   # mark variables as local
-  local CC cc_temp compiler CROSS_COMPILE
+  local CC cc_temp clang_custom clang_exist clang_version compiler CROSS_COMPILE
 
   # custom clang
   if find "$clang_path/bin/clang" &> /dev/null; then
