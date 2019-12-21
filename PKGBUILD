@@ -85,7 +85,7 @@ build() {
   if [ -n "$clang_path" ] && find "$clang_path"/bin/clang &> /dev/null; then
     export PATH="$clang_path/bin:$PATH"
     # required for LTO
-    export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+    export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
     clang_exist=true
     clang_custom=true
 
@@ -96,6 +96,8 @@ build() {
   # custom gcc if exist, otherwise fallback
   elif [ -n "$gcc_path" ]; then
     export PATH="$gcc_path/bin:$PATH"
+    # required for LTO
+    export LD_LIBRARY_PATH="$gcc_path/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
     # check whether the custom gcc has prefix
     cc_temp="$(basename "$(find "$gcc_path/bin/*gcc" 2> /dev/null)" | sed -e 's/gcc//')"
     # bail out if prefix is x86_64-pc-linux-gnu-; it's for host
