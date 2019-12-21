@@ -78,20 +78,19 @@ prepare() {
 
 build() {
   # mark variables as local
-  local CC cc_temp clang_custom clang_exist clang_version compiler \
-    CROSS_COMPILE gcc_version
+  local CC cc_temp clang_custom clang_version compiler CROSS_COMPILE gcc_version
 
   # custom clang
   if [ -n "$clang_path" ] && find "$clang_path"/bin/clang &> /dev/null; then
     export PATH="$clang_path/bin:$PATH"
     # required for LTO
     export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-    clang_exist=true
+    export clang_exist=true
     clang_custom=true
 
   # clang installed on system
   elif $use_clang && which clang &> /dev/null; then
-    clang_exist=true
+    export clang_exist=true
 
   # custom gcc if exist, otherwise fallback
   elif [ -n "$gcc_path" ]; then
@@ -193,6 +192,7 @@ _package() {
 
 _package-headers() {
   pkgdesc="Header and scripts for building modules for the $pkgdesc kernel"
+  [ -n "$clang_exist" ] && depends=( "clang>=9.0.0" "lld>=9.0.0" "llvm>=9.0.0" )
 
   cd $_srcname
 
@@ -204,6 +204,15 @@ _package-headers() {
   install -Dt "$builddir/kernel" -m644 kernel/Makefile
   install -Dt "$builddir/arch/x86" -m644 arch/x86/Makefile
   cp -t "$builddir" -a scripts
+
+  # conditionally patch Makefile to build external modules with Clang
+  if [ -n "$clang_exist" ]; then
+    for i in as ar nm strip objcopy objdump size; do
+      sed -i s/'$(CROSS_COMPILE)'$i/llvm-$i/ "$builddir"/Makefile
+    done
+    sed -i 's/$(CROSS_COMPILE)ld/ld.lld/' "$builddir"/Makefile
+    sed -i 's/$(CROSS_COMPILE)gcc/clang/' "$builddir"/Makefile
+  fi
 
   # add objtool for external module building and enabled VALIDATION_STACK option
   install -Dt "$builddir/tools/objtool" tools/objtool/objtool
