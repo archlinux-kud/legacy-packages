@@ -120,10 +120,10 @@ build() {
     clang_version="$($CC --version | head -1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
     msg2 "Using $clang_version..."
 
-    # go full LLVM! - setting clang triple is harmless on unaffected compilers
+    # go full LLVM!
     compiler=( "AS=llvm-as" "LD=ld.lld" "CC=$CC" "AR=llvm-ar" "NM=llvm-nm"
                 "STRIP=llvm-strip" "OBJCOPY=llvm-objcopy" "OBJDUMP=llvm-objdump"
-                "OBJSIZE=llvm-objsize" "CLANG_TRIPLE=$($CC -dumpmachine)" )
+                "OBJSIZE=llvm-objsize" )
   else
     # custom compiler string
     gcc_version="$(${CROSS_COMPILE}gcc --version | head -1 | sed -e 's/(.*.)[[:space:]]//')"
