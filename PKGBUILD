@@ -67,7 +67,7 @@ prepare() {
   echo "-$pkgrel" > localversion.10-pkgrel
   echo "-$pkgdesc" > localversion.20-pkgname
 
-  msg2 "Generating defconfig..."
+  msg2 "Generating config..."
   make -s "$(basename $_defconfig)"
 
   make -s kernelrelease > version
@@ -132,7 +132,13 @@ build() {
 
   cd $_srcname
 
+  # regenerate config with selected compiler
+  msg2 "Regenerating config..."
+  make -s "${compiler[@]}" "$(basename $_defconfig)"
+
   msg2 "Applying compiler sanitization features..."
+  # INIT_STACK_NONE is common for both compilers
+  scripts/config -d INIT_STACK_NONE
   if [ -n "$clang_exist" ]; then
     # apply init stack sanitizer
     scripts/config -e INIT_STACK_ALL
