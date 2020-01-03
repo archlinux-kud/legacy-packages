@@ -1,20 +1,20 @@
-# Contributor: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
-# Contributor: Ionut Biru <ibiru@archlinux.org>
-# Contributor: Hugo Doria <hugo@archlinux.org>
+# Based on PKGBUILD by:
+# Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Ionut Biru <ibiru@archlinux.org>
+# Hugo Doria <hugo@archlinux.org>
 
-# Package branching
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=deluge-legacy
 pkgver=1.3.15+19+gd62987089
-pkgrel=1
+pkgrel=2
 pkgdesc="A BitTorrent client with multiple user interfaces in a client/server model (version 1.3.x)"
-arch=(any)
 url="https://deluge-torrent.org/"
-license=(GPL3)
-depends=(python2-xdg libtorrent-rasterbar python2-twisted python2-pyopenssl
-         python2-chardet python2-setuptools)
-makedepends=(intltool pygtk librsvg python2-mako git)
+arch=('any')
+license=('GPL3')
+depends=('libtorrent-rasterbar<1.2.1' 'python2-chardet' 'python2-pyopenssl'
+         'python2-setuptools' 'python2-twisted' 'python2-xdg')
+makedepends=('git' 'intltool' 'librsvg' 'pygtk' 'python2-mako')
 optdepends=('python2-notify: libnotify notifications'
             'python2-pygame: audible notifications'
             'python2-libappindicator: appindicator notifications'
