@@ -14,7 +14,7 @@ arch=('x86_64')
 license=('BSD')
 depends=('boost-libs')
 makedepends=('boost' 'python2' 'python')
-provides=('libtorrent-rasterbar')
+provides=("libtorrent-rasterbar=$pkgver")
 conflicts=('libtorrent-rasterbar')
 options=('!emptydirs')
 _pkgname=${pkgname/-1_1}

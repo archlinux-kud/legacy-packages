@@ -9,7 +9,7 @@ pkgbase = libtorrent-rasterbar-1_1
 	makedepends = python2
 	makedepends = python
 	depends = boost-libs
-	provides = libtorrent-rasterbar
+	provides = libtorrent-rasterbar=1.1.14
 	conflicts = libtorrent-rasterbar
 	options = !emptydirs
 	source = https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1_14/libtorrent-rasterbar-1.1.14.tar.gz
