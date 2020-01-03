@@ -13,7 +13,7 @@ pkgbase = libtorrent-rasterbar-1_1
 	conflicts = libtorrent-rasterbar
 	options = !emptydirs
 	source = https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1_14/libtorrent-rasterbar-1.1.14.tar.gz
-	sha512sums = b640ada016f8e68a3fb0e033dd33ab79b345b0f691aa722c4256b8cd8524c6e55067ccd1f11584984bbb82c0f64151f0b5223bd2b8431b899ffca46d2d31fff5
+	sha384sums = 2cb9de8cedda8d0caa414734d7642c09bbe238182fd254a5fc6605033773573031751abd16ac93570161a7b73e86905f
 
 pkgname = libtorrent-rasterbar-1_1
 

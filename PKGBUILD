@@ -6,6 +6,7 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=libtorrent-rasterbar-1_1
+_pkgname=${pkgname/-1_1}
 pkgver=1.1.14
 pkgrel=1
 pkgdesc="A C++ BitTorrent library that aims to be a good alternative to all the other implementations around (version 1.1)"
@@ -14,13 +15,12 @@ arch=('x86_64')
 license=('BSD')
 depends=('boost-libs')
 makedepends=('boost' 'python2' 'python')
-provides=("libtorrent-rasterbar=$pkgver")
-conflicts=('libtorrent-rasterbar')
+provides=("$_pkgname=$pkgver")
+conflicts=("$_pkgname")
 options=('!emptydirs')
-_pkgname=${pkgname/-1_1}
 _pkgver=${pkgver//./_}
 source=(https://github.com/arvidn/libtorrent/releases/download/libtorrent-$_pkgver/$_pkgname-$pkgver.tar.gz)
-sha512sums=('b640ada016f8e68a3fb0e033dd33ab79b345b0f691aa722c4256b8cd8524c6e55067ccd1f11584984bbb82c0f64151f0b5223bd2b8431b899ffca46d2d31fff5')
+sha384sums=('2cb9de8cedda8d0caa414734d7642c09bbe238182fd254a5fc6605033773573031751abd16ac93570161a7b73e86905f')
 
 prepare() {
   mkdir py2 py3
