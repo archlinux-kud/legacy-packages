@@ -27,12 +27,13 @@ provides=($_srcname)
 conflicts=($_srcname)
 _srcver=$(echo "$pkgver" | cut -d '.' -f 1,2)
 source=("$_srcname::git://git.deluge-torrent.org/deluge.git#branch=${_srcver}-stable"
-        untag-build.patch
-        deluged.service deluge-web.service)
-sha256sums=('SKIP'
-            'fbd17f13765f5560bab01a81a42aff0f2f757a4a6fa29379ae31d95b9721e4f2'
-            '58a451bb6cf4fe6ff78a4fb71d51c5910340a2de032ff435c3c7365015ab538f'
-            'c3f2d6ad5bc9de5ffd9973d92badbe04a9ecf12c0c575e13d505a96add03275a')
+        deluged.service
+        deluge-web.service
+        untag-build.patch)
+sha384sums=('SKIP'
+            'deee15cb4bcb11786792b2230454ec59a6ae47fd08881a599d422655e63881487ce918d2486490a64df8eee7e2bd0ef0'
+            '881dec17e240a84d82bfaf790845e96559ed37d8e48a1c0c8c887299b41acd6b0053b6130b7283e9cc0d1fe1a919c630'
+            'c5f4a3d38ecd3cba8792d62da6b7a451102d27b34c005dadbc90704d1590706bd32a106198a285b411f2f24e9340f87a')
 
 prepare() {
   cd $_srcname
