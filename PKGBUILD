@@ -3,9 +3,9 @@
 # Contributor: sysrq
 
 pkgname=picard
-pkgver=2.2.3
-_commit=f2c1d58f97f35a4b33436ad9a1cb08f4f9a80676
-pkgrel=2
+pkgver=2.3.0a1
+_commit=aa372fbe4cc27e0a05705f4d0ae530c78f11c551
+pkgrel=1
 pkgdesc='Official MusicBrainz tagger'
 url='https://picard.musicbrainz.org/'
 license=('GPL')
