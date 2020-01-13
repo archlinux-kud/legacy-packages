@@ -64,8 +64,7 @@ prepare() {
 
   msg2 "Setting version..."
   scripts/setlocalversion --save-scmversion
-  echo "-$pkgrel" > localversion.10-pkgrel
-  echo "-$pkgdesc" > localversion.20-pkgname
+  echo "-$pkgrel" > localversion.98-pkgrel
 
   msg2 "Generating config..."
   make -s "$(basename $_defconfig)"
