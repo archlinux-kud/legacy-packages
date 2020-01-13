@@ -11,7 +11,7 @@ arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
 license=(GPL2)
 makedepends=(bc kmod libelf git)
-options=('!strip')
+options=('!buildflags' '!strip')
 _srcname=${pkgbase/-*}
 source=(
   "$_srcname::git+$url"

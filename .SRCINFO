@@ -9,6 +9,7 @@ pkgbase = linux-moesyndrome
 	makedepends = kmod
 	makedepends = libelf
 	makedepends = git
+	options = !buildflags
 	options = !strip
 	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel
 	source = config.compilers
