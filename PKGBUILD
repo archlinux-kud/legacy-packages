@@ -47,15 +47,15 @@ prepare() {
     [ -z "$hash" ] && hash=SHA1
     msg2 "Module signature hash algorithm used: ${hash,,}"
 
-    if [ ! -f "../${pkgbase}.pem" ]; then
+    if [ ! -f "../$pkgbase.pem" ]; then
       msg2 "Generating an $hash public/private key pair..."
       openssl req -new -nodes -utf8 -${hash,,} -days 3650 -batch -x509 \
         -config x509.genkey -outform PEM -out ../${pkgbase}.pem \
-        -keyout ../${pkgbase}.pem 2> /dev/null
+        -keyout ../$pkgbase.pem 2> /dev/null
     fi
 
     msg2 "Copying key pair into source folder..."
-    cp -f ../${pkgbase}.pem $_srcname/${pkgbase}.pem
+    cp -f ../$pkgbase.pem $_srcname/certs/signing_key.pem
   else
     msg2 "Module signing status: disabled"
   fi
@@ -169,7 +169,7 @@ _package() {
               'linux-firmware: firmware images needed for some devices')
 
   # copy signing_key.x509 to PKGBUILD location
-  cp -f ${_srcname}/certs/signing_key.x509 ../$pkgbase.x509
+  cp -f $_srcname/certs/signing_key.x509 ../$pkgbase.x509
 
   cd $_srcname
 
