@@ -166,6 +166,7 @@ _package() {
   depends=(coreutils kmod initramfs)
   optdepends=('crda: to set the correct wireless channels of your country'
               'linux-firmware: firmware images needed for some devices')
+  provides=('WIREGUARD-MODULE')
 
   # copy signing_key.x509 to PKGBUILD location
   cp -f $_srcname/certs/signing_key.x509 ../$pkgbase.x509
