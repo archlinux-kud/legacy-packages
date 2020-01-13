@@ -142,6 +142,7 @@ build() {
     # apply init stack sanitizer
     scripts/config -e INIT_STACK_ALL
   else
+    scripts/config -e GCC_PLUGINS
     # apply recommended KSPP settings for GCC plugins
     # https://kernsec.org/wiki/index.php/Kernel_Self_Protection_Project/Recommended_Settings#GCC_plugins
     scripts/config -d GCC_PLUGIN_CYC_COMPLEXITY \
