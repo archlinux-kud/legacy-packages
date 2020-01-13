@@ -157,8 +157,12 @@ build() {
                    --disable-after STACKLEAK_METRICS STACKLEAK_RUNTIME_DISABLE
   fi
 
-  # lol?
-  [ -z "$clang_exist" ] && scripts/config -m REGULATOR_DA903X
+  if [ -z "$clang_exist" ]; then
+    # 1) REGULATOR_DA903X: https://git.kernel.org/torvalds/c/0077aaaeeb69b5dcfe15a398e38d71bf28c9505d
+    # 2) SENSORS_APPLESMC: Doesn't build on -O3 with Clang due to __bad_udelay trap
+    scripts/config -m REGULATOR_DA903X \
+                   -m SENSORS_APPLESMC
+  fi
   # use -O3 for Clang
   [ -n "$clang_exist" ] && scripts/config -d CC_OPTIMIZE_FOR_PERFORMANCE \
                                           -e CC_OPTIMIZE_FOR_PERFORMANCE_O3
