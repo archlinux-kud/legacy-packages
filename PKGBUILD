@@ -173,6 +173,9 @@ build() {
   msg2 "Building kernel and modules..."
   make -s "${compiler[@]}" bzImage modules
   export image_name=$(make -s "${compiler[@]}" image_name)
+
+  # copy signing_key.x509 to PKGBUILD location
+  cp -f certs/signing_key.x509 ../../$pkgbase.x509
 }
 
 _package() {
@@ -181,9 +184,6 @@ _package() {
   optdepends=('crda: to set the correct wireless channels of your country'
               'linux-firmware: firmware images needed for some devices')
   provides=('WIREGUARD-MODULE')
-
-  # copy signing_key.x509 to PKGBUILD location
-  cp -f $_srcname/certs/signing_key.x509 ../$pkgbase.x509
 
   cd $_srcname
 
