@@ -21,7 +21,7 @@ source=(
 )
 sha384sums=('SKIP'
             'SKIP' # we modify this, just don't
-            'd5dcc15254f4ff2ac545aabf6971bd19389f89d18130bed08177721fc799ebc7d39d395366743e0d93202fc29afe7a6d'
+            'ff8a65f1b504d2754152ec8f69e497607c463da311001d040b5453e02d6f6f2312678ff5edc100481839e7ac2d74c4d3'
             '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da'
 )
 
