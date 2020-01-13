@@ -142,13 +142,19 @@ build() {
     # apply init stack sanitizer
     scripts/config -e INIT_STACK_ALL
   else
-    # apply certain sanitizer features
-    scripts/config -e GCC_PLUGIN_STRUCTLEAK_BYREF_ALL \
-                   -d GCC_PLUGIN_STRUCTLEAK_VERBOSE \
-                   -e GCC_PLUGIN_STACKLEAK \
+    # apply recommended KSPP settings for GCC plugins
+    # https://kernsec.org/wiki/index.php/Kernel_Self_Protection_Project/Recommended_Settings#GCC_plugins
+    scripts/config -d GCC_PLUGIN_CYC_COMPLEXITY \
+                   -e GCC_PLUGIN_LATENT_ENTROPY \
+                   -e GCC_PLUGIN_RANDSTRUCT \
+                   --enable-after GCC_PLUGIN_RANDSTRUCT GCC_PLUGIN_RANDSTRUCT_PERFORMANCE \
+                   -e GCC_PLUGIN_STRUCTLEAK_BYREF_ALL \
+                   --disable-after GCC_PLUGIN_STRUCTLEAK_BYREF_ALL GCC_PLUGIN_STRUCTLEAK_VERBOSE
+    # apply sanitizer features enabled by Arch Linux
+    scripts/config -e GCC_PLUGIN_STACKLEAK \
                    --set-val STACKLEAK_TRACK_MIN_SIZE 100 \
-                   -d STACKLEAK_METRICS \
-                   -d STACKLEAK_RUNTIME_DISABLE
+                   --disable-after STACKLEAK_TRACK_MIN_SIZE STACKLEAK_METRICS \
+                   --disable-after STACKLEAK_METRICS STACKLEAK_RUNTIME_DISABLE
   fi
 
   # lol?
