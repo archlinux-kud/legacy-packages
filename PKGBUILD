@@ -159,6 +159,9 @@ build() {
 
   # lol?
   [ -z "$clang_exist" ] && scripts/config -m REGULATOR_DA903X
+  # use -O3 for Clang
+  [ -n "$clang_exist" ] && scripts/config -d CC_OPTIMIZE_FOR_PERFORMANCE \
+                                          -e CC_OPTIMIZE_FOR_PERFORMANCE_O3
   # refresh the config just in case
   make -s "${compiler[@]}" oldconfig
 
