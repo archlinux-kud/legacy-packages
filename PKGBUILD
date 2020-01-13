@@ -38,7 +38,7 @@ export KBUILD_BUILD_USER=${pkgbase#linux-}
 prepare() {
   local hash
 
-  if [ -n "$(grep MODULE_SIG=y $_defconfig)" ]; then
+  if [ -z "$(grep "MODULE_SIG is not set" $_defconfig)" ]; then
     msg2 "Module signing status: enabled"
 
     # parse hash used to sign modules from defconfig
