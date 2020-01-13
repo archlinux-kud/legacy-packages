@@ -4,3 +4,6 @@ use_clang=false
 # custom path to clang/gcc (without /bin); clang takes precedence
 clang_path=
 gcc_path=
+
+# include applesmc into clang build; demotes optimization to -O2
+with_applesmc=false
