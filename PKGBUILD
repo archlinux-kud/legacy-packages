@@ -4,7 +4,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.4.5
+pkgver=5.4.8
 pkgrel=1
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
@@ -20,7 +20,7 @@ source=(
   x509.genkey      # preset for generating module signing key
 )
 sha384sums=('SKIP'
-            'SKIP'
+            'SKIP' # we modify this, just don't
             'd5dcc15254f4ff2ac545aabf6971bd19389f89d18130bed08177721fc799ebc7d39d395366743e0d93202fc29afe7a6d'
             '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da'
 )
