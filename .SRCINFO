@@ -1,0 +1,22 @@
+pkgbase = picard
+	pkgdesc = Official MusicBrainz tagger
+	pkgver = 2.3.0a1
+	pkgrel = 1
+	url = https://picard.musicbrainz.org/
+	arch = x86_64
+	license = GPL
+	makedepends = git
+	makedepends = python-setuptools
+	depends = python-pyqt5
+	depends = python-mutagen
+	optdepends = chromaprint: fingerprinting
+	optdepends = python-discid: cd lookup
+	optdepends = qt5-multimedia: media player toolbar
+	optdepends = qt5-translations: full UI translation
+	source = git+https://github.com/metabrainz/picard.git#commit=aa372fbe4cc27e0a05705f4d0ae530c78f11c551
+	source = pyqt-5.14.patch::https://github.com/metabrainz/picard/commit/32e05058e0ac5772d7a480287ee428642fbbc9b9.patch
+	sha384sums = SKIP
+	sha384sums = efeb1f33db6b7c4473a26a8fef2b99e651a5f8a125d497017950d26aaf70129c381cd1e1a7e3dced19547d217b33be42
+
+pkgname = picard
+
