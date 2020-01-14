@@ -16,8 +16,15 @@ optdepends=('chromaprint: fingerprinting'
             'qt5-multimedia: media player toolbar'
             'qt5-translations: full UI translation')
 makedepends=('git' 'python-setuptools')
-source=("git+https://github.com/metabrainz/picard.git#commit=$_commit")
-sha256sums=('SKIP')
+source=("git+https://github.com/metabrainz/picard.git#commit=$_commit"
+        'pyqt-5.14.patch::https://github.com/metabrainz/picard/commit/32e05058e0ac5772d7a480287ee428642fbbc9b9.patch')
+sha256sums=('SKIP'
+            '08ec55a9b35c8f68374bfff548e63eec7c1afea44626e749c096957cc96fbb66')
+
+prepare() {
+	cd "${srcdir}/${pkgname}"
+	patch -Np1 < ../pyqt-5.14.patch
+}
 
 build() {
 	cd "${srcdir}/${pkgname}"
