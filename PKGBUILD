@@ -4,7 +4,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.4.14
+pkgver=5.4.15
 pkgrel=1
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
@@ -119,7 +119,7 @@ build() {
     # go full LLVM!
     compiler=( "AS=llvm-as" "LD=ld.lld" "CC=$CC" "AR=llvm-ar" "NM=llvm-nm"
                 "STRIP=llvm-strip" "OBJCOPY=llvm-objcopy" "OBJDUMP=llvm-objdump"
-                "OBJSIZE=llvm-objsize" )
+                "OBJSIZE=llvm-objsize" READELF="llvm-readelf" )
   else
     # custom compiler string
     gcc_version="$(${CROSS_COMPILE}gcc --version | head -1 | sed -e 's/(.*.)[[:space:]]//')"
