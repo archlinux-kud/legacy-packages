@@ -1,6 +1,6 @@
 pkgbase = linux-moesyndrome
 	pkgdesc = MoeSyndrome
-	pkgver = 5.5
+	pkgver = 5.5.1
 	pkgrel = 1
 	url = https://github.com/krasCGQ/moesyndrome-kernel
 	arch = x86_64
