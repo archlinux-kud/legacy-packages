@@ -3,8 +3,8 @@
 # Contributor: sysrq
 
 pkgname=picard
-pkgver=2.3.0a1
-_commit=aa372fbe4cc27e0a05705f4d0ae530c78f11c551
+pkgver=2.3.0b1
+_commit=66a1b7822bc0bfa397ea49281a3e3fbc766df3fa
 pkgrel=1
 pkgdesc='Official MusicBrainz tagger'
 url='https://picard.musicbrainz.org/'
@@ -16,15 +16,8 @@ optdepends=('chromaprint: fingerprinting'
             'qt5-multimedia: media player toolbar'
             'qt5-translations: full UI translation')
 makedepends=('git' 'python-setuptools')
-source=("git+https://github.com/metabrainz/picard.git#commit=$_commit"
-        'pyqt-5.14.patch::https://github.com/metabrainz/picard/commit/32e05058e0ac5772d7a480287ee428642fbbc9b9.patch')
-sha384sums=('SKIP'
-            'efeb1f33db6b7c4473a26a8fef2b99e651a5f8a125d497017950d26aaf70129c381cd1e1a7e3dced19547d217b33be42')
-
-prepare() {
-	cd "${srcdir}/${pkgname}"
-	patch -Np1 < ../pyqt-5.14.patch
-}
+source=("git+https://github.com/metabrainz/picard.git#commit=$_commit")
+sha384sums=('SKIP')
 
 build() {
 	cd "${srcdir}/${pkgname}"
