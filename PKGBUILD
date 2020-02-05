@@ -8,7 +8,7 @@
 pkgname=libtorrent-rasterbar-1_1
 _pkgname=${pkgname/-1_1}
 pkgver=1.1.14
-pkgrel=1
+pkgrel=2
 pkgdesc="A C++ BitTorrent library that aims to be a good alternative to all the other implementations around (version 1.1)"
 url="https://www.rasterbar.com/products/libtorrent/"
 arch=('x86_64')
