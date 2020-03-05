@@ -172,6 +172,10 @@ build() {
   # refresh the config just in case
   make -s "${compiler[@]}" oldconfig
 
+  # export timestamp earlier before build
+  KBUILD_BUILD_TIMESTAMP="$(date)"
+  export KBUILD_BUILD_TIMESTAMP
+
   msg2 "Building kernel and modules..."
   make -s "${compiler[@]}" bzImage modules
   export image_name=$(make -s "${compiler[@]}" image_name)
