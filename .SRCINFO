@@ -1,6 +1,6 @@
 pkgbase = linux-moesyndrome
 	pkgdesc = MoeSyndrome
-	pkgver = 5.5.8
+	pkgver = 5.5.9
 	pkgrel = 1
 	url = https://github.com/krasCGQ/moesyndrome-kernel
 	arch = x86_64
@@ -9,9 +9,12 @@ pkgbase = linux-moesyndrome
 	makedepends = kmod
 	makedepends = libelf
 	makedepends = git
+	makedepends = clang>=9.0.0
+	makedepends = lld>=9.0.0
+	makedepends = llvm>=9.0.0
 	options = !buildflags
 	options = !strip
-	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel
+	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel#tag=5.5.9-1
 	source = config.compilers
 	source = sign_modules.sh
 	source = x509.genkey

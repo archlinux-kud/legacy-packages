@@ -4,7 +4,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.5.8
+pkgver=5.5.9
 pkgrel=1
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
@@ -14,7 +14,7 @@ makedepends=(bc kmod libelf git)
 options=('!buildflags' '!strip')
 _srcname=${pkgbase/-*}
 source=(
-  "$_srcname::git+$url"
+  "$_srcname::git+$url#tag=$pkgver-$pkgrel"
   config.compilers # configuration for custom compiler paths
   sign_modules.sh  # script to sign out-of-tree kernel modules
   x509.genkey      # preset for generating module signing key
