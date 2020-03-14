@@ -135,10 +135,13 @@ build() {
   msg2 "Regenerating config..."
   make -s "${compiler[@]}" "$(basename $_defconfig)"
 
-  msg2 "Applying compiler sanitization features..."
+  msg2 "Applying compiler-specific features..."
   # INIT_STACK_NONE is common for both compilers
   scripts/config -d INIT_STACK_NONE
   if [ -n "$clang_exist" ]; then
+    # unconditionally apply polly optimizations
+    # (requires compiler to have the feature enabled explicitly)
+    scripts/config -e LLVM_POLLY
     # apply init stack sanitizer
     scripts/config -e INIT_STACK_ALL
   else
@@ -236,6 +239,8 @@ _package-headers() {
     done
     sed -i 's/$(CROSS_COMPILE)ld/ld.lld/' "$builddir"/Makefile
     sed -i 's/$(CROSS_COMPILE)gcc/clang/' "$builddir"/Makefile
+    # until arch clang has polly support, hardcode this
+    sed -i 's/CONFIG_LLVM_POLLY/0/' "$builddir"/Makefile
   fi
 
   # add objtool for external module building and enabled VALIDATION_STACK option
