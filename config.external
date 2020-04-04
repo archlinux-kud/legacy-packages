@@ -1,0 +1,5 @@
+# custom path to compiler (without /bin)
+compiler_path=
+
+# include applesmc into build; demotes optimization to -O2
+with_applesmc=false

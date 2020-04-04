@@ -4,18 +4,19 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.5.13
+pkgver=5.6.2
 pkgrel=1
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
 license=(GPL2)
-makedepends=(bc kmod libelf git)
+makedepends=('bc' 'kmod' 'libelf' 'git'
+             'clang>=9.0.0' 'lld>=9.0.0' 'llvm>=9.0.0')
 options=('!buildflags' '!strip')
 _srcname=${pkgbase/-*}
 source=(
   "$_srcname::git+$url#tag=$pkgver-$pkgrel"
-  config.compilers # configuration for custom compiler paths
+  config.external  # configuration for external properties
   sign_modules.sh  # script to sign out-of-tree kernel modules
   x509.genkey      # preset for generating module signing key
 )
@@ -25,10 +26,8 @@ sha384sums=('SKIP'
             '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da'
 )
 
-# import custom clang and gcc properties
-source config.compilers
-# add clang, lld and llvm 9+ into build dependencies if requested
-$use_clang && makedepends+=( 'clang>=9.0.0' 'lld>=9.0.0' 'llvm>=9.0.0' )
+# import external properties
+source config.external
 
 _defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
 
@@ -75,113 +74,56 @@ prepare() {
 
 build() {
   # mark variables as local
-  local CC cc_temp clang_custom clang_version compiler CROSS_COMPILE gcc_version
+  local clang_custom clang_version
 
-  # custom clang
-  if [ -n "$clang_path" ] && find "$clang_path"/bin/clang &> /dev/null; then
-    export PATH="$clang_path/bin:$PATH"
-    # required for LTO
-    export LD_LIBRARY_PATH="$clang_path/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-    export clang_exist=true
-    clang_custom=true
-
-  # clang installed on system
-  elif $use_clang && which clang &> /dev/null; then
-    export clang_exist=true
-
-  # custom gcc if exist, otherwise fallback
-  elif [ -n "$gcc_path" ]; then
-    export PATH="$gcc_path/bin:$PATH"
-    # required for LTO
-    export LD_LIBRARY_PATH="$gcc_path/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-    # check whether the custom gcc has prefix
-    cc_temp="$(basename "$(find "$gcc_path/bin/*gcc" 2> /dev/null)" | sed -e 's/gcc//')"
-    # bail out if prefix is x86_64-pc-linux-gnu-; it's for host
-    if [ -n "$cc_temp" ] && [ "$cc_temp" != "x86_64-pc-linux-gnu-" ]; then
-      CROSS_COMPILE="$cc_temp"
-    fi
-    msg2 "Custom GCC detected!"
-  fi
-
-  if [ -n "$clang_exist" ]; then
+  # custom compiler detection
+  if [ -n "$compiler_path" ] && find "$compiler_path"/bin/clang &> /dev/null; then
     # clang < 9 doesn't support asm goto
     [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && \
       error "Detected Clang doesn't support asm goto."
 
-    msg2 "${clang_custom:+Custom }Clang detected!"
-    CC=clang
-
-    # custom compiler string
-    # from github.com/nathanchance/scripts, slightly edited
-    clang_version="$($CC --version | head -1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
-    msg2 "Using $clang_version..."
-
-    # go full LLVM!
-    compiler=( "AS=llvm-as" "LD=ld.lld" "CC=$CC" "AR=llvm-ar" "NM=llvm-nm"
-                "STRIP=llvm-strip" "OBJCOPY=llvm-objcopy" "OBJDUMP=llvm-objdump"
-                "OBJSIZE=llvm-objsize" READELF="llvm-readelf" )
-  else
-    # custom compiler string
-    gcc_version="$(${CROSS_COMPILE}gcc --version | head -1 | sed -e 's/(.*.)[[:space:]]//')"
-    msg2 "Using $gcc_version..."
-
-    # set cross compile prefix
-    [ -n "$CROSS_COMPILE" ] && compiler=( "CROSS_COMPILE=$CROSS_COMPILE" )
+    export PATH="$compiler_path/bin:$PATH"
+    # required for LTO
+    export LD_LIBRARY_PATH="$compiler_path/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    clang_custom=true
+    msg2 "Custom compiler detected!"
   fi
+
+  # custom compiler string to be printed out
+  # from github.com/nathanchance/scripts, slightly edited
+  clang_version="$(clang --version | head -1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
+  msg2 "Using $clang_version..."
 
   cd $_srcname
 
   # regenerate config with selected compiler
   msg2 "Regenerating config..."
-  make -s "${compiler[@]}" "$(basename $_defconfig)"
+  make -s "$(basename $_defconfig)"
 
   msg2 "Applying compiler-specific features..."
-  # INIT_STACK_NONE is common for both compilers
-  scripts/config -d INIT_STACK_NONE
-  if [ -n "$clang_exist" ]; then
-    # unconditionally apply polly optimizations
-    # (requires compiler to have the feature enabled explicitly)
-    scripts/config -e LLVM_POLLY
-    # apply init stack sanitizer
-    scripts/config -e INIT_STACK_ALL
-  else
-    scripts/config -e GCC_PLUGINS
-    # apply recommended KSPP settings for GCC plugins
-    # https://kernsec.org/wiki/index.php/Kernel_Self_Protection_Project/Recommended_Settings#GCC_plugins
-    scripts/config -d GCC_PLUGIN_CYC_COMPLEXITY \
-                   -e GCC_PLUGIN_LATENT_ENTROPY \
-                   -e GCC_PLUGIN_RANDSTRUCT \
-                   --enable-after GCC_PLUGIN_RANDSTRUCT GCC_PLUGIN_RANDSTRUCT_PERFORMANCE \
-                   -e GCC_PLUGIN_STRUCTLEAK_BYREF_ALL \
-                   --disable-after GCC_PLUGIN_STRUCTLEAK_BYREF_ALL GCC_PLUGIN_STRUCTLEAK_VERBOSE
-    # apply sanitizer features enabled by Arch Linux
-    scripts/config -e GCC_PLUGIN_STACKLEAK \
-                   --set-val STACKLEAK_TRACK_MIN_SIZE 100 \
-                   --disable-after STACKLEAK_TRACK_MIN_SIZE STACKLEAK_METRICS \
-                   --disable-after STACKLEAK_METRICS STACKLEAK_RUNTIME_DISABLE
-  fi
-
-  # https://git.kernel.org/torvalds/c/0077aaaeeb69b5dcfe15a398e38d71bf28c9505d
-  [ -z "$clang_exist" ] && scripts/config -m REGULATOR_DA903X
+  # Clang 9 is known to have buggy asm goto support
+  # assuming custom compiler provided isn't buggy
+  [ -n "$clang_custom" ] && scripts/config -e JUMP_LABEL \
+                                           -d STATIC_KEYS_SELFTEST
+  # unconditionally apply polly optimizations
+  # (requires compiler to have the feature enabled explicitly)
+  scripts/config -e LLVM_POLLY
   # use -O3 for Clang if without Apple SMC
   # Apple SMC doesn't build on -O3 with Clang due to __bad_udelay trap
   msg2 "Apple SMC included in build: $with_applesmc"
-  if [ -n "$clang_exist" ] && ! $with_applesmc; then
-    scripts/config -d CC_OPTIMIZE_FOR_PERFORMANCE \
-                   -e CC_OPTIMIZE_FOR_PERFORMANCE_O3
-  else
-    scripts/config -m SENSORS_APPLESMC
-  fi
+  $with_applesmc && scripts/config -d CC_OPTIMIZE_FOR_PERFORMANCE_O3 \
+                                   -e CC_OPTIMIZE_FOR_PERFORMANCE \
+                                   -m SENSORS_APPLESMC
+
   # refresh the config just in case
-  make -s "${compiler[@]}" oldconfig
+  make -s oldconfig
 
   # export timestamp earlier before build
   KBUILD_BUILD_TIMESTAMP="$(date)"
   export KBUILD_BUILD_TIMESTAMP
 
   msg2 "Building kernel and modules..."
-  make -s "${compiler[@]}" bzImage modules
-  export image_name=$(make -s "${compiler[@]}" image_name)
+  make -s bzImage modules
 
   # copy signing_key.x509 to PKGBUILD location
   cp -f certs/signing_key.x509 ../../$pkgbase.x509
@@ -192,7 +134,7 @@ _package() {
   depends=(coreutils kmod initramfs)
   optdepends=('crda: to set the correct wireless channels of your country'
               'linux-firmware: firmware images needed for some devices')
-  provides=('WIREGUARD-MODULE')
+  provides=('VIRTUALBOX-GUEST-MODULES' 'WIREGUARD-MODULE')
 
   cd $_srcname
 
@@ -202,7 +144,7 @@ _package() {
   msg2 "Installing boot image..."
   # systemd expects to find the kernel here to allow hibernation
   # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
-  install -Dm644 "$image_name" "$modulesdir/vmlinuz"
+  install -Dm644 "$(make -s image_name)" "$modulesdir/vmlinuz"
 
   # Used by mkinitcpio to name the kernel
   echo "$pkgbase" | install -Dm644 /dev/stdin "$modulesdir/pkgbase"
@@ -212,14 +154,11 @@ _package() {
 
   # remove build and source links
   rm "$modulesdir"/{source,build}
-
-  msg2 "Fixing permissions..."
-  chmod -Rc u=rwX,go=rX "$pkgdir"
 }
 
 _package-headers() {
   pkgdesc="Header and scripts for building modules for $pkgdesc kernel"
-  [ -n "$clang_exist" ] && depends=( "clang>=9.0.0" "lld>=9.0.0" "llvm>=9.0.0" )
+  depends=('clang>=9.0.0' 'lld>=9.0.0' 'llvm>=9.0.0')
 
   cd $_srcname
 
@@ -231,17 +170,6 @@ _package-headers() {
   install -Dt "$builddir/kernel" -m644 kernel/Makefile
   install -Dt "$builddir/arch/x86" -m644 arch/x86/Makefile
   cp -t "$builddir" -a scripts
-
-  # conditionally patch Makefile to build external modules with Clang
-  if [ -n "$clang_exist" ]; then
-    for i in as ar nm strip objcopy objdump size; do
-      sed -i s/'$(CROSS_COMPILE)'$i/llvm-$i/ "$builddir"/Makefile
-    done
-    sed -i 's/$(CROSS_COMPILE)ld/ld.lld/' "$builddir"/Makefile
-    sed -i 's/$(CROSS_COMPILE)gcc/clang/' "$builddir"/Makefile
-    # until arch clang has polly support, hardcode this
-    sed -i 's/CONFIG_LLVM_POLLY/0/' "$builddir"/Makefile
-  fi
 
   # add objtool for external module building and enabled VALIDATION_STACK option
   install -Dt "$builddir/tools/objtool" tools/objtool/objtool
@@ -264,6 +192,10 @@ _package-headers() {
   install -Dt "$builddir/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
   install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
   install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
+
+  # until arch clang has polly support, hardcode this
+  sed -i '/LLVM_POLLY/d' "$builddir"/include/config/auto.conf
+  sed -i 's/LLVM_POLLY 1/LLVM_POLLY 0/' "$builddir"/include/generated/autoconf.h
 
   msg2 "Installing KConfig files..."
   find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
@@ -302,9 +234,6 @@ _package-headers() {
   msg2 "Adding symlink..."
   mkdir -p "$pkgdir/usr/src"
   ln -sr "$builddir" "$pkgdir/usr/src/$pkgbase"
-
-  msg2 "Fixing permissions..."
-  chmod -Rc u=rwX,go=rX "$pkgdir"
 }
 
 pkgname=("$pkgbase" "$pkgbase-headers")

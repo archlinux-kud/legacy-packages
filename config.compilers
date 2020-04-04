@@ -1,9 +1,0 @@
-# use clang and llvm; default is true and will be overridden by clang_path below
-use_clang=true
-
-# custom path to clang/gcc (without /bin); clang takes precedence
-clang_path=
-gcc_path=
-
-# include applesmc into clang build; demotes optimization to -O2
-with_applesmc=false
