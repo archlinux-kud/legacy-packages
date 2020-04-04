@@ -14,10 +14,14 @@ pkgbase = linux-moesyndrome
 	makedepends = llvm>=9.0.0
 	options = !buildflags
 	options = !strip
-	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel#tag=5.6.2-1
+	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel?signed#tag=5.6.2-1
 	source = config.external
 	source = sign_modules.sh
 	source = x509.genkey
+	validpgpkeys = ABAF11C65A2970B130ABE3C479BE3E4300411886
+	validpgpkeys = 647F28654894E3BD457199BE38DBBDC86092693E
+	validpgpkeys = 73EC669FD2695442A3568EDA25A6FD691FA2918B
+	validpgpkeys = 4D4209B115B5643C3E753A9317E9D95B6620AF67
 	sha384sums = SKIP
 	sha384sums = SKIP
 	sha384sums = ff8a65f1b504d2754152ec8f69e497607c463da311001d040b5453e02d6f6f2312678ff5edc100481839e7ac2d74c4d3
