@@ -103,8 +103,8 @@ build() {
   msg2 "Applying compiler-specific features..."
   # Clang 9 is known to have buggy asm goto support
   # assuming custom compiler provided isn't buggy
-  [ -n "$clang_custom" ] && scripts/config -e JUMP_LABEL \
-                                           -d STATIC_KEYS_SELFTEST
+  #[ -n "$clang_custom" ] && scripts/config -e JUMP_LABEL \
+  #                                         -d STATIC_KEYS_SELFTEST
   # unconditionally apply polly optimizations
   # (requires compiler to have the feature enabled explicitly)
   scripts/config -e LLVM_POLLY
