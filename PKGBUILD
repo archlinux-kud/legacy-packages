@@ -5,7 +5,7 @@
 
 pkgbase=linux-moesyndrome
 pkgver=5.6.2
-pkgrel=1
+pkgrel=2
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
@@ -199,7 +199,12 @@ _package-headers() {
   install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
   install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
 
-  # until arch clang has polly support, hardcode this
+  # asm_inline is broken on Clang 9
+  for i in config/auto.conf generated/autoconf.h; do
+    sed -i '/ASM_INLINE/d' "$builddir"/include/$i
+  done
+
+  # until arch Clang has polly support, hardcode this
   sed -i '/LLVM_POLLY/d' "$builddir"/include/config/auto.conf
   sed -i 's/LLVM_POLLY 1/LLVM_POLLY 0/' "$builddir"/include/generated/autoconf.h
 
