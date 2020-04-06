@@ -5,7 +5,7 @@
 
 pkgbase=linux-moesyndrome
 pkgver=5.6.2
-pkgrel=2
+pkgrel=3
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
@@ -16,20 +16,15 @@ options=('!buildflags' '!strip')
 _srcname=${pkgbase/-*}
 source=(
   "$_srcname::git+$url?signed#tag=$pkgver-$pkgrel"
-  config.external  # configuration for external properties
-  sign_modules.sh  # script to sign out-of-tree kernel modules
-  x509.genkey      # preset for generating module signing key
+  x509.genkey # preset for generating module signing key
 )
 validpgpkeys=(
-  'ABAF11C65A2970B130ABE3C479BE3E4300411886' # Linus Torvalds
-  '647F28654894E3BD457199BE38DBBDC86092693E' # Greg Kroah-Hartman
-  '73EC669FD2695442A3568EDA25A6FD691FA2918B' # Albert I (krasCGQ) #1
-  '4D4209B115B5643C3E753A9317E9D95B6620AF67' # Albert I (krasCGQ) #2
+  '73EC669FD2695442A3568EDA25A6FD691FA2918B' # #1
+  '4D4209B115B5643C3E753A9317E9D95B6620AF67' # #2
 )
-sha384sums=('SKIP'
-            'SKIP' # we modify this, just don't
-            'ff8a65f1b504d2754152ec8f69e497607c463da311001d040b5453e02d6f6f2312678ff5edc100481839e7ac2d74c4d3'
-            '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da'
+sha384sums=(
+  'SKIP'
+  '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da'
 )
 
 # import external properties
