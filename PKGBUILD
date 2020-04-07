@@ -26,11 +26,12 @@ sha384sums=(
   'SKIP'
   '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da'
 )
+_defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
 
 # import external properties
 source config.external
-
-_defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
+# determines how package will be treated
+with_r8168=$(test -n "$(grep R8168 $_defconfig)" && echo true || echo false)
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=${pkgbase#linux-}
@@ -109,6 +110,9 @@ build() {
   # unconditionally apply polly optimizations
   # (requires compiler to have the feature enabled explicitly)
   scripts/config -e LLVM_POLLY
+
+  # whether configuration ships r8168 or not
+  msg2 "Realtek RTL8168 included in build: $with_r8168"
   # use -O3 for Clang if without Apple SMC
   # Apple SMC doesn't build on -O3 with Clang due to __bad_udelay trap
   msg2 "Apple SMC included in build: $with_applesmc"
@@ -136,6 +140,8 @@ _package() {
   optdepends=('crda: to set the correct wireless channels of your country'
               'linux-firmware: firmware images needed for some devices')
   provides=('VIRTUALBOX-GUEST-MODULES' 'WIREGUARD-MODULE')
+  # make it conflict with dkms version
+  $with_r8168 && conflicts+=(r8168-dkms)
 
   cd $_srcname
 
