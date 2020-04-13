@@ -1,12 +1,13 @@
-# Maintainer: Bet4 <0xbet4@gmail.com>
+# Maintainer: Albert I <kras@raphielgang.org>
 
 # Special thanks to the following people that provided the
 # original PKGBUILD from hyper (https://aur.archlinux.org/packages/hyper/)
-# Contributer: Frederic Bezies <fredbezies at gmail dot com>
+# Contributor: Frederic Bezies <fredbezies at gmail dot com>
 # Contributor: ahrs <Forward dot to at hotmail dot co dot uk>
 # Contributor: Aaron Abbott <aabmass@gmail.com>
-# Contributer: fleischie
-# Contributer: auk
+# Contributor: fleischie
+# Contributor: auk
+# Contributor: Bet4 <0xbet4@gmail.com>
 
 pkgname=hyper
 _pkgver=3.1.0-canary.4
@@ -63,15 +64,15 @@ build() {
 package() {
     cd "$pkgname"
 
-    _appdir="/usr/lib/$pkgname"
-    _libinstall="$pkgdir$_appdir"
+    install -dm755 "$pkgdir/usr/lib/$pkgname"
+    cp -r dist/linux-unpacked/* "$pkgdir/usr/lib/$pkgname"
 
-    mkdir -p "$pkgdir/usr/bin" "$_libinstall"
-    cp -R dist/linux-unpacked/* "$_libinstall"
+    # fix chrome-sandbox permissions
+    chmod 4755 "$pkgdir/usr/lib/$pkgname/chrome-sandbox"
 
+    install -dm755 "$pkgdir/usr/bin"
     # link the binary to /usr/bin
-    cd $pkgdir/usr/bin
-    ln -s "../lib/$pkgname/resources/bin/hyper" hyper
+    ln -s "../lib/$pkgname/resources/bin/hyper" "$pkgdir/usr/bin/hyper"
 
     install -Dm644 "$srcdir/Hyper.desktop" "$pkgdir/usr/share/applications/Hyper.desktop"
     install -Dm644 "$srcdir/Hyper-Mark-120@3x.png" "$pkgdir/usr/share/pixmaps/hyper.png"
