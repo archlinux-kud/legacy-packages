@@ -1,52 +1,46 @@
-# Maintainer: Aaron Abbott <aabmass@gmail.com>
+# Maintainer: Bet4 <0xbet4@gmail.com>
+
+# Special thanks to the following people that provided the
+# original PKGBUILD from hyper (https://aur.archlinux.org/packages/hyper/)
+# Contributer: Frederic Bezies <fredbezies at gmail dot com>
+# Contributor: ahrs <Forward dot to at hotmail dot co dot uk>
+# Contributor: Aaron Abbott <aabmass@gmail.com>
 # Contributer: fleischie
 # Contributer: auk
-# Contributer: blind
 
 pkgname=hyper
-pkgver=3.0.2
+_pkgver=3.1.0-canary.4
+pkgver=${_pkgver/-/.}
 pkgrel=1
-epoch=
 pkgdesc="A terminal built on web technologies"
 arch=('any')
 url="https://hyper.is/"
 license=('MIT')
-groups=()
-depends=('nodejs' 'electron' 'gconf')
-makedepends=('npm' 'yarn' 'python2')
-checkdepends=()
-optdepends=()
-provides=()
-
+makedepends=('git' 'npm' 'yarn' 'python')
 conflicts=('hyperterm')
 replaces=('hyperterm')
-backup=()
-options=()
-install=
-changelog=
-
-_pkgver_project=${pkgver/\.canary/-canary}
-
 source=(
-    "https://github.com/zeit/$pkgname/archive/${_pkgver_project}.tar.gz"
-    "https://raw.githubusercontent.com/zeit/art/master/hyper/mark/Hyper-Mark-120@3x.png"
-    "Hyper.desktop"
+    "git+https://github.com/zeit/$pkgname.git#tag=$_pkgver"
+    'https://raw.githubusercontent.com/zeit/art/master/hyper/mark/Hyper-Mark-120@3x.png'
+    'Hyper.desktop'
+    'disable-auto-update.diff'
 )
-noextract=()
-md5sums=('065b64a0a8846b2fb04755a66c418d5a'
-         'f3481e14cba331160339b3b5ab78872b'
-         '74cb7ba38e37332aa8300e4b6ba9c61c')
-validpgpkeys=()
+sha256sums=('SKIP'
+         'a928049af63f49dd270a26c7099dccbe038124e4195507919f2d062e5cd2ecaa'
+         'ae29bd930c822c3144817a0e2fe2e2a8253fde90d31b0e19ad7880cd35609ebf'
+         '20244b8ca2b253be04f6f8a009d9f4c6b78bc391b40445eff7c6f762b145a0ce')
 
 prepare() {
-    cd "$pkgname-$_pkgver_project"
+    cd "$pkgname"
+
+    patch -p1 < ../disable-auto-update.diff
 
     # yarn is a build-dep according to the README
     yarn install
 }
 
 build() {
-    cd "$pkgname-$_pkgver_project"
+    cd "$pkgname"
 
     # This build command is the same as the one defined in package.json via
     # npm run dist except that it doesn't build for debian, rpm, etc. and
@@ -56,34 +50,28 @@ build() {
     oldpath=$PATH
     PATH=$(pwd)/node_modules/.bin:$PATH
 
-    npm run build &&
-    cross-env BABEL_ENV=production babel \
-        --out-file app/renderer/bundle.js \
+    yarn run build &&
+    cross-env BABEL_ENV=production babel target/renderer/bundle.js \
+        --out-file target/renderer/bundle.js \
         --no-comments \
-        --minified app/renderer/bundle.js &&
-    command build --linux --dir             # need to use command because the
-                                            # function name is build
+        --minified &&
+    electron-builder --linux --dir
 
     PATH=$oldpath
 }
 
 package() {
-    cd "$pkgname-$_pkgver_project"
+    cd "$pkgname"
 
     _appdir="/usr/lib/$pkgname"
-    _libinstall="${pkgdir}${_appdir}"
+    _libinstall="$pkgdir$_appdir"
 
     mkdir -p "$pkgdir/usr/bin" "$_libinstall"
     cp -R dist/linux-unpacked/* "$_libinstall"
 
     # link the binary to /usr/bin
     cd $pkgdir/usr/bin
-    ln -s "../lib/$pkgname/hyper" hyper
-
-    # # TODO: remove included electron libs and use the system ones by symlink
-    # cd "$_libinstall"
-    # rm libnode.so libffmpeg.so
-    # ln -s /usr/share/electron/lib{node,ffmpeg}.so .
+    ln -s "../lib/$pkgname/resources/bin/hyper" hyper
 
     install -Dm644 "$srcdir/Hyper.desktop" "$pkgdir/usr/share/applications/Hyper.desktop"
     install -Dm644 "$srcdir/Hyper-Mark-120@3x.png" "$pkgdir/usr/share/pixmaps/hyper.png"
