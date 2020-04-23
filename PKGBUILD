@@ -4,8 +4,8 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.6.4
-pkgrel=1
+pkgver=5.6.6
+pkgrel=2
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
