@@ -4,7 +4,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.6.7
+pkgver=5.6.11
 pkgrel=1
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
@@ -18,14 +18,10 @@ source=(
   "$_srcname::git+$url?signed#tag=$pkgver-$pkgrel"
   x509.genkey # preset for generating module signing key
 )
-validpgpkeys=(
-  '73EC669FD2695442A3568EDA25A6FD691FA2918B' # #1
-  '4D4209B115B5643C3E753A9317E9D95B6620AF67' # #2
-)
-sha384sums=(
-  'SKIP'
-  '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da'
-)
+validpgpkeys=('73EC669FD2695442A3568EDA25A6FD691FA2918B'
+              '4D4209B115B5643C3E753A9317E9D95B6620AF67')
+sha384sums=('SKIP'
+            '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da')
 _defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
 
 # import external properties
