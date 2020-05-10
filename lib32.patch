@@ -1,0 +1,10 @@
+--- a/cmake/modules/FindFFmpeg.cmake	2020-05-10 16:36:51.418934801 +0800
++++ b/cmake/modules/FindFFmpeg.cmake	2020-05-10 16:37:01.483977011 +0800
+@@ -50,6 +50,7 @@
+     FIND_LIBRARY(FFMPEG_${varname}_LIBRARIES
+         NAMES ${shortname}
+         PATHS
++        /usr/lib32
+         ${FFMPEG_ROOT}/lib
+         $ENV{FFMPEG_DIR}/lib
+         ~/Library/Frameworks
