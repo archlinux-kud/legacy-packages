@@ -16,7 +16,9 @@ pkgbase = megacmd-dynamic
 	depends = sqlite
 	depends = zlib
 	optdepends = bash-completion: for completion script
-	provides = mega-sdk
+	provides = megacmd=1.2.0
+	provides = mega-sdk=3.6.9
+	conflicts = megacmd
 	conflicts = mega-sdk
 	source = git+https://github.com/meganz/MEGAcmd.git#tag=1.2.0_Linux
 	source = git+https://github.com/meganz/sdk.git#commit=de4ff325da7734655c9edd5f37b412520d88e3b2
