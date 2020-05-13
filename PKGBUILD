@@ -53,8 +53,10 @@ build() {
 
 package() {
     make -C MEGAcmd DESTDIR="$pkgdir" install
-    install -Dm644 MEGAcmd/src/client/megacmd_completion.sh "$pkgdir"/etc/bash_completion.d/megacmd_completion.sh
-    install -m644 MEGAcmd/sdk/src/libmega.la "$pkgdir"/usr/lib/libmega.la
-    install -Dm644 MEGAcmd/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+
+    # the Makefile installs bash completion scripts at wrong path
+    mv "$pkgdir"/{usr/,}etc
+
     install -Dm644 100-megacmd-inotify-limit.conf "$pkgdir"/etc/sysctl.d/100-megacmd-inotify-limit.conf
+    install -Dm644 MEGAcmd/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 }
