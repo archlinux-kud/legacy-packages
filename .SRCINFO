@@ -1,0 +1,29 @@
+pkgbase = megacmd-dynamic
+	pkgdesc = MEGA Command Line Interactive and Scriptable Application (dynamic version)
+	pkgver = 1.2.0
+	pkgrel = 1
+	url = https://mega.nz/cmd
+	arch = x86_64
+	license = BSD-2-Clause
+	license = GPL3
+	depends = c-ares
+	depends = crypto++
+	depends = ffmpeg
+	depends = freeimage
+	depends = libsodium
+	depends = libuv
+	depends = mediainfo
+	depends = sqlite
+	depends = zlib
+	optdepends = bash-completion: for completion script
+	provides = mega-sdk
+	conflicts = mega-sdk
+	source = git+https://github.com/meganz/MEGAcmd.git#tag=1.2.0_Linux
+	source = git+https://github.com/meganz/sdk.git#commit=de4ff325da7734655c9edd5f37b412520d88e3b2
+	source = 100-megacmd-inotify-limit.conf
+	sha384sums = SKIP
+	sha384sums = SKIP
+	sha384sums = 2deaecee10d8b0d350cf3ee57f0aafdb2096fbff21b364596f2f57dfe0f82eff85c77510d7a1569f7b9d85116160c360
+
+pkgname = megacmd-dynamic
+
