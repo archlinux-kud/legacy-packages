@@ -1,0 +1,492 @@
+From 61fd6c09581cf4d3ff795861d8e7398f5d802697 Mon Sep 17 00:00:00 2001
+From: Albert I <kras@raphielgang.org>
+Date: Sun, 24 May 2020 00:51:05 +0800
+Subject: [PATCH 1/3] Init Iridium Browser 2020.04.81 (based on 81.4044.92)
+
+This is essentially a rollback since new version of the browser is released
+only once a month, but we need specific fixes due to updated version of Arch
+packages.
+
+Signed-off-by: Albert I <kras@raphielgang.org>
+---
+ .SRCINFO | 77 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ PKGBUILD | 21 +++++++++-------
+ 2 files changed, 89 insertions(+), 9 deletions(-)
+ create mode 100644 .SRCINFO
+
+diff --git a/.SRCINFO b/.SRCINFO
+new file mode 100644
+index 0000000..d76c48d
+--- /dev/null
++++ b/.SRCINFO
+@@ -0,0 +1,77 @@
++pkgbase = iridium
++	pkgdesc = An attempt at creating a safer, faster, and more stable browser
++	pkgver = 2020.04.81
++	pkgrel = 2
++	url = https://iridiumbrowser.de
++	install = chromium.install
++	arch = x86_64
++	license = BSD
++	makedepends = python
++	makedepends = python2
++	makedepends = gperf
++	makedepends = yasm
++	makedepends = mesa
++	makedepends = ninja
++	makedepends = nodejs
++	makedepends = git
++	makedepends = libpipewire02
++	makedepends = clang
++	makedepends = lld
++	makedepends = gn
++	makedepends = java-runtime-headless
++	depends = gtk3
++	depends = nss
++	depends = alsa-lib
++	depends = xdg-utils
++	depends = libxss
++	depends = libcups
++	depends = libgcrypt
++	depends = ttf-liberation
++	depends = systemd
++	depends = dbus
++	depends = libpulse
++	depends = pciutils
++	depends = json-glib
++	depends = desktop-file-utils
++	depends = hicolor-icon-theme
++	depends = icu
++	depends = libxml2
++	depends = fontconfig
++	depends = harfbuzz
++	depends = libvpx
++	depends = libjpeg
++	depends = re2
++	depends = snappy
++	depends = ffmpeg
++	depends = flac
++	depends = libwebp
++	depends = minizip
++	depends = libxslt
++	depends = freetype2
++	depends = opus
++	optdepends = pepper-flash: support for Flash content
++	optdepends = libpipewire02: WebRTC desktop sharing under Wayland
++	optdepends = kdialog: needed for file dialogs in KDE
++	optdepends = org.freedesktop.secrets: password storage backend on GNOME / Xfce
++	optdepends = kwallet: for storing passwords in KWallet on KDE desktops
++	provides = chromium
++	conflicts = chromium
++	source = https://dl.iridiumbrowser.de/source/iridium-browser-2020.04.81.tar.xz
++	source = chromium-launcher-6.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v6.tar.gz
++	source = rename-Relayout-in-DesktopWindowTreeHostPlatform.patch
++	source = rebuild-Linux-frame-button-cache-when-activation.patch
++	source = clean-up-a-call-to-set_utf8.patch
++	source = icu67.patch
++	source = chromium-widevine.patch
++	source = chromium-skia-harmony.patch
++	sha256sums = b9283170001db5f93d9edec61d1abfd2ad66918c266b2cf88cb448470811ab91
++	sha256sums = 04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1
++	sha256sums = ae3bf107834bd8eda9a3ec7899fe35fde62e6111062e5def7d24bf49b53db3db
++	sha256sums = 46f7fc9768730c460b27681ccf3dc2685c7e1fd22d70d3a82d9e57e3389bb014
++	sha256sums = 58c41713eb6fb33b6eef120f4324fa1fb8123b1fbc4ecbe5662f1f9779b9b6af
++	sha256sums = 5315977307e69d20b3e856d3f8724835b08e02085a4444a5c5cefea83fd7d006
++	sha256sums = 709e2fddba3c1f2ed4deb3a239fc0479bfa50c46e054e7f32db4fb1365fed070
++	sha256sums = 771292942c0901092a402cc60ee883877a99fb804cb54d568c8c6c94565a48e1
++
++pkgname = iridium
++
+diff --git a/PKGBUILD b/PKGBUILD
+index fff39bf..8dc4c84 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -3,13 +3,13 @@
+ # Contributor: Jan "heftig" Steffens <jan.steffens@gmail.com>
+ # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+ 
+-pkgname=chromium
+-pkgver=81.0.4044.138
++pkgname=iridium
++pkgver=2020.04.81
+ pkgrel=2
+ _launcher_ver=6
+-pkgdesc="A web browser built for speed, simplicity, and security"
++pkgdesc="An attempt at creating a safer, faster, and more stable browser"
+ arch=('x86_64')
+-url="https://www.chromium.org/Home"
++url="https://iridiumbrowser.de"
+ license=('BSD')
+ depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
+          'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils' 'json-glib'
+@@ -21,8 +21,11 @@ optdepends=('pepper-flash: support for Flash content'
+             'kdialog: needed for file dialogs in KDE'
+             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
+             'kwallet: for storing passwords in KWallet on KDE desktops')
++provides=(chromium)
++conflicts=(chromium)
+ install=chromium.install
+-source=(https://commondatastorage.googleapis.com/chromium-browser-official/$pkgname-$pkgver.tar.xz
++_srcname=$pkgname-browser-$pkgver
++source=(https://dl.iridiumbrowser.de/source/$_srcname.tar.xz
+         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
+         rename-Relayout-in-DesktopWindowTreeHostPlatform.patch
+         rebuild-Linux-frame-button-cache-when-activation.patch
+@@ -30,7 +33,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/$pkgn
+         icu67.patch
+         chromium-widevine.patch
+         chromium-skia-harmony.patch)
+-sha256sums=('f478f28b8111cb70231df4c36e754d812ad7a94b7c844e9d0515345a71fd77a6'
++sha256sums=('b9283170001db5f93d9edec61d1abfd2ad66918c266b2cf88cb448470811ab91'
+             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
+             'ae3bf107834bd8eda9a3ec7899fe35fde62e6111062e5def7d24bf49b53db3db'
+             '46f7fc9768730c460b27681ccf3dc2685c7e1fd22d70d3a82d9e57e3389bb014'
+@@ -74,7 +77,7 @@ _google_default_client_id=413772536636.apps.googleusercontent.com
+ _google_default_client_secret=0ZChLK6AxeA3Isu96MkwqDR4
+ 
+ prepare() {
+-  cd "$srcdir/$pkgname-$pkgver"
++  cd "$srcdir/$_srcname"
+ 
+   # Allow building against system libraries in official builds
+   sed -i 's/OFFICIAL_BUILD/GOOGLE_CHROME_BUILD/' \
+@@ -129,7 +132,7 @@ prepare() {
+ build() {
+   make -C chromium-launcher-$_launcher_ver
+ 
+-  cd "$srcdir/$pkgname-$pkgver"
++  cd "$srcdir/$_srcname"
+ 
+   if check_buildoption ccache y; then
+     # Avoid falling back to preprocessor mode when sources contain time macros
+@@ -192,7 +195,7 @@ package() {
+   install -Dm644 LICENSE \
+     "$pkgdir/usr/share/licenses/chromium/LICENSE.launcher"
+ 
+-  cd "$srcdir/$pkgname-$pkgver"
++  cd "$srcdir/$_srcname"
+ 
+   install -D out/Release/chrome "$pkgdir/usr/lib/chromium/chromium"
+   install -Dm4755 out/Release/chrome_sandbox "$pkgdir/usr/lib/chromium/chrome-sandbox"
+-- 
+2.26.2
+
+
+From 21435c6d9d30dd20a4cd424307db09391dd8c811 Mon Sep 17 00:00:00 2001
+From: Albert I <kras@raphielgang.org>
+Date: Sun, 24 May 2020 20:41:49 +0800
+Subject: [PATCH 2/3] Add GCC 10 patches
+
+Signed-off-by: Albert I <kras@raphielgang.org>
+---
+ .SRCINFO              |   6 ++
+ PKGBUILD              |  11 ++++
+ angle-gcc-10.patch    |  26 +++++++++
+ chromium-gcc-10.patch | 127 ++++++++++++++++++++++++++++++++++++++++++
+ perfetto-gcc-10.patch |  28 ++++++++++
+ 5 files changed, 198 insertions(+)
+ create mode 100644 angle-gcc-10.patch
+ create mode 100644 chromium-gcc-10.patch
+ create mode 100644 perfetto-gcc-10.patch
+
+diff --git a/.SRCINFO b/.SRCINFO
+index d76c48d..97dde3c 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -63,6 +63,9 @@ pkgbase = iridium
+ 	source = clean-up-a-call-to-set_utf8.patch
+ 	source = icu67.patch
+ 	source = chromium-widevine.patch
++	source = chromium-gcc-10.patch
++	source = angle-gcc-10.patch
++	source = perfetto-gcc-10.patch
+ 	source = chromium-skia-harmony.patch
+ 	sha256sums = b9283170001db5f93d9edec61d1abfd2ad66918c266b2cf88cb448470811ab91
+ 	sha256sums = 04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1
+@@ -71,6 +74,9 @@ pkgbase = iridium
+ 	sha256sums = 58c41713eb6fb33b6eef120f4324fa1fb8123b1fbc4ecbe5662f1f9779b9b6af
+ 	sha256sums = 5315977307e69d20b3e856d3f8724835b08e02085a4444a5c5cefea83fd7d006
+ 	sha256sums = 709e2fddba3c1f2ed4deb3a239fc0479bfa50c46e054e7f32db4fb1365fed070
++	sha256sums = 29877ae86b0ca7382c1b241d4bab68fee10ee84d5b475bbb745354f7246a6cf4
++	sha256sums = 1aae66ee36f21d82a7fc97080c6c1ec1c156fa3b85b588cd024a959cc2813463
++	sha256sums = 1926cb9135d7da57b25c023b32b09368c43dd7af732dfe5a645278d738eb9cb2
+ 	sha256sums = 771292942c0901092a402cc60ee883877a99fb804cb54d568c8c6c94565a48e1
+ 
+ pkgname = iridium
+diff --git a/PKGBUILD b/PKGBUILD
+index 8dc4c84..0f5d8ae 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -32,6 +32,9 @@ source=(https://dl.iridiumbrowser.de/source/$_srcname.tar.xz
+         clean-up-a-call-to-set_utf8.patch
+         icu67.patch
+         chromium-widevine.patch
++        chromium-gcc-10.patch
++        angle-gcc-10.patch
++        perfetto-gcc-10.patch
+         chromium-skia-harmony.patch)
+ sha256sums=('b9283170001db5f93d9edec61d1abfd2ad66918c266b2cf88cb448470811ab91'
+             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
+@@ -40,6 +43,9 @@ sha256sums=('b9283170001db5f93d9edec61d1abfd2ad66918c266b2cf88cb448470811ab91'
+             '58c41713eb6fb33b6eef120f4324fa1fb8123b1fbc4ecbe5662f1f9779b9b6af'
+             '5315977307e69d20b3e856d3f8724835b08e02085a4444a5c5cefea83fd7d006'
+             '709e2fddba3c1f2ed4deb3a239fc0479bfa50c46e054e7f32db4fb1365fed070'
++            '29877ae86b0ca7382c1b241d4bab68fee10ee84d5b475bbb745354f7246a6cf4'
++            '1aae66ee36f21d82a7fc97080c6c1ec1c156fa3b85b588cd024a959cc2813463'
++            '1926cb9135d7da57b25c023b32b09368c43dd7af732dfe5a645278d738eb9cb2'
+             '771292942c0901092a402cc60ee883877a99fb804cb54d568c8c6c94565a48e1')
+ 
+ # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
+@@ -103,6 +109,11 @@ prepare() {
+   # M79 is supposed to download it as a component but it doesn't seem to work
+   patch -Np1 -i ../chromium-widevine.patch
+ 
++  # GCC 10 fixes
++  patch -Np1 -i ../chromium-gcc-10.patch
++  patch -Np1 -i ../angle-gcc-10.patch
++  patch -Np1 -i ../perfetto-gcc-10.patch
++
+   # https://crbug.com/skia/6663#c10
+   patch -Np0 -i ../chromium-skia-harmony.patch
+ 
+diff --git a/angle-gcc-10.patch b/angle-gcc-10.patch
+new file mode 100644
+index 0000000..1f76836
+--- /dev/null
++++ b/angle-gcc-10.patch
+@@ -0,0 +1,26 @@
++From 9a481b6ec835cfd0d4014c0b11f03c27a209f305 Mon Sep 17 00:00:00 2001
++From: Pierre-Marc Berube <pmberube@google.com>
++Date: Tue, 18 Feb 2020 19:21:34 -0500
++Subject: [PATCH] Add missing #include to fix build with GCC 10.
++
++Bug: angleproject:4389
++Change-Id: I4a2f04a12a059924871f5d54f137c67670747ebd
++Reviewed-on: https://chromium-review.googlesource.com/c/angle/angle/+/2063042
++Reviewed-by: Jamie Madill <jmadill@chromium.org>
++Commit-Queue: Jamie Madill <jmadill@chromium.org>
++---
++ third_party/angle/include/platform/Platform.h | 1 +
++ 1 file changed, 1 insertion(+)
++
++diff --git a/third_party/angle/include/platform/Platform.h b/third_party/angle/include/platform/Platform.h
++index b603ff9bad..1316740085 100644
++--- a/third_party/angle/include/platform/Platform.h
+++++ b/third_party/angle/include/platform/Platform.h
++@@ -10,6 +10,7 @@
++ #define ANGLE_PLATFORM_H
++ 
++ #include <stdint.h>
+++#include <stdlib.h>
++ #include <array>
++ 
++ #define EGL_PLATFORM_ANGLE_PLATFORM_METHODS_ANGLEX 0x3482
+diff --git a/chromium-gcc-10.patch b/chromium-gcc-10.patch
+new file mode 100644
+index 0000000..cfc0c1b
+--- /dev/null
++++ b/chromium-gcc-10.patch
+@@ -0,0 +1,127 @@
++From c6197f05ef6d19d072847ae628c4de65799743e1 Mon Sep 17 00:00:00 2001
++From: Chisoon Jeong <chisoon.jeong@lge.com>
++Date: Thu, 26 Mar 2020 21:53:05 +0000
++Subject: [PATCH 1/2] Add '#include <string>' in trace_event_memory_overhead.h for
++ clarity.
++
++Depending on compilation environment, trace_event_memory_overhead.h|cc
++is not compilable, owing to missing <string> header.
++
++Change-Id: I8e52e7bae33e68d5dc3cc08b1d38fcd3c87303a6
++Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2117932
++Reviewed-by: dsinclair <dsinclair@chromium.org>
++Reviewed-by: Scott Violet <sky@chromium.org>
++Reviewed-by: Kentaro Hara <haraken@chromium.org>
++Commit-Queue: Nico Weber <thakis@chromium.org>
++Cr-Commit-Position: refs/heads/master@{#753781}
++---
++ base/trace_event/trace_event_memory_overhead.h | 1 +
++ 1 file changed, 1 insertion(+)
++
++diff --git a/base/trace_event/trace_event_memory_overhead.h b/base/trace_event/trace_event_memory_overhead.h
++index 69468d4640982..e10a3eca667d8 100644
++--- a/base/trace_event/trace_event_memory_overhead.h
+++++ b/base/trace_event/trace_event_memory_overhead.h
++@@ -8,6 +8,7 @@
++ #include <stddef.h>
++ #include <stdint.h>
++ 
+++#include <string>
++ #include <unordered_map>
++ 
++ #include "base/base_export.h"
++From 17902f2263622eb21bd8adddf078355dbe7654a5 Mon Sep 17 00:00:00 2001
++From: Chisoon Jeong <chisoon.jeong@lge.com>
++Date: Tue, 31 Mar 2020 18:02:12 +0000
++Subject: [PATCH 2/2] Add #include <stddef.h> for clarity and supporting gcc
++ compilation
++
++Depending on compilation environments of gcc, supported_cdm_versions.h|cc
++is not compiled. To fix this issue add '#include <stddef.h>' in
++supported_cdm_versions.h
++
++Change-Id: I0f56cb4f69e1fb3867a1c168a28431661341784b
++Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2117912
++Reviewed-by: Nico Weber <thakis@chromium.org>
++Reviewed-by: Scott Violet <sky@chromium.org>
++Reviewed-by: John Rummell <jrummell@chromium.org>
++Commit-Queue: Nico Weber <thakis@chromium.org>
++Cr-Commit-Position: refs/heads/master@{#755016}
++---
++ media/cdm/supported_cdm_versions.h | 2 ++
++ 1 file changed, 2 insertions(+)
++
++diff --git a/media/cdm/supported_cdm_versions.h b/media/cdm/supported_cdm_versions.h
++index dbe59ba5ea7f7..25bb6ed3f3304 100644
++--- a/media/cdm/supported_cdm_versions.h
+++++ b/media/cdm/supported_cdm_versions.h
++@@ -5,6 +5,8 @@
++ #ifndef MEDIA_CDM_SUPPORTED_CDM_VERSIONS_H_
++ #define MEDIA_CDM_SUPPORTED_CDM_VERSIONS_H_
++ 
+++#include <stddef.h>
+++
++ #include <array>
++ 
++ #include "media/base/media_export.h"
++From e473f41284ccc8fa4bc4622d087194b18a1ec23a Mon Sep 17 00:00:00 2001
++From: Stephan Hartmann <stha09@googlemail.com>
++Date: Tue, 7 Apr 2020 16:37:10 +0000
++Subject: [PATCH] GCC: fix includes for gcc-10
++
++---
++ chrome/browser/search/background/ntp_backgrounds.h              | 1 +
++ third_party/webrtc/call/rtx_receive_stream.h                    | 1 +
++ .../webrtc/modules/audio_processing/aec3/clockdrift_detector.h  | 1 +
++ ui/gfx/linux/drm_util_linux.h                                   | 2 ++
++ 5 files changed, 6 insertions(+)
++
++diff --git a/chrome/browser/search/background/ntp_backgrounds.h b/chrome/browser/search/background/ntp_backgrounds.h
++index 7afc0a2..ea5818e 100644
++--- a/chrome/browser/search/background/ntp_backgrounds.h
+++++ b/chrome/browser/search/background/ntp_backgrounds.h
++@@ -6,6 +6,7 @@
++ #define CHROME_BROWSER_SEARCH_BACKGROUND_NTP_BACKGROUNDS_H_
++ 
++ #include <array>
+++#include <cstddef>
++ 
++ class GURL;
++ 
++diff --git a/third_party/webrtc/call/rtx_receive_stream.h b/third_party/webrtc/call/rtx_receive_stream.h
++index 8ffa440..113a816 100644
++--- a/third_party/webrtc/call/rtx_receive_stream.h
+++++ b/third_party/webrtc/call/rtx_receive_stream.h
++@@ -12,6 +12,7 @@
++ #define CALL_RTX_RECEIVE_STREAM_H_
++ 
++ #include <map>
+++#include <cstdint>
++ 
++ #include "call/rtp_packet_sink_interface.h"
++ 
++diff --git a/third_party/webrtc/modules/audio_processing/aec3/clockdrift_detector.h b/third_party/webrtc/modules/audio_processing/aec3/clockdrift_detector.h
++index 22528c9..69e624e 100644
++--- a/third_party/webrtc/modules/audio_processing/aec3/clockdrift_detector.h
+++++ b/third_party/webrtc/modules/audio_processing/aec3/clockdrift_detector.h
++@@ -12,6 +12,7 @@
++ #define MODULES_AUDIO_PROCESSING_AEC3_CLOCKDRIFT_DETECTOR_H_
++ 
++ #include <array>
+++#include <cstddef>
++ 
++ namespace webrtc {
++ 
++diff --git a/ui/gfx/linux/drm_util_linux.h b/ui/gfx/linux/drm_util_linux.h
++index 86ff2eb..990f12c 100644
++--- a/ui/gfx/linux/drm_util_linux.h
+++++ b/ui/gfx/linux/drm_util_linux.h
++@@ -7,6 +7,8 @@
++ 
++ #include "ui/gfx/buffer_types.h"
++ 
+++#include <cstdint>
+++
++ namespace ui {
++ 
++ int GetFourCCFormatFromBufferFormat(gfx::BufferFormat format);
+diff --git a/perfetto-gcc-10.patch b/perfetto-gcc-10.patch
+new file mode 100644
+index 0000000..72e234a
+--- /dev/null
++++ b/perfetto-gcc-10.patch
+@@ -0,0 +1,28 @@
++From 0e7ca0bf9872932322563e70bcf84eb033ffde4f Mon Sep 17 00:00:00 2001
++From: Chisoon Jeong <chisoon.jeong@lge.com>
++Date: Tue, 24 Mar 2020 19:46:20 +0900
++Subject: [PATCH] Add #include <stdint.h> in
++ include/perfetto/base/task_runner.h
++
++Depending on compilation environment, task_runner.h|cc is
++not compiled due to missing stdint.h. This change includes stdint.h in
++task_runner.h to fix this issue.
++
++Change-Id: I6dcfbd4ad62cbd287b8e75e306930ad00731048a
++---
++ third_party/perfetto/include/perfetto/base/task_runner.h | 2 ++
++ 1 file changed, 2 insertions(+)
++
++diff --git a/third_party/perfetto/include/perfetto/base/task_runner.h b/third_party/perfetto/include/perfetto/base/task_runner.h
++index cf6040123..040aab2b7 100644
++--- a/third_party/perfetto/include/perfetto/base/task_runner.h
+++++ b/third_party/perfetto/include/perfetto/base/task_runner.h
++@@ -17,6 +17,8 @@
++ #ifndef INCLUDE_PERFETTO_BASE_TASK_RUNNER_H_
++ #define INCLUDE_PERFETTO_BASE_TASK_RUNNER_H_
++ 
+++#include <stdint.h>
+++
++ #include <functional>
++ 
++ #include "perfetto/base/export.h"
+-- 
+2.26.2
+
+
+From b46ee72eedc9c77ebf751602d9280ac8ae3089ad Mon Sep 17 00:00:00 2001
+From: Albert I <kras@raphielgang.org>
+Date: Mon, 25 May 2020 04:58:20 +0800
+Subject: [PATCH 3/3] Enable use of ccache by default
+
+Signed-off-by: Albert I <kras@raphielgang.org>
+---
+ .SRCINFO | 1 +
+ PKGBUILD | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/.SRCINFO b/.SRCINFO
+index 97dde3c..ffd77b2 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -56,6 +56,7 @@ pkgbase = iridium
+ 	optdepends = kwallet: for storing passwords in KWallet on KDE desktops
+ 	provides = chromium
+ 	conflicts = chromium
++	options = ccache
+ 	source = https://dl.iridiumbrowser.de/source/iridium-browser-2020.04.81.tar.xz
+ 	source = chromium-launcher-6.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v6.tar.gz
+ 	source = rename-Relayout-in-DesktopWindowTreeHostPlatform.patch
+diff --git a/PKGBUILD b/PKGBUILD
+index 0f5d8ae..9cf2343 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -24,6 +24,7 @@ optdepends=('pepper-flash: support for Flash content'
+ provides=(chromium)
+ conflicts=(chromium)
+ install=chromium.install
++options=('ccache')
+ _srcname=$pkgname-browser-$pkgver
+ source=(https://dl.iridiumbrowser.de/source/$_srcname.tar.xz
+         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
+-- 
+2.26.2
+
