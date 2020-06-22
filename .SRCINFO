@@ -6,9 +6,10 @@ pkgbase = linux-moesyndrome
 	arch = x86_64
 	license = GPL2
 	makedepends = bc
+	makedepends = git
 	makedepends = kmod
 	makedepends = libelf
-	makedepends = git
+	makedepends = pahole
 	makedepends = clang>=9.0.0
 	makedepends = lld>=9.0.0
 	makedepends = llvm>=9.0.0
