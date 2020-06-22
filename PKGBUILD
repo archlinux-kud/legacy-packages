@@ -4,7 +4,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.6.15
+pkgver=5.7.5~ms1
 pkgrel=1
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
@@ -15,7 +15,7 @@ makedepends=('bc' 'git' 'kmod' 'libelf' 'pahole'
 options=('!buildflags' '!strip')
 _srcname=${pkgbase/-*}
 source=(
-  "$_srcname::git+$url?signed#tag=$pkgver-$pkgrel"
+  "$_srcname::git+$url?signed#tag=${pkgver/\~/-}"
   x509.genkey # preset for generating module signing key
 )
 validpgpkeys=('73EC669FD2695442A3568EDA25A6FD691FA2918B'
@@ -59,9 +59,14 @@ prepare() {
 
   cd $_srcname
 
+  # necessary for both kernel building and DKMS
+  # with this, LLVM=1 on make command is no longer required
+  msg2 "Patching Makefile..."
+  sed -i 's/($(LLVM),)/($(LLVM),0)/g' Makefile
+  sed -i 's/($(LLVM),)/($(LLVM),0)/' tools/objtool/Makefile
+
   msg2 "Setting version..."
   scripts/setlocalversion --save-scmversion
-  echo "-$pkgrel" > localversion.98-pkgrel
 
   msg2 "Generating config..."
   make -s "$(basename $_defconfig)"
@@ -97,11 +102,6 @@ build() {
   # regenerate config with selected compiler
   msg2 "Regenerating config..."
   make -s "$(basename $_defconfig)"
-
-  msg2 "Applying compiler-specific features..."
-  # unconditionally apply polly optimizations
-  # (requires compiler to have the feature enabled explicitly)
-  scripts/config -e LLVM_POLLY
 
   # whether configuration ships r8168 or not
   msg2 "Realtek RTL8168 included in build: $with_r8168"
