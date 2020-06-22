@@ -11,7 +11,7 @@ arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
 license=(GPL2)
 makedepends=('bc' 'git' 'kmod' 'libelf' 'pahole'
-             'clang>=9.0.0' 'lld>=9.0.0' 'llvm>=9.0.0')
+             'clang>=10.0.0' 'lld>=10.0.0' 'llvm>=10.0.0')
 options=('!buildflags' '!strip')
 _srcname=${pkgbase/-*}
 source=(
@@ -77,8 +77,8 @@ build() {
   # custom compiler detection
   if [ -n "$compiler_path" ] && find "$compiler_path"/bin/clang &> /dev/null; then
     # clang < 9 doesn't support asm goto
-    [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 9 ] && \
-      error "Detected Clang doesn't support asm goto."
+    [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 10 ] && \
+      error "Clang older than version 10 isn't supported!"
 
     export PATH="$compiler_path/bin:$PATH"
     # required for LTO
@@ -99,10 +99,6 @@ build() {
   make -s "$(basename $_defconfig)"
 
   msg2 "Applying compiler-specific features..."
-  # Clang 9 is known to have buggy asm goto support
-  # assuming custom compiler provided isn't buggy
-  #[ -n "$clang_custom" ] && scripts/config -e JUMP_LABEL \
-  #                                         -d STATIC_KEYS_SELFTEST
   # unconditionally apply polly optimizations
   # (requires compiler to have the feature enabled explicitly)
   scripts/config -e LLVM_POLLY
@@ -161,7 +157,7 @@ _package() {
 
 _package-headers() {
   pkgdesc="Header and scripts for building modules for $pkgdesc kernel"
-  depends=('clang>=9.0.0' 'lld>=9.0.0' 'llvm>=9.0.0')
+  depends=('clang>=10.0.0' 'lld>=10.0.0' 'llvm>=10.0.0')
 
   cd $_srcname
 
@@ -195,11 +191,6 @@ _package-headers() {
   install -Dt "$builddir/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
   install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
   install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
-
-  # asm_inline is broken on Clang 9
-  for i in config/auto.conf generated/autoconf.h; do
-    sed -i '/ASM_INLINE/d' "$builddir"/include/$i
-  done
 
   # until arch Clang has polly support, hardcode this
   sed -i '/LLVM_POLLY/d' "$builddir"/include/config/auto.conf
