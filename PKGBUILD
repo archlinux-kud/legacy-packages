@@ -1,8 +1,8 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=megacmd-dynamic
-pkgver=1.2.0
-_sdkver=3.6.9
+pkgver=1.3.0
+_sdkver=3.7.0b
 pkgrel=1
 pkgdesc='MEGA Command Line Interactive and Scriptable Application (dynamic version)'
 arch=(x86_64)
@@ -12,8 +12,8 @@ depends=('c-ares' 'crypto++' 'ffmpeg' 'freeimage' 'libsodium' 'libuv' 'mediainfo
 optdepends=('bash-completion: for completion script')
 provides=("megacmd=$pkgver" "mega-sdk=$_sdkver")
 conflicts=(megacmd mega-sdk)
-source=("git+https://github.com/meganz/MEGAcmd.git#tag=${pkgver}_Linux"
-        'git+https://github.com/meganz/sdk.git#commit=de4ff325da7734655c9edd5f37b412520d88e3b2'
+source=("git+https://github.com/meganz/MEGAcmd.git#branch=release/$pkgver"
+        'git+https://github.com/meganz/sdk.git#commit=b2948c7c77862e99dee912f4fe321d3c6dac6b09'
         '100-megacmd-inotify-limit.conf')
 sha384sums=('SKIP'
             'SKIP'
