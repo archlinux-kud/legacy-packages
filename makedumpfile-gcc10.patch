@@ -1,0 +1,52 @@
+diff --git a/.SRCINFO b/.SRCINFO
+index 3cb63c3..d82edf9 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -1,7 +1,7 @@
+ pkgbase = makedumpfile
+ 	pkgdesc = A tool to generate smaller dumpfiles from kdump memory dumps
+ 	pkgver = 1.6.7
+-	pkgrel = 1
++	pkgrel = 2
+ 	url = http://sourceforge.net/projects/makedumpfile
+ 	arch = i686
+ 	arch = x86_64
+@@ -9,7 +9,9 @@ pkgbase = makedumpfile
+ 	depends = perl
+ 	depends = elfutils
+ 	source = https://netcologne.dl.sourceforge.net/project/makedumpfile/makedumpfile/1.6.7/makedumpfile-1.6.7.tar.gz
++	source = gcc10.patch::https://github.com/makedumpfile/makedumpfile/commit/399f2c9a3acd5bd913e50a4dde52dee6527b297e.patch
+ 	sha256sums = e702fbdf62b4cd829a76e46f3e24eb3fc7501918b85ebdcd8baef4f53d6ee2c8
++	sha256sums = 98c3160c42b75ae602390b946c61d2b4a0cedf60fda94a1d2b0937a68f0ff1f6
+ 
+ pkgname = makedumpfile
+ 
+diff --git a/PKGBUILD b/PKGBUILD
+index 314f203..340cd1e 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -5,14 +5,21 @@
+ 
+ pkgname=makedumpfile
+ pkgver=1.6.7
+-pkgrel=1
++pkgrel=2
+ pkgdesc="A tool to generate smaller dumpfiles from kdump memory dumps"
+ license=('GPL2')
+ depends=('perl' 'elfutils')
+ arch=('i686' 'x86_64')
+ url="http://sourceforge.net/projects/makedumpfile"
+-source=("https://netcologne.dl.sourceforge.net/project/makedumpfile/makedumpfile/${pkgver}/makedumpfile-${pkgver}.tar.gz")
+-sha256sums=('e702fbdf62b4cd829a76e46f3e24eb3fc7501918b85ebdcd8baef4f53d6ee2c8')
++source=("https://netcologne.dl.sourceforge.net/project/makedumpfile/makedumpfile/${pkgver}/makedumpfile-${pkgver}.tar.gz"
++        'gcc10.patch::https://github.com/makedumpfile/makedumpfile/commit/399f2c9a3acd5bd913e50a4dde52dee6527b297e.patch')
++sha256sums=('e702fbdf62b4cd829a76e46f3e24eb3fc7501918b85ebdcd8baef4f53d6ee2c8'
++            '98c3160c42b75ae602390b946c61d2b4a0cedf60fda94a1d2b0937a68f0ff1f6')
++
++prepare() {
++  cd $srcdir/$pkgname-$pkgver
++  patch -Np1 < ../gcc10.patch
++}
+ 
+ build() {
+   cd $srcdir/$pkgname-$pkgver

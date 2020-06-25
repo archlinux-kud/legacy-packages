@@ -1,0 +1,77 @@
+diff --git a/.SRCINFO b/.SRCINFO
+index fbd66d4..56c61c5 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -1,17 +1,17 @@
+ pkgbase = lib32-libcdio
+ 	pkgdesc = GNU Compact Disc Input and Control Library (32-bit)
+-	pkgver = 2.0.0
+-	pkgrel = 3
++	pkgver = 2.1.0
++	pkgrel = 1
+ 	url = https://www.gnu.org/software/libcdio/
+ 	arch = x86_64
+ 	license = GPL3
+ 	depends = lib32-gcc-libs
+ 	depends = libcdio
+-	source = https://ftp.gnu.org/gnu/libcdio/libcdio-2.0.0.tar.gz
+-	source = https://ftp.gnu.org/gnu/libcdio/libcdio-2.0.0.tar.gz.sig
++	source = https://ftp.gnu.org/gnu/libcdio/libcdio-2.1.0.tar.bz2
++	source = https://ftp.gnu.org/gnu/libcdio/libcdio-2.1.0.tar.bz2.sig
+ 	validpgpkeys = DAA63BC2582034A02B923D521A8DE5008275EC21
+-	sha256sums = 1b481b5da009bea31db875805665974e2fc568e2b2afa516f4036733657cf958
+-	sha256sums = 1ca33fe6e86266f7829f0d4cdef36e0268144484c86090d6608fa53da782e8ac
++	sha256sums = 8550e9589dbd594bfac93b81ecf129b1dc9d0d51e90f9696f1b2f9b2af32712b
++	sha256sums = SKIP
+ 
+ pkgname = lib32-libcdio
+ 
+diff --git a/PKGBUILD b/PKGBUILD
+index 9616304..a98a57f 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -5,16 +5,16 @@
+ # Contributor: damir <damir@archlinux.org>
+ 
+ pkgname=lib32-libcdio
+-pkgver=2.0.0
+-pkgrel=3
++pkgver=2.1.0
++pkgrel=1
+ pkgdesc="GNU Compact Disc Input and Control Library (32-bit)"
+ arch=("x86_64")
+ license=("GPL3")
+ url="https://www.gnu.org/software/${pkgname#lib32-*}/"
+ depends=("lib32-gcc-libs" "${pkgname#lib32-*}")
+-source=(https://ftp.gnu.org/gnu/${pkgname#lib32-*}/${pkgname#lib32-*}-${pkgver}.tar.gz{,.sig})
+-sha256sums=("1b481b5da009bea31db875805665974e2fc568e2b2afa516f4036733657cf958"
+-            "1ca33fe6e86266f7829f0d4cdef36e0268144484c86090d6608fa53da782e8ac")
++source=(https://ftp.gnu.org/gnu/${pkgname#lib32-*}/${pkgname#lib32-*}-${pkgver}.tar.bz2{,.sig})
++sha256sums=('8550e9589dbd594bfac93b81ecf129b1dc9d0d51e90f9696f1b2f9b2af32712b'
++            'SKIP')
+ validpgpkeys=("DAA63BC2582034A02B923D521A8DE5008275EC21") # R. Bernstein
+ 
+ prepare() {
+@@ -32,6 +32,7 @@ build() {
+     --prefix=/usr \
+     --disable-vcd-info \
+     --enable-cpp-progs \
++    --disable-static \
+     --libdir=/usr/lib32 \
+     --without-cd-drive \
+     --without-cd-info \
+@@ -40,12 +41,13 @@ build() {
+     --without-iso-info \
+     --without-iso-read \
+     --disable-cddb
++    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+   make
+ }
+ 
+ package() {
+   cd "${pkgname#lib32-*}-${pkgver}"
+-  make -j1 DESTDIR="${pkgdir}" install
++  make DESTDIR="${pkgdir}" install
+ 
+   rm -rf "${pkgdir}/usr/bin" "${pkgdir}/usr/include" "${pkgdir}/usr/share"
+ }

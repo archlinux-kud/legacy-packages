@@ -1,0 +1,15 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 173e14e..012b3fd 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -16,7 +16,10 @@ sha256sums=('3ec0f5743ed609feed51d4ac27ae4b63bbd594ed915afaafa0b926328c421ef0')
+ build() {
+   cd "$pkgname-$pkgver"
+ 
++  CFLAGS="$(echo "$CFLAGS" | sed -e s/mtune/march/ -e s/O2/Ofast/)"
+   CFLAGS+=' -Wa,--noexecstack'
++  CXXFLAGS="$(echo "$CXXFLAGS" | sed -e s/mtune/march/ -e s/O2/Ofast/)"
++  CXXFLAGS+=' -Wa,--noexecstack'
+   ./autogen.sh
+   ./configure --prefix=/usr --with-crypto --with-curl
+   make
