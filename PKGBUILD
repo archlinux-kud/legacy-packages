@@ -4,7 +4,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.7.6~ms2
+pkgver=5.7.6~ms3
 pkgrel=1
 pkgdesc='MoeSyndrome'
 arch=(x86_64)
@@ -42,10 +42,10 @@ prepare() {
     hash=$(grep SIG_SHA $_defconfig | sed -e s/.*._// -e s/=y//)
     # defaults to SHA1 if not found in defconfig
     [ -z "$hash" ] && hash=SHA1
-    msg2 "Module signature hash algorithm used: ${hash,,}"
+    msg2 "Module signature hash algorithm used: %s" "${hash,,}"
 
     if [ ! -f "../$pkgbase.pem" ]; then
-      msg2 "Generating an $hash public/private key pair..."
+      msg2 "Generating an %s public/private key pair..." "$hash"
       openssl req -new -nodes -utf8 -${hash,,} -days 3650 -batch -x509 \
         -config x509.genkey -outform PEM -out ../${pkgbase}.pem \
         -keyout ../$pkgbase.pem 2> /dev/null
@@ -95,7 +95,7 @@ build() {
   # custom compiler string to be printed out
   # from github.com/nathanchance/scripts, slightly edited
   clang_version="$(clang --version | head -1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
-  msg2 "Using $clang_version..."
+  msg2 "Using %s..." "$clang_version"
 
   cd $_srcname
 
@@ -104,10 +104,10 @@ build() {
   make -s "$(basename $_defconfig)"
 
   # whether configuration ships r8168 or not
-  msg2 "Realtek RTL8168 included in build: $with_r8168"
+  msg2 "Realtek RTL8168 included in build: %s" "$with_r8168"
   # use -O3 for Clang if without Apple SMC
   # Apple SMC doesn't build on -O3 with Clang due to __bad_udelay trap
-  msg2 "Apple SMC included in build: $with_applesmc"
+  msg2 "Apple SMC included in build: %s" "$with_applesmc"
   $with_applesmc && scripts/config -d CC_OPTIMIZE_FOR_PERFORMANCE_O3 \
                                    -e CC_OPTIMIZE_FOR_PERFORMANCE \
                                    -m SENSORS_APPLESMC
@@ -230,7 +230,7 @@ _package-headers() {
     esac
   done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux)
 
-  echo "Stripping vmlinux..."
+  msg2 "Stripping vmlinux..."
   llvm-strip $STRIP_STATIC "$builddir/vmlinux"
 
   msg2 "Adding symlink..."
