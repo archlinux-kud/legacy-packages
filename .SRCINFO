@@ -1,6 +1,6 @@
 pkgbase = linux-moesyndrome
-	pkgdesc = MoeSyndrome
-	pkgver = 5.7.6~ms3
+	pkgdesc = MoeSyndrome Kernel
+	pkgver = 5.7.7~ms4
 	pkgrel = 1
 	url = https://github.com/krasCGQ/moesyndrome-kernel
 	arch = x86_64
@@ -15,7 +15,7 @@ pkgbase = linux-moesyndrome
 	makedepends = llvm>=10.0.0
 	options = !buildflags
 	options = !strip
-	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel?signed#tag=5.7.6-ms3
+	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel?signed#tag=5.7.7-ms4
 	source = x509.genkey
 	validpgpkeys = 73EC669FD2695442A3568EDA25A6FD691FA2918B
 	validpgpkeys = 4D4209B115B5643C3E753A9317E9D95B6620AF67
@@ -23,7 +23,7 @@ pkgbase = linux-moesyndrome
 	sha384sums = 193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da
 
 pkgname = linux-moesyndrome
-	pkgdesc = MoeSyndrome kernel and modules
+	pkgdesc = MoeSyndrome Kernel - kernel and modules
 	depends = coreutils
 	depends = kmod
 	depends = initramfs
@@ -33,7 +33,7 @@ pkgname = linux-moesyndrome
 	provides = WIREGUARD-MODULE
 
 pkgname = linux-moesyndrome-headers
-	pkgdesc = Header and scripts for building modules for MoeSyndrome kernel
+	pkgdesc = Header and scripts for building modules for MoeSyndrome Kernel
 	depends = clang>=10.0.0
 	depends = lld>=10.0.0
 	depends = llvm>=10.0.0

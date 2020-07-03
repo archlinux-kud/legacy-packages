@@ -4,9 +4,9 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.7.6~ms3
+pkgver=5.7.7~ms4
 pkgrel=1
-pkgdesc='MoeSyndrome'
+pkgdesc='MoeSyndrome Kernel'
 arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
 license=(GPL2)
@@ -127,7 +127,7 @@ build() {
 }
 
 _package() {
-  pkgdesc="$pkgdesc kernel and modules"
+  pkgdesc="$pkgdesc - kernel and modules"
   depends=(coreutils kmod initramfs)
   optdepends=('crda: to set the correct wireless channels of your country'
               'linux-firmware: firmware images needed for some devices')
@@ -156,7 +156,7 @@ _package() {
 }
 
 _package-headers() {
-  pkgdesc="Header and scripts for building modules for $pkgdesc kernel"
+  pkgdesc="Header and scripts for building modules for $pkgdesc"
   depends=('clang>=10.0.0' 'lld>=10.0.0' 'llvm>=10.0.0')
 
   cd $_srcname
