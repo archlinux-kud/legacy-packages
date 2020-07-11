@@ -1,7 +1,7 @@
 From 61fd6c09581cf4d3ff795861d8e7398f5d802697 Mon Sep 17 00:00:00 2001
 From: Albert I <kras@raphielgang.org>
 Date: Sun, 24 May 2020 00:51:05 +0800
-Subject: [PATCH 1/3] Init Iridium Browser 2020.04.81 (based on 81.4044.92)
+Subject: [PATCH 1/4] Init Iridium Browser 2020.04.81 (based on 81.4044.92)
 
 This is essentially a rollback since new version of the browser is released
 only once a month, but we need specific fixes due to updated version of Arch
@@ -169,13 +169,13 @@ index fff39bf..8dc4c84 100644
    install -D out/Release/chrome "$pkgdir/usr/lib/chromium/chromium"
    install -Dm4755 out/Release/chrome_sandbox "$pkgdir/usr/lib/chromium/chrome-sandbox"
 -- 
-2.26.2
+2.27.0
 
 
 From 21435c6d9d30dd20a4cd424307db09391dd8c811 Mon Sep 17 00:00:00 2001
 From: Albert I <kras@raphielgang.org>
 Date: Sun, 24 May 2020 20:41:49 +0800
-Subject: [PATCH 2/3] Add GCC 10 patches
+Subject: [PATCH 2/4] Add GCC 10 patches
 
 Signed-off-by: Albert I <kras@raphielgang.org>
 ---
@@ -449,13 +449,13 @@ index 0000000..72e234a
 + 
 + #include "perfetto/base/export.h"
 -- 
-2.26.2
+2.27.0
 
 
 From b46ee72eedc9c77ebf751602d9280ac8ae3089ad Mon Sep 17 00:00:00 2001
 From: Albert I <kras@raphielgang.org>
 Date: Mon, 25 May 2020 04:58:20 +0800
-Subject: [PATCH 3/3] Enable use of ccache by default
+Subject: [PATCH 3/4] Enable use of ccache by default
 
 Signed-off-by: Albert I <kras@raphielgang.org>
 ---
@@ -488,5 +488,46 @@ index 0f5d8ae..9cf2343 100644
  source=(https://dl.iridiumbrowser.de/source/$_srcname.tar.xz
          chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
 -- 
-2.26.2
+2.27.0
+
+
+From cbbcfb7e5dce9594166bf5850e22b3fc41709263 Mon Sep 17 00:00:00 2001
+From: Albert I <kras@raphielgang.org>
+Date: Sat, 11 Jul 2020 22:57:07 +0800
+Subject: [PATCH 4/4] 2020.04.81-3: re2 rebuild
+
+Signed-off-by: Albert I <kras@raphielgang.org>
+---
+ .SRCINFO | 2 +-
+ PKGBUILD | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/.SRCINFO b/.SRCINFO
+index ffd77b2..cd2f940 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -1,7 +1,7 @@
+ pkgbase = iridium
+ 	pkgdesc = An attempt at creating a safer, faster, and more stable browser
+ 	pkgver = 2020.04.81
+-	pkgrel = 2
++	pkgrel = 3
+ 	url = https://iridiumbrowser.de
+ 	install = chromium.install
+ 	arch = x86_64
+diff --git a/PKGBUILD b/PKGBUILD
+index 9cf2343..3e68dce 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -5,7 +5,7 @@
+ 
+ pkgname=iridium
+ pkgver=2020.04.81
+-pkgrel=2
++pkgrel=3
+ _launcher_ver=6
+ pkgdesc="An attempt at creating a safer, faster, and more stable browser"
+ arch=('x86_64')
+-- 
+2.27.0
 
