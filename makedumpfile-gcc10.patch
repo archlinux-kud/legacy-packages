@@ -1,13 +1,13 @@
 diff --git a/.SRCINFO b/.SRCINFO
-index 3cb63c3..d82edf9 100644
+index 62d668d..f646abc 100644
 --- a/.SRCINFO
 +++ b/.SRCINFO
 @@ -1,7 +1,7 @@
  pkgbase = makedumpfile
  	pkgdesc = A tool to generate smaller dumpfiles from kdump memory dumps
  	pkgver = 1.6.7
--	pkgrel = 1
-+	pkgrel = 2
+-	pkgrel = 2
++	pkgrel = 3
  	url = http://sourceforge.net/projects/makedumpfile
  	arch = i686
  	arch = x86_64
@@ -22,15 +22,15 @@ index 3cb63c3..d82edf9 100644
  pkgname = makedumpfile
  
 diff --git a/PKGBUILD b/PKGBUILD
-index 314f203..340cd1e 100644
+index ebe6f4a..6845269 100644
 --- a/PKGBUILD
 +++ b/PKGBUILD
-@@ -5,14 +5,21 @@
+@@ -5,18 +5,25 @@
  
  pkgname=makedumpfile
  pkgver=1.6.7
--pkgrel=1
-+pkgrel=2
+-pkgrel=2
++pkgrel=3
  pkgdesc="A tool to generate smaller dumpfiles from kdump memory dumps"
  license=('GPL2')
  depends=('perl' 'elfutils')
@@ -50,3 +50,8 @@ index 314f203..340cd1e 100644
  
  build() {
    cd $srcdir/$pkgname-$pkgver
+-  export CFLAGS="-fcommon"
++  export CFLAGS="$CFLAGS -fcommon"
+   make LINKTYPE=dynamic
+ }
+ 
