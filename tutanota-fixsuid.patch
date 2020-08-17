@@ -1,0 +1,14 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 68706c6..2bd0d30 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -42,6 +42,9 @@ package() {
+ 	cp -r build/desktop/linux-unpacked/* \
+ 		"$pkgdir/opt/$pkgname"
+ 
++	# fix chrome-sandbox permissions
++	chmod 4755 "$pkgdir/opt/$pkgname/chrome-sandbox"
++
+ 	install -Dm755 "$srcdir/$pkgname" -t "$pkgdir/usr/bin"
+ 
+ 	for icon_size in 64 512; do
