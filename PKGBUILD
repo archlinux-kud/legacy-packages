@@ -24,8 +24,6 @@ sha384sums=('SKIP'
             '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da')
 _defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
 
-# import external properties
-source config.external
 # determines how package will be treated
 with_r8168=$(test -n "$(grep R8168 $_defconfig)" && echo true || echo false)
 
@@ -76,27 +74,6 @@ prepare() {
 }
 
 build() {
-  # mark variables as local
-  local clang_custom clang_version
-
-  # custom compiler detection
-  if [ -n "$compiler_path" ] && find "$compiler_path"/bin/clang &> /dev/null; then
-    # clang < 9 doesn't support asm goto
-    [ "$(clang -dumpversion | cut -d '.' -f 1)" -lt 10 ] && \
-      error "Clang older than version 10 isn't supported!"
-
-    export PATH="$compiler_path/bin:$PATH"
-    # required for LTO
-    export LD_LIBRARY_PATH="$compiler_path/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-    clang_custom=true
-    msg2 "Custom compiler detected!"
-  fi
-
-  # custom compiler string to be printed out
-  # from github.com/nathanchance/scripts, slightly edited
-  clang_version="$(clang --version | head -1 | cut -d \( -f 1 | sed 's/[[:space:]]*$//')"
-  msg2 "Using %s..." "$clang_version"
-
   cd $_srcname
 
   # regenerate config with selected compiler
@@ -105,15 +82,6 @@ build() {
 
   # whether configuration ships r8168 or not
   msg2 "Realtek RTL8168 included in build: %s" "$with_r8168"
-  # use -O3 for Clang if without Apple SMC
-  # Apple SMC doesn't build on -O3 with Clang due to __bad_udelay trap
-  msg2 "Apple SMC included in build: %s" "$with_applesmc"
-  $with_applesmc && scripts/config -d CC_OPTIMIZE_FOR_PERFORMANCE_O3 \
-                                   -e CC_OPTIMIZE_FOR_PERFORMANCE \
-                                   -m SENSORS_APPLESMC
-
-  # refresh the config just in case
-  make -s oldconfig
 
   # export timestamp earlier before build
   KBUILD_BUILD_TIMESTAMP="$(date)"
@@ -191,10 +159,6 @@ _package-headers() {
   install -Dt "$builddir/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
   install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
   install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
-
-  # until arch Clang has polly support, hardcode this
-  sed -i '/LLVM_POLLY/d' "$builddir"/include/config/auto.conf
-  sed -i 's/LLVM_POLLY 1/LLVM_POLLY 0/' "$builddir"/include/generated/autoconf.h
 
   msg2 "Installing KConfig files..."
   find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
