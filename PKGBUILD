@@ -5,13 +5,12 @@
 
 pkgbase=linux-moesyndrome
 pkgver=5.8.5~ms9
-pkgrel=1
+pkgrel=2
 pkgdesc='MoeSyndrome Kernel'
 arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
 license=(GPL2)
-makedepends=('bc' 'git' 'kmod' 'libelf' 'pahole'
-             'clang>=10.0.0' 'lld>=10.0.0' 'llvm>=10.0.0')
+makedepends=('bc' 'git' 'kmod' 'libelf' 'pahole')
 options=('!buildflags' '!strip')
 _srcname=${pkgbase/-*}
 source=(
@@ -24,6 +23,10 @@ sha384sums=('SKIP'
             '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da')
 _defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
 
+# llvm-proton-bin is preferred compiler for main kernel
+[ -z "$use_proton" ] && use_proton=$(test -d /opt/proton-clang && echo true || echo false)
+$use_proton && makedepends+=('proton-clang>=11.0.0') \
+            || makedepends+=('clang>=11.0.0' 'lld>=11.0.0' 'llvm>=11.0.0')
 # determines how package will be treated
 with_r8168=$(test -n "$(grep R8168 $_defconfig)" && echo true || echo false)
 
@@ -32,6 +35,13 @@ export KBUILD_BUILD_USER=${pkgbase#linux-}
 
 prepare() {
   local hash
+
+  # llvm-proton-bin is preferred compiler for main kernel
+  if $use_proton; then
+    PATH=/opt/proton-clang/bin:$PATH
+    LD_LIBRARY_PATH=/opt/proton-clang/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+    export PATH LD_LIBRARY_PATH
+  fi
 
   if [ -z "$(grep "MODULE_SIG is not set" $_defconfig)" ]; then
     msg2 "Module signing status: enabled"
