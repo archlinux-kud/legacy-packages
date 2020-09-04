@@ -9,11 +9,11 @@ epoch=1
 pkgrel=1
 arch=(x86_64)
 pkgdesc='A LLVM and Clang compiler toolchain built for kernel development'
-url='https://github.com/kdrag0n/proton-clang'
+url="https://github.com/$_reponame"
 license=('custom:Apache 2.0 with LLVM Exception' 'GPL')
 provides=('proton-clang=12.0.0')
 options=(!strip)
-source=("${_reponame/kdrag0n\//}-$pkgver.tar.gz::https://github.com/$_reponame/archive/$pkgver.tar.gz"
+source=("${_reponame/kdrag0n\//}-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz"
         'license-llvm.txt::https://raw.githubusercontent.com/llvm/llvm-project/4a1b95bda0c444798a5240fe924dd127b776d12d/llvm/LICENSE.TXT'
         'license-binutils.txt::https://www.gnu.org/licenses/gpl-3.0.txt')
 b2sums=('SKIP'
