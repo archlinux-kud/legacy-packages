@@ -1,0 +1,59 @@
+diff --git a/.SRCINFO b/.SRCINFO
+index 7c30234..64b46e2 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -1,11 +1,12 @@
+ pkgbase = kotatogram-desktop
+ 	pkgdesc = Kotatogram – experimental Telegram Desktop fork
+-	pkgver = 1.3.4
++	pkgver = 1.3.8
+ 	pkgrel = 1
+ 	url = https://kotatogram.github.io
+ 	arch = x86_64
+ 	license = GPL3
+ 	makedepends = git
++	makedepends = gtk3
+ 	makedepends = python
+ 	makedepends = cmake
+ 	makedepends = ninja
+@@ -27,8 +28,8 @@ pkgbase = kotatogram-desktop
+ 	optdepends = ttf-opensans: default Open Sans font family
+ 	conflicts = kotatogram-desktop-bin
+ 	conflicts = kotatogram-desktop-dynamic-bin
+-	source = https://github.com/kotatogram/kotatogram-desktop/releases/download/k1.3.4/kotatogram-desktop-1.3.4-full.tar.gz
+-	sha512sums = f0255e1bcbf1703c684e3c71392156002456a988f4128107e0181b4f4b9956073c29c27ff19d8416b19b3d836da999b39a421bd9755683013eec71ff51104f38
++	source = https://github.com/kotatogram/kotatogram-desktop/releases/download/k1.3.8/kotatogram-desktop-1.3.8-full.tar.gz
++	sha512sums = 22809f8eeb5c0be1c5c90be5b204e35650dc8344c7bb767e1dc174160ef3dea9fed6d3581ea3549f5e66798edfc6575781639a89863f21a158e4fd27c0c2b61b
+ 
+ pkgname = kotatogram-desktop
+ 
+diff --git a/PKGBUILD b/PKGBUILD
+index 99ea88c..8235d23 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -2,7 +2,7 @@
+ # Contributor: Auteiy <dmitry@auteiy.me>
+ 
+ pkgname=kotatogram-desktop
+-pkgver=1.3.4
++pkgver=1.3.8
+ pkgrel=1
+ pkgdesc="Kotatogram – experimental Telegram Desktop fork"
+ arch=(x86_64)
+@@ -25,6 +25,7 @@ depends=(
+ )
+ makedepends=(
+ 	git
++	gtk3
+ 	python
+ 	cmake
+ 	ninja
+@@ -36,7 +37,7 @@ optdepends=(
+ )
+ conflicts=('kotatogram-desktop-bin' 'kotatogram-desktop-dynamic-bin')
+ source=("https://github.com/kotatogram/${pkgname}/releases/download/k${pkgver}/${pkgname}-${pkgver}-full.tar.gz")
+-sha512sums=('f0255e1bcbf1703c684e3c71392156002456a988f4128107e0181b4f4b9956073c29c27ff19d8416b19b3d836da999b39a421bd9755683013eec71ff51104f38')
++sha512sums=('22809f8eeb5c0be1c5c90be5b204e35650dc8344c7bb767e1dc174160ef3dea9fed6d3581ea3549f5e66798edfc6575781639a89863f21a158e4fd27c0c2b61b')
+ 
+ build() {
+ 	cd ${pkgname}-${pkgver}-full
