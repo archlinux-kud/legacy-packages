@@ -4,7 +4,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.8.6~ms10
+pkgver=5.8.7~ms11
 pkgrel=1
 pkgdesc='MoeSyndrome Kernel'
 arch=(x86_64)
@@ -19,8 +19,8 @@ source=(
 )
 validpgpkeys=('73EC669FD2695442A3568EDA25A6FD691FA2918B'
               '4D4209B115B5643C3E753A9317E9D95B6620AF67')
-sha384sums=('SKIP'
-            '193dc59cee4e6f660b000ff448b5decc6325a449fa7cba00945849860498db0eca1070928eccc8fd624c427a086f14da')
+b2sums=('SKIP'
+        '835cf07cf8d45e349e6c683306d680b976b8add6c21c6cb0ec4bc380521e8b0f83386ce5dae7942126ef389f72ee6d73c914cc98c167bdb580b46cd838a94f8d')
 _defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
 
 # llvm-proton-bin is preferred compiler for main kernel
