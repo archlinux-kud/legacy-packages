@@ -1,6 +1,6 @@
 pkgbase = megacmd-dynamic
 	pkgdesc = MEGA Command Line Interactive and Scriptable Application (dynamic version)
-	pkgver = 1.3.0
+	pkgver = 1.4.0
 	pkgrel = 1
 	url = https://mega.nz/cmd
 	arch = x86_64
@@ -16,12 +16,12 @@ pkgbase = megacmd-dynamic
 	depends = sqlite
 	depends = zlib
 	optdepends = bash-completion: for completion script
-	provides = megacmd=1.3.0
-	provides = mega-sdk=3.7.0b
+	provides = megacmd=1.4.0
+	provides = mega-sdk=3.7.3c
 	conflicts = megacmd
 	conflicts = mega-sdk
-	source = git+https://github.com/meganz/MEGAcmd.git#branch=release/1.3.0
-	source = git+https://github.com/meganz/sdk.git#commit=b2948c7c77862e99dee912f4fe321d3c6dac6b09
+	source = git+https://github.com/meganz/MEGAcmd.git#commit=4fc0787c44d1894a476355c147ad8c207333fe94
+	source = git+https://github.com/meganz/sdk.git#commit=2337aca38daaca6deedd04d8ea400293503f00ff
 	source = 100-megacmd-inotify-limit.conf
 	sha384sums = SKIP
 	sha384sums = SKIP
