@@ -4,7 +4,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.8.12~ms12
+pkgver=5.8.18~ms13
 pkgrel=1
 pkgdesc='MoeSyndrome Kernel'
 arch=(x86_64)
@@ -28,6 +28,7 @@ _defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
 $use_proton && makedepends+=('proton-clang>=11.0.0') \
             || makedepends+=('clang>=11.0.0' 'lld>=11.0.0' 'llvm>=11.0.0')
 # determines how package will be treated
+with_ntfs3=$(test -n "$(grep NTFS3 $_defconfig)" && echo true || echo false)
 with_r8168=$(test -n "$(grep R8168 $_defconfig)" && echo true || echo false)
 
 export KBUILD_BUILD_HOST=archlinux
@@ -90,7 +91,8 @@ build() {
   msg2 "Regenerating config..."
   make -s "$(basename $_defconfig)"
 
-  # whether configuration ships r8168 or not
+  # whether configuration ships NTFS3 and/or r8168 or not at all
+  msg2 "Paragon NTFS3 included in build: %s" "$with_ntfs3"
   msg2 "Realtek RTL8168 included in build: %s" "$with_r8168"
 
   # export timestamp earlier before build
@@ -111,6 +113,7 @@ _package() {
               'linux-firmware: firmware images needed for some devices')
   provides=('VIRTUALBOX-GUEST-MODULES' 'WIREGUARD-MODULE')
   # make it conflict with dkms version
+  $with_ntfs3 && conflicts+=(ntfs3-dkms)
   $with_r8168 && conflicts+=(r8168-dkms)
 
   cd $_srcname
