@@ -5,7 +5,7 @@
 
 pkgbase=linux-moesyndrome
 pkgver=5.8.18~ms13
-pkgrel=1
+pkgrel=2
 pkgdesc='MoeSyndrome Kernel'
 arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
@@ -21,15 +21,15 @@ validpgpkeys=('73EC669FD2695442A3568EDA25A6FD691FA2918B'
               '4D4209B115B5643C3E753A9317E9D95B6620AF67')
 b2sums=('SKIP'
         '835cf07cf8d45e349e6c683306d680b976b8add6c21c6cb0ec4bc380521e8b0f83386ce5dae7942126ef389f72ee6d73c914cc98c167bdb580b46cd838a94f8d')
-_defconfig=$_srcname/arch/x86/configs/archlinux_defconfig
+_defconfig=arch/x86/configs/archlinux_defconfig
 
 # llvm-proton-bin is preferred compiler for main kernel
 [ -z "$use_proton" ] && use_proton=$(test -d /opt/proton-clang && echo true || echo false)
 $use_proton && makedepends+=('proton-clang>=11.0.0') \
             || makedepends+=('clang>=11.0.0' 'lld>=11.0.0' 'llvm>=11.0.0')
 # determines how package will be treated
-with_ntfs3=$(test -n "$(grep NTFS3 $_defconfig)" && echo true || echo false)
-with_r8168=$(test -n "$(grep R8168 $_defconfig)" && echo true || echo false)
+with_ntfs3=$(test -n "$(grep NTFS3 "$_srcname/$_defconfig")" && echo true || echo false)
+with_r8168=$(test -n "$(grep R8168 "$_srcname/$_defconfig")" && echo true || echo false)
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=${pkgbase#linux-}
@@ -44,29 +44,26 @@ prepare() {
     export PATH LD_LIBRARY_PATH
   fi
 
-  if [ -z "$(grep "MODULE_SIG is not set" $_defconfig)" ]; then
+  cd $_srcname
+
+  if [ -z "$(grep "MODULE_SIG is not set" "$_defconfig")" ]; then
     msg2 "Module signing status: enabled"
 
     # parse hash used to sign modules from defconfig
-    hash=$(grep SIG_SHA $_defconfig | sed -e s/.*._// -e s/=y//)
+    hash=$(grep SIG_SHA "$_defconfig" | sed -e s/.*._// -e s/=y//)
     # defaults to SHA1 if not found in defconfig
     [ -z "$hash" ] && hash=SHA1
     msg2 "Module signature hash algorithm used: %s" "${hash,,}"
 
-    if [ ! -f "../$pkgbase.pem" ]; then
+    if [ ! -f "certs/signing_key.pem" ]; then
       msg2 "Generating an %s public/private key pair..." "$hash"
       openssl req -new -nodes -utf8 -${hash,,} -days 3650 -batch -x509 \
-        -config x509.genkey -outform PEM -out ../${pkgbase}.pem \
-        -keyout ../$pkgbase.pem 2> /dev/null
+        -config ../x509.genkey -outform PEM -out certs/signing_key.pem \
+        -keyout certs/signing_key.pem 2>/dev/null
     fi
-
-    msg2 "Copying key pair into source folder..."
-    cp -f ../$pkgbase.pem $_srcname/certs/signing_key.pem
   else
     msg2 "Module signing status: disabled"
   fi
-
-  cd $_srcname
 
   # necessary for both kernel building and DKMS
   # with this, LLVM=1 on make command is no longer required
@@ -78,7 +75,7 @@ prepare() {
   scripts/setlocalversion --save-scmversion
 
   msg2 "Generating config..."
-  make -s "$(basename $_defconfig)"
+  make -s "$(basename "$_defconfig")"
 
   make -s kernelrelease > version
   msg2 "Prepared %s version %s" "$pkgbase" "$(<version)"
@@ -86,10 +83,6 @@ prepare() {
 
 build() {
   cd $_srcname
-
-  # regenerate config with selected compiler
-  msg2 "Regenerating config..."
-  make -s "$(basename $_defconfig)"
 
   # whether configuration ships NTFS3 and/or r8168 or not at all
   msg2 "Paragon NTFS3 included in build: %s" "$with_ntfs3"
@@ -101,9 +94,6 @@ build() {
 
   msg2 "Building kernel and modules..."
   make -s bzImage modules
-
-  # copy signing_key.x509 to PKGBUILD location
-  cp -f certs/signing_key.x509 ../../$pkgbase.x509
 }
 
 _package() {
@@ -172,6 +162,8 @@ _package-headers() {
   install -Dt "$builddir/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
   install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
   install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
+
+  install -Dt "$builddir/certs" -m644 certs/signing_key.{pem,x509}
 
   msg2 "Installing KConfig files..."
   find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;

@@ -1,7 +1,7 @@
 pkgbase = linux-moesyndrome
 	pkgdesc = MoeSyndrome Kernel
 	pkgver = 5.8.18~ms13
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/krasCGQ/moesyndrome-kernel
 	arch = x86_64
 	license = GPL2
