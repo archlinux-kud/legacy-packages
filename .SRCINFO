@@ -1,0 +1,16 @@
+pkgbase = srandom-moesyndrome
+	pkgdesc = Kernel modules for the srandom for linux-moesyndrome
+	pkgver = 1.38.0
+	pkgrel = 1
+	url = https://github.com/josenk/srandom
+	arch = x86_64
+	license = GPL3
+	makedepends = linux-moesyndrome-headers=5.8.18~ms13-2
+	depends = linux-moesyndrome=5.8.18~ms13-2
+	options = !buildflags
+	options = !strip
+	source = srandom::git+https://github.com/josenk/srandom#commit=939c5e0980875b1c51b3cbb2b00ad91de6b90719
+	b2sums = SKIP
+
+pkgname = srandom-moesyndrome
+
