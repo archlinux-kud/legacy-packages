@@ -1,19 +1,25 @@
 pkgbase = linux-moesyndrome
 	pkgdesc = MoeSyndrome Kernel
-	pkgver = 5.8.18~ms13
-	pkgrel = 2
+	pkgver = 5.10.2~ms14
+	pkgrel = 1
 	url = https://github.com/krasCGQ/moesyndrome-kernel
 	arch = x86_64
 	license = GPL2
 	makedepends = bc
+	makedepends = cpio
 	makedepends = git
+	makedepends = gzip
 	makedepends = kmod
 	makedepends = libelf
+	makedepends = lz4
 	makedepends = pahole
-	makedepends = proton-clang>=11.0.0
+	makedepends = perl
+	makedepends = clang>=11.0.0
+	makedepends = lld>=11.0.0
+	makedepends = llvm>=11.0.0
 	options = !buildflags
 	options = !strip
-	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel?signed#tag=5.8.18-ms13
+	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel?signed#tag=5.10.2-ms14
 	source = x509.genkey
 	validpgpkeys = 73EC669FD2695442A3568EDA25A6FD691FA2918B
 	validpgpkeys = 4D4209B115B5643C3E753A9317E9D95B6620AF67

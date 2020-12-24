@@ -4,13 +4,14 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.8.18~ms13
-pkgrel=2
+pkgver=5.10.2~ms14
+pkgrel=1
 pkgdesc='MoeSyndrome Kernel'
 arch=(x86_64)
 url="https://github.com/krasCGQ/moesyndrome-kernel"
 license=(GPL2)
-makedepends=('bc' 'git' 'kmod' 'libelf' 'pahole')
+makedepends=(bc cpio git gzip kmod libelf lz4 pahole perl
+             'clang>=11.0.0' 'lld>=11.0.0' 'llvm>=11.0.0')
 options=('!buildflags' '!strip')
 _srcname=${pkgbase/-*}
 source=(
@@ -23,10 +24,6 @@ b2sums=('SKIP'
         '835cf07cf8d45e349e6c683306d680b976b8add6c21c6cb0ec4bc380521e8b0f83386ce5dae7942126ef389f72ee6d73c914cc98c167bdb580b46cd838a94f8d')
 _defconfig=arch/x86/configs/archlinux_defconfig
 
-# llvm-proton-bin is preferred compiler for main kernel
-[ -z "$use_proton" ] && use_proton=$(test -d /opt/proton-clang && echo true || echo false)
-$use_proton && makedepends+=('proton-clang>=11.0.0') \
-            || makedepends+=('clang>=11.0.0' 'lld>=11.0.0' 'llvm>=11.0.0')
 # determines how package will be treated
 with_ntfs3=$(test -n "$(grep NTFS3 "$_srcname/$_defconfig")" && echo true || echo false)
 with_r8168=$(test -n "$(grep R8168 "$_srcname/$_defconfig")" && echo true || echo false)
@@ -36,13 +33,6 @@ export KBUILD_BUILD_USER=${pkgbase#linux-}
 
 prepare() {
   local hash
-
-  # llvm-proton-bin is preferred compiler for main kernel
-  if $use_proton; then
-    PATH=/opt/proton-clang/bin:$PATH
-    LD_LIBRARY_PATH=/opt/proton-clang/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-    export PATH LD_LIBRARY_PATH
-  fi
 
   cd $_srcname
 
@@ -66,9 +56,11 @@ prepare() {
   fi
 
   # necessary for both kernel building and DKMS
-  # with this, LLVM=1 on make command is no longer required
+  # with this, LLVM=1 and LLVM_IAS=1 on make command are no longer required
   msg2 "Patching Makefile..."
-  sed -i 's/($(LLVM),)/($(LLVM),0)/g' Makefile
+  sed -e 's/($(LLVM),)/($(LLVM),0)/g' \
+      -e 's/ifneq ($(LLVM_IAS),1)/ifeq ($(LLVM_IAS),0)/g' \
+      -i Makefile
   sed -i 's/($(LLVM),)/($(LLVM),0)/' tools/objtool/Makefile
 
   msg2 "Setting version..."
