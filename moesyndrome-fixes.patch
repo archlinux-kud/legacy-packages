@@ -1,0 +1,335 @@
+diff --git a/libbcachefs/bset.c b/libbcachefs/bset.c
+index 1c7318c6e46f..3dc14910d228 100644
+--- a/libbcachefs/bset.c
++++ b/libbcachefs/bset.c
+@@ -604,11 +604,10 @@ static inline unsigned bkey_mantissa(const struct bkey_packed *k,
+ 	return (u16) v;
+ }
+ 
+-__always_inline
+-static inline void __make_bfloat(struct btree *b, struct bset_tree *t,
+-				 unsigned j,
+-				 struct bkey_packed *min_key,
+-				 struct bkey_packed *max_key)
++static __always_inline void __make_bfloat(struct btree *b, struct bset_tree *t,
++					  unsigned j,
++					  struct bkey_packed *min_key,
++					  struct bkey_packed *max_key)
+ {
+ 	struct bkey_float *f = bkey_float(b, t, j);
+ 	struct bkey_packed *m = tree_to_bkey(b, t, j);
+@@ -1190,19 +1189,14 @@ static struct bkey_packed *bset_search_write_set(const struct btree *b,
+ static inline void prefetch_four_cachelines(void *p)
+ {
+ #ifdef CONFIG_X86_64
+-	asm(".intel_syntax noprefix;"
+-	    "prefetcht0 [%0 - 127 + 64 * 0];"
+-	    "prefetcht0 [%0 - 127 + 64 * 1];"
+-	    "prefetcht0 [%0 - 127 + 64 * 2];"
+-	    "prefetcht0 [%0 - 127 + 64 * 3];"
+-	    ".att_syntax prefix;"
+-	    :
+-	    : "r" (p + 127));
+-#else
++	asm(".intel_syntax noprefix");
++#endif
+ 	prefetch(p + L1_CACHE_BYTES * 0);
+ 	prefetch(p + L1_CACHE_BYTES * 1);
+ 	prefetch(p + L1_CACHE_BYTES * 2);
+ 	prefetch(p + L1_CACHE_BYTES * 3);
++#ifdef CONFIG_X86_64
++	asm(".att_syntax prefix");
+ #endif
+ }
+ 
+@@ -1399,7 +1393,7 @@ void bch2_btree_node_iter_push(struct btree_node_iter *iter,
+ 	bch2_btree_node_iter_sort(iter, b);
+ }
+ 
+-noinline __flatten __attribute__((cold))
++noinline __flatten __cold
+ static void btree_node_iter_init_pack_failed(struct btree_node_iter *iter,
+ 			      struct btree *b, struct bpos *search)
+ {
+@@ -1455,7 +1449,7 @@ static void btree_node_iter_init_pack_failed(struct btree_node_iter *iter,
+  *    So we've got to search for start_of_range, then after the lookup iterate
+  *    past any extents that compare equal to the position we searched for.
+  */
+-__flatten
++__flatten __cold
+ void bch2_btree_node_iter_init(struct btree_node_iter *iter,
+ 			       struct btree *b, struct bpos *search)
+ {
+diff --git a/libbcachefs/btree_gc.c b/libbcachefs/btree_gc.c
+index 6268ea637d19..9e714985f11f 100644
+--- a/libbcachefs/btree_gc.c
++++ b/libbcachefs/btree_gc.c
+@@ -208,9 +208,9 @@ static int bch2_gc_btree(struct bch_fs *c, enum btree_id btree_id,
+ 	struct btree_trans trans;
+ 	struct btree_iter *iter;
+ 	struct btree *b;
+-	unsigned depth = metadata_only			? 1
+-		: bch2_expensive_debug_checks		? 0
+-		: !btree_node_type_needs_gc(btree_id)	? 1
++	unsigned depth = metadata_only						? 1
++		: bch2_expensive_debug_checks					? 0
++		: !btree_node_type_needs_gc((enum btree_node_type)btree_id)	? 1
+ 		: 0;
+ 	u8 max_stale = 0;
+ 	int ret = 0;
+@@ -327,9 +327,9 @@ static int bch2_gc_btree_init(struct bch_fs *c,
+ 			      bool metadata_only)
+ {
+ 	struct btree *b;
+-	unsigned target_depth = metadata_only		? 1
+-		: bch2_expensive_debug_checks		? 0
+-		: !btree_node_type_needs_gc(btree_id)	? 1
++	unsigned target_depth = metadata_only					? 1
++		: bch2_expensive_debug_checks					? 0
++		: !btree_node_type_needs_gc((enum btree_node_type)btree_id)	? 1
+ 		: 0;
+ 	u8 max_stale = 0;
+ 	int ret = 0;
+@@ -1202,7 +1202,7 @@ static void bch2_coalesce_nodes(struct bch_fs *c, struct btree_iter *iter,
+ 		delete.k.p = old_nodes[i]->key.k.p;
+ 		bch2_keylist_add_in_order(&keylist, &delete);
+ next:
+-		i = i;
++		continue;
+ 	}
+ 
+ 	/*
+diff --git a/libbcachefs/btree_io.h b/libbcachefs/btree_io.h
+index 1a4b11e99cc4..67b09e532755 100644
+--- a/libbcachefs/btree_io.h
++++ b/libbcachefs/btree_io.h
+@@ -219,7 +219,7 @@ static inline void compat_btree_node(unsigned level, enum btree_id btree_id,
+ 				     struct btree_node *bn)
+ {
+ 	if (version < bcachefs_metadata_version_inode_btree_change &&
+-	    btree_node_type_is_extents(btree_id) &&
++	    btree_node_type_is_extents((enum btree_node_type)btree_id) &&
+ 	    bkey_cmp(bn->min_key, POS_MIN) &&
+ 	    write)
+ 		bn->min_key = bkey_predecessor(bn->min_key);
+@@ -228,7 +228,7 @@ static inline void compat_btree_node(unsigned level, enum btree_id btree_id,
+ 	compat_bpos(level, btree_id, version, big_endian, write, &bn->max_key);
+ 
+ 	if (version < bcachefs_metadata_version_inode_btree_change &&
+-	    btree_node_type_is_extents(btree_id) &&
++	    btree_node_type_is_extents((enum btree_node_type)btree_id) &&
+ 	    bkey_cmp(bn->min_key, POS_MIN) &&
+ 	    !write)
+ 		bn->min_key = bkey_successor(bn->min_key);
+diff --git a/libbcachefs/btree_iter.c b/libbcachefs/btree_iter.c
+index 8c35e39ea97f..3198c130f6cd 100644
+--- a/libbcachefs/btree_iter.c
++++ b/libbcachefs/btree_iter.c
+@@ -538,7 +538,7 @@ static void bch2_btree_iter_verify_level(struct btree_iter *iter,
+ 	 * For extents, the iterator may have skipped past deleted keys (but not
+ 	 * whiteouts)
+ 	 */
+-	p = level || btree_node_type_is_extents(iter->btree_id)
++	p = level || btree_iter_is_extents(iter)
+ 		? bch2_btree_node_iter_prev_filter(&tmp, l->b, KEY_TYPE_discard)
+ 		: bch2_btree_node_iter_prev_all(&tmp, l->b);
+ 	k = bch2_btree_node_iter_peek_all(&l->iter, l->b);
+@@ -719,8 +719,7 @@ static void __bch2_btree_node_iter_fix(struct btree_iter *iter,
+ 	 */
+ 	if (!bch2_btree_node_iter_end(node_iter) &&
+ 	    iter_current_key_modified &&
+-	    (b->c.level ||
+-	     btree_node_type_is_extents(iter->btree_id))) {
++	    (b->c.level || btree_iter_is_extents(iter))) {
+ 		struct bset_tree *t;
+ 		struct bkey_packed *k, *k2, *p;
+ 
+@@ -1955,7 +1954,7 @@ static inline void bch2_btree_iter_init(struct btree_trans *trans,
+ 	struct bch_fs *c = trans->c;
+ 	unsigned i;
+ 
+-	if (btree_node_type_is_extents(btree_id) &&
++	if (btree_node_type_is_extents((enum btree_node_type)btree_id) &&
+ 	    !(flags & BTREE_ITER_NODES))
+ 		flags |= BTREE_ITER_IS_EXTENTS;
+ 
+@@ -2124,9 +2123,12 @@ static struct btree_iter *__btree_trans_get_iter(struct btree_trans *trans,
+ 	iter->flags &= ~BTREE_ITER_USER_FLAGS;
+ 	iter->flags |= flags & BTREE_ITER_USER_FLAGS;
+ 
+-	if (iter->flags & BTREE_ITER_INTENT)
+-		bch2_btree_iter_upgrade(iter, 1);
+-	else
++	if (iter->flags & BTREE_ITER_INTENT) {
++		if (!iter->locks_want) {
++			__bch2_btree_iter_unlock(iter);
++			iter->locks_want = 1;
++		}
++	} else
+ 		bch2_btree_iter_downgrade(iter);
+ 
+ 	BUG_ON(iter->btree_id != btree_id);
+@@ -2149,7 +2151,7 @@ struct btree_iter *__bch2_trans_get_iter(struct btree_trans *trans,
+ 		__btree_trans_get_iter(trans, btree_id, pos, flags);
+ 
+ 	__bch2_btree_iter_set_pos(iter, pos,
+-		btree_node_type_is_extents(btree_id));
++		btree_node_type_is_extents((enum btree_node_type)btree_id));
+ 	return iter;
+ }
+ 
+diff --git a/libbcachefs/btree_update_interior.c b/libbcachefs/btree_update_interior.c
+index 8f96756ba648..e2d9c20c0eab 100644
+--- a/libbcachefs/btree_update_interior.c
++++ b/libbcachefs/btree_update_interior.c
+@@ -1464,7 +1464,7 @@ int bch2_btree_split_leaf(struct bch_fs *c, struct btree_iter *iter,
+ 	 * allocation must not block:
+ 	 */
+ 	trans_for_each_update(trans, i)
+-		if (btree_node_type_needs_gc(i->iter->btree_id))
++		if (btree_node_type_needs_gc(btree_iter_key_type(i->iter)))
+ 			flags |= BTREE_INSERT_USE_RESERVE;
+ 
+ 	closure_init_stack(&cl);
+diff --git a/libbcachefs/btree_update_leaf.c b/libbcachefs/btree_update_leaf.c
+index 64734f9158c3..eaee13de9f50 100644
+--- a/libbcachefs/btree_update_leaf.c
++++ b/libbcachefs/btree_update_leaf.c
+@@ -407,7 +407,7 @@ bch2_trans_commit_write_locked(struct btree_trans *trans,
+ 			return ret;
+ 		}
+ 
+-		if (btree_node_type_needs_gc(i->iter->btree_id))
++		if (btree_node_type_needs_gc(btree_iter_key_type(i->iter)))
+ 			marking = true;
+ 	}
+ 
+@@ -869,8 +869,8 @@ int __bch2_trans_commit(struct btree_trans *trans)
+ 		trans_trigger_run = false;
+ 
+ 		trans_for_each_update(trans, i) {
+-			if (unlikely(i->iter->uptodate > BTREE_ITER_NEED_PEEK &&
+-				     (ret = bch2_btree_iter_traverse(i->iter)))) {
++			ret = bch2_btree_iter_traverse(i->iter);
++			if (unlikely(ret)) {
+ 				trace_trans_restart_traverse(trans->ip);
+ 				goto out;
+ 			}
+@@ -879,8 +879,8 @@ int __bch2_trans_commit(struct btree_trans *trans)
+ 			 * We're not using bch2_btree_iter_upgrade here because
+ 			 * we know trans->nounlock can't be set:
+ 			 */
+-			if (unlikely(i->iter->locks_want < 1 &&
+-				     !__bch2_btree_iter_upgrade(i->iter, 1))) {
++			if (unlikely(!btree_node_intent_locked(i->iter, i->iter->level) &&
++				     !__bch2_btree_iter_upgrade(i->iter, i->iter->level + 1))) {
+ 				trace_trans_restart_upgrade(trans->ip);
+ 				ret = -EINTR;
+ 				goto out;
+@@ -988,7 +988,7 @@ int bch2_trans_update(struct btree_trans *trans, struct btree_iter *iter,
+ 
+ 	iter->flags |= BTREE_ITER_KEEP_UNTIL_COMMIT;
+ 
+-	if (btree_node_type_is_extents(iter->btree_id)) {
++	if (btree_iter_is_extents(iter)) {
+ 		iter->pos_after_commit = k->k.p;
+ 		iter->flags |= BTREE_ITER_SET_POS_AFTER_COMMIT;
+ 	}
+@@ -1123,7 +1123,7 @@ int bch2_btree_delete_range_trans(struct btree_trans *trans, enum btree_id id,
+ 		 */
+ 		delete.k.p = iter->pos;
+ 
+-		if (btree_node_type_is_extents(iter->btree_id)) {
++		if (btree_iter_is_extents(iter)) {
+ 			unsigned max_sectors =
+ 				KEY_SIZE_MAX & (~0 << trans->c->block_bits);
+ 
+diff --git a/libbcachefs/buckets.c b/libbcachefs/buckets.c
+index 1934b845ea15..34316926031d 100644
+--- a/libbcachefs/buckets.c
++++ b/libbcachefs/buckets.c
+@@ -1392,13 +1392,13 @@ int bch2_mark_update(struct btree_trans *trans,
+ 	if (unlikely(flags & BTREE_TRIGGER_NORUN))
+ 		return 0;
+ 
+-	if (!btree_node_type_needs_gc(iter->btree_id))
++	if (!btree_node_type_needs_gc(btree_iter_key_type(iter)))
+ 		return 0;
+ 
+ 	bkey_init(&unpacked);
+ 	old = (struct bkey_s_c) { &unpacked, NULL };
+ 
+-	if (!btree_node_type_is_extents(iter->btree_id)) {
++	if (!btree_iter_is_extents(iter)) {
+ 		/* iterators should be uptodate, shouldn't get errors here: */
+ 		if (btree_iter_type(iter) != BTREE_ITER_CACHED) {
+ 			old = bch2_btree_iter_peek_slot(iter);
+@@ -1548,7 +1548,7 @@ static struct btree_iter *trans_get_update(struct btree_trans *trans,
+ 
+ 	trans_for_each_update(trans, i)
+ 		if (i->iter->btree_id == btree_id &&
+-		    (btree_node_type_is_extents(btree_id)
++		    (btree_iter_is_extents(i->iter)
+ 		     ? bkey_cmp(pos, bkey_start_pos(&i->k->k)) >= 0 &&
+ 		       bkey_cmp(pos, i->k->k.p) < 0
+ 		     : !bkey_cmp(pos, i->iter->pos))) {
+@@ -2000,10 +2000,10 @@ int bch2_trans_mark_update(struct btree_trans *trans,
+ 	if (unlikely(flags & BTREE_TRIGGER_NORUN))
+ 		return 0;
+ 
+-	if (!btree_node_type_needs_gc(iter->btree_id))
++	if (!btree_node_type_needs_gc(btree_iter_key_type(iter)))
+ 		return 0;
+ 
+-	if (!btree_node_type_is_extents(iter->btree_id)) {
++	if (!btree_iter_is_extents(iter)) {
+ 		/* iterators should be uptodate, shouldn't get errors here: */
+ 		if (btree_iter_type(iter) != BTREE_ITER_CACHED) {
+ 			old = bch2_btree_iter_peek_slot(iter);
+diff --git a/libbcachefs/extents.c b/libbcachefs/extents.c
+index 828ccf07da61..bb5800b465cd 100644
+--- a/libbcachefs/extents.c
++++ b/libbcachefs/extents.c
+@@ -234,7 +234,7 @@ void bch2_btree_ptr_v2_compat(enum btree_id btree_id, unsigned version,
+ 	compat_bpos(0, btree_id, version, big_endian, write, &bp.v->min_key);
+ 
+ 	if (version < bcachefs_metadata_version_inode_btree_change &&
+-	    btree_node_type_is_extents(btree_id) &&
++	    btree_node_type_is_extents((enum btree_node_type)btree_id) &&
+ 	    bkey_cmp(bp.v->min_key, POS_MIN))
+ 		bp.v->min_key = write
+ 			? bkey_predecessor(bp.v->min_key)
+diff --git a/libbcachefs/io.c b/libbcachefs/io.c
+index abf204ef21ca..9211364c3e99 100644
+--- a/libbcachefs/io.c
++++ b/libbcachefs/io.c
+@@ -2208,7 +2208,11 @@ int __bch2_read_extent(struct btree_trans *trans, struct bch_read_bio *orig,
+ 
+ 	bch2_increment_clock(c, bio_sectors(&rbio->bio), READ);
+ 
+-	if (pick.ptr.cached)
++	/*
++	 * If it's being moved internally, we don't want to flag it as a cache
++	 * hit:
++	 */
++	if (pick.ptr.cached && !(flags & BCH_READ_NODECODE))
+ 		bch2_bucket_io_time_reset(trans, pick.ptr.dev,
+ 			PTR_BUCKET_NR(ca, &pick.ptr), READ);
+ 
+diff --git a/libbcachefs/move.c b/libbcachefs/move.c
+index 6633d21f604a..6242b7d91a00 100644
+--- a/libbcachefs/move.c
++++ b/libbcachefs/move.c
+@@ -612,6 +612,12 @@ static int __bch2_move_data(struct bch_fs *c,
+ 		ret2 = bch2_move_extent(&trans, ctxt, wp, io_opts, btree_id, k,
+ 					data_cmd, data_opts);
+ 		if (ret2) {
++			if (ret2 == -EINTR) {
++				bch2_trans_reset(&trans, 0);
++				bch2_trans_cond_resched(&trans);
++				continue;
++			}
++
+ 			if (ret2 == -ENOMEM) {
+ 				/* memory allocation failure, wait for some IO to finish */
+ 				bch2_move_ctxt_wait_for_io(ctxt);

@@ -1,56 +1,54 @@
 # Maintainer: Kyle De'Vir (QuartzDragon) <kyle.devir.mykolab.com>
+# Contributor: Albert I <kras@raphielgang.org>
 
-pkgname=bcachefs-tools-git
-pkgver=631
+_reponame=bcachefs-tools
+pkgname=$_reponame-git
+pkgver=0.1.r251.g80846e9
 pkgrel=1
-pkgdesc="BCacheFS filesystem utilities"
-url="https://github.com/koverstreet/bcachefs-tools"
-arch=("x86_64")
-license=("GPL2")
-install="$pkgname.install"
-
+pkgdesc='BCacheFS filesystem utilities'
+url="https://github.com/koverstreet/$_reponame"
+arch=(x86_64)
+license=(GPL2)
 provides=(bcachefs-tools)
-dependsarray="attr cargo clang fuse3 git keyutils libaio libscrypt libsodium liburcu libutil-linux pkgconf valgrind zlib"
-makedepends=(${dependsarray})
-depends=(${dependsarray})
-
-_reponame="bcachefs-tools"
-_repo_url="https://github.com/koverstreet/$_reponame"
-
+depends=(glibc keyutils libaio libscrypt libsodium liburcu libutil-linux lz4 zlib zstd)
+makedepends=(git pkgconf valgrind)
+checkdepends=(python-pytest)
+install=$pkgname.install
 source=(
-    "git+$_repo_url"
-    "add-mkinitcpio-hook-for-Arch.patch"
+    git+"$url"
+    add-mkinitcpio-hook-for-Arch.patch
+    # Clang fixes to kernel driver from MoeSyndrome Kernel; also updates kernel driver itself
+    moesyndrome-fixes.patch
 )
-sha512sums=('SKIP'
-            'e75e0fc9576990d910acf5a3eafb1f83ab7d407bddcc210c9926b048ceb3ef018749654ca6a6ebdfab45a3e00031f6bb3537d2f3f19e3a7ec3be7c470d4ce7df')
+b2sums=(
+    SKIP
+    9b62011738b412d579852ee95dc15eda5b462bd9f8858e7acd144101f64c9f58bf4f928da792d675443e2d0904ed9d6f71e444abc827314d6a5d5273f5021339
+    1fb1f4f8b008b20298904df0716d5a328954e17af91bcecd8b3e708cc29b73c913b96287ac66e960921c4a78e57c2e8a0b7d815b73cc285a415d44d2cdea2ba6
+)
 
 prepare() {
     cd "$srcdir/$_reponame"
     
-    PName="add-mkinitcpio-hook-for-Arch.patch"
-    msg2 "Patching with $PName ..."
-    patch -Np1 -i "../$PName"
+    patch -Np1 < ../add-mkinitcpio-hook-for-Arch.patch
+    patch -Np1 < ../moesyndrome-fixes.patch
 }
 
 pkgver() {
-    cd "$srcdir/$_reponame"
-
-    echo "$(git rev-list --count HEAD)"
+    git -C "$srcdir/$_reponame" describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 build() {
-    cd "$srcdir/$_reponame"
+    make -C "$srcdir/$_reponame" bcachefs
+}
 
-    make
+check() {
+    make -C "$srcdir/$_reponame" PYTEST=pytest check
 }
 
 package() {
     cd "$srcdir/$_reponame"
 
-    make DESTDIR="$pkgdir" PREFIX="/usr" ROOT_SBINDIR="/usr/bin" INITRAMFS_DIR="/etc/initcpio" install
-    
-    install -Dm644 "arch/etc/initcpio/hooks/bcachefs" \
-                   "$pkgdir/etc/initcpio/hooks/bcachefs"
-    install -Dm644 "arch/etc/initcpio/install/bcachefs" \
-                   "$pkgdir/etc/initcpio/install/bcachefs"
+    make DESTDIR="$pkgdir" PREFIX=/usr ROOT_SBINDIR=/usr/bin INITRAMFS_DIR=/etc/initcpio install
+    install -Dm644 arch/etc/initcpio/hooks/bcachefs "$pkgdir"/etc/initcpio/hooks/bcachefs
+    install -Dm644 arch/etc/initcpio/install/bcachefs "$pkgdir"/etc/initcpio/install/bcachefs
 }
