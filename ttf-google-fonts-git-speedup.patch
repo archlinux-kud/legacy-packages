@@ -1,0 +1,44 @@
+diff --git a/.SRCINFO b/.SRCINFO
+index d0ac0a4..24a114f 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -1,6 +1,6 @@
+ pkgbase = ttf-google-fonts-git
+ 	pkgdesc = TrueType fonts from the Google Fonts project (git version)
+-	pkgver = r2002.37e0f8a4
++	pkgver = r2237.ebaa6a7a
+ 	pkgrel = 1
+ 	epoch = 1
+ 	url = https://github.com/google/fonts
+@@ -68,6 +68,11 @@ pkgbase = ttf-google-fonts-git
+ 	conflicts = ttf-source-code-pro-ibx
+ 	conflicts = ttf-source-sans-pro-ibx
+ 	conflicts = ttf-vollkorn-ibx
++	options = !strip
++	options = libtool
++	options = staticlibs
++	options = !zipman
++	options = !purge
+ 	source = git+https://github.com/google/fonts.git
+ 	sha512sums = SKIP
+ 
+diff --git a/PKGBUILD b/PKGBUILD
+index d29a401..9e62ac9 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -9,13 +9,14 @@
+ # Contributor: Alexander De Sousa <archaur.xandy21@spamgourmet.com>
+ 
+ pkgname=ttf-google-fonts-git
+-pkgver=r2002.37e0f8a4
++pkgver=r2237.ebaa6a7a
+ pkgrel=1
+ epoch=1
+ pkgdesc="TrueType fonts from the Google Fonts project (git version)"
+ arch=('any')
+ url="https://github.com/google/fonts"
+ license=('custom:SIL Open Font License' 'custom:Ubuntu Font License v1.0')
++options=('!strip' 'libtool' 'staticlibs' '!zipman' '!purge')
+ 
+ depends=('noto-fonts'
+          'noto-fonts-extra'

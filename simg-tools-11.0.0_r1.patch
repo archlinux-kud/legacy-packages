@@ -1,0 +1,34 @@
+diff --git a/.SRCINFO b/.SRCINFO
+index a1eba43..a788c01 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -1,6 +1,6 @@
+ pkgbase = simg-tools
+ 	pkgdesc = Tools to handle/convert Android sparse image file (simg2img, append2simg, img2simg, simg2simg)
+-	pkgver = 10.0.0_r14
++	pkgver = 11.0.0_r1
+ 	pkgrel = 1
+ 	url = https://android.googlesource.com/platform/system/core
+ 	arch = i686
+@@ -10,7 +10,7 @@ pkgbase = simg-tools
+ 	license = Apache
+ 	makedepends = git
+ 	depends = zlib
+-	source = git+https://android.googlesource.com/platform/system/core#tag=android-10.0.0_r14
++	source = git+https://android.googlesource.com/platform/system/core#tag=android-11.0.0_r1
+ 	md5sums = SKIP
+ 
+ pkgname = simg-tools
+diff --git a/PKGBUILD b/PKGBUILD
+index dd665f7..49b0f4e 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -1,7 +1,7 @@
+ # Maintainer: Christoph Scholz <christoph.scholz@gmail.com>
+ 
+ pkgname=simg-tools
+-pkgver=10.0.0_r14
++pkgver=11.0.0_r1
+ pkgrel=1
+ pkgdesc="Tools to handle/convert Android sparse image file (simg2img, append2simg, img2simg, simg2simg)"
+ arch=('i686' 'x86_64' 'armv7h' 'aarch64')
