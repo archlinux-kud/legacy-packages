@@ -1,0 +1,49 @@
+diff --git a/.SRCINFO b/.SRCINFO
+index b2db012..3fca9ae 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -1,7 +1,7 @@
+ pkgbase = lib32-libass
+ 	pkgdesc = A portable library for SSA/ASS subtitles rendering (32 bit)
+-	pkgver = 0.14.0
+-	pkgrel = 3
++	pkgver = 0.15.0
++	pkgrel = 1
+ 	url = https://github.com/libass/libass/
+ 	arch = x86_64
+ 	license = BSD
+@@ -14,8 +14,8 @@ pkgbase = lib32-libass
+ 	depends = lib32-glibc
+ 	depends = libfreetype.so
+ 	provides = libass.so
+-	source = https://github.com/libass/libass/releases/download/0.14.0/libass-0.14.0.tar.xz
+-	sha256sums = 881f2382af48aead75b7a0e02e65d88c5ebd369fe46bc77d9270a94aa8fd38a2
++	source = https://github.com/libass/libass/releases/download/0.15.0/libass-0.15.0.tar.xz
++	sha256sums = 9f09230c9a0aa68ef7aa6a9e2ab709ca957020f842e52c5b2e52b801a7d9e833
+ 
+ pkgname = lib32-libass
+ 
+diff --git a/PKGBUILD b/PKGBUILD
+index 50d9cf6..0a09998 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -5,8 +5,8 @@
+ 
+ _pkgname=libass
+ pkgname=lib32-${_pkgname}
+-pkgver=0.14.0
+-pkgrel=3
++pkgver=0.15.0
++pkgrel=1
+ pkgdesc='A portable library for SSA/ASS subtitles rendering (32 bit)'
+ arch=('x86_64')
+ url='https://github.com/libass/libass/'
+@@ -16,7 +16,7 @@ depends=("${_pkgname}" 'lib32-fontconfig' 'lib32-fribidi' 'lib32-glib2' 'lib32-g
+ makedepends=('gcc-multilib' 'nasm')
+ provides=('libass.so')
+ source=("https://github.com/libass/libass/releases/download/${pkgver}/libass-${pkgver}.tar.xz")
+-sha256sums=('881f2382af48aead75b7a0e02e65d88c5ebd369fe46bc77d9270a94aa8fd38a2')
++sha256sums=('9f09230c9a0aa68ef7aa6a9e2ab709ca957020f842e52c5b2e52b801a7d9e833')
+ 
+ build() {
+   cd "${_pkgname}-${pkgver}"
