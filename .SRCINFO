@@ -1,0 +1,38 @@
+pkgbase = android-firmware-extractor-git
+	pkgdesc = Collection of tools to extract images from stock Android firmware
+	pkgver = r134.f1df5de
+	pkgrel = 1
+	url = https://github.com/AndroidDumps/Firmware_extractor
+	arch = x86_64
+	license = GPL3
+	license = custom
+	depends = brotli
+	depends = lz4
+	depends = p7zip
+	depends = perl-rename
+	depends = python>=3.6.0
+	depends = python2
+	depends = python-argparse
+	depends = python-zstandard
+	depends = python-protobuf>=3.6.0
+	depends = python-docopt
+	depends = python-pycryptodome
+	depends = python2-argparse
+	options = !strip
+	options = libtool
+	options = staticlibs
+	options = !zipman
+	options = !purge
+	source = git+https://github.com/AndroidDumps/Firmware_extractor
+	source = git+https://github.com/cyxx/extract_android_ota_payload
+	source = git+https://github.com/bkerler/oppo_ozip_decrypt
+	source = git+https://github.com/erfanoabdi/update_payload_extractor
+	source = fw-extractor.sh
+	b2sums = SKIP
+	b2sums = SKIP
+	b2sums = SKIP
+	b2sums = SKIP
+	b2sums = fac57da161e40c621b6698b8e27836e3fcb91a57ca309e4f43c167255889a9aed3b297d2c573394c4fffa11ca5038ee54888df1bd383a88eb14cd51189e35b5f
+
+pkgname = android-firmware-extractor-git
+
