@@ -3,8 +3,8 @@
 
 _reponame=bcachefs-tools
 pkgname=$_reponame-git
-pkgver=0.1.r251.g80846e9
-pkgrel=2
+pkgver=0.1.r253.gf39f0bd
+pkgrel=1
 pkgdesc='BCacheFS filesystem utilities'
 url="https://github.com/koverstreet/$_reponame"
 arch=(x86_64)
@@ -23,7 +23,7 @@ source=(
 b2sums=(
     SKIP
     9b62011738b412d579852ee95dc15eda5b462bd9f8858e7acd144101f64c9f58bf4f928da792d675443e2d0904ed9d6f71e444abc827314d6a5d5273f5021339
-    cedd7e490c20a181386f6f7b5e4e3c38baf2ef74d32a3227ed9d1d2de104907a85d185818e351881b15782bd2f67c63fe609c2ecf3de9c216c4ab05fce4cc325
+    eaea27c3972d8ae225163dadb92030c7180047efd82aad8c53867b95bbf30f0b77bfa36df7b46ee4bea14d89ca082f8bb33b002502806c672a217d38e5ac7443
 )
 
 prepare() {
