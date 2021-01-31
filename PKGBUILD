@@ -7,7 +7,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.10.6~ms18
+pkgver=5.10.12~ms19
 pkgrel=1
 pkgdesc='MoeSyndrome Kernel'
 arch=(x86_64)
