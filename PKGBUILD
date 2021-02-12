@@ -7,7 +7,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.10.13~ms19
+pkgver=5.10.15~ms20
 pkgrel=1
 pkgdesc='MoeSyndrome Kernel'
 arch=(x86_64)
@@ -99,7 +99,7 @@ _package() {
         'crda: to set the correct wireless channels of your country'
         'linux-firmware: firmware images needed for some devices'
     )
-    provides=(VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE)
+    provides=("$pkgbase=$pkgver" VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE)
     # make it conflict with dkms version
     $WITH_NTFS3 && conflicts+=(ntfs3-dkms)
     $WITH_R8168 && conflicts+=(r8168-dkms)
@@ -128,6 +128,7 @@ _package() {
 _package-headers() {
     pkgdesc="Header and scripts for building modules for $pkgdesc"
     depends=("${clang_deps[@]}")
+    provides=("$pkgbase-headers=$pkgver")
 
     local arch builddir file
     cd $_srcname
