@@ -2,18 +2,18 @@
 
 pkgname=srandom-moesyndrome
 pkgver=1.38.0
-pkgrel=8
+pkgrel=9
 pkgdesc='Kernel modules for the srandom for linux-moesyndrome'
 arch=(x86_64)
 url='https://github.com/josenk/srandom'
 license=(GPL3)
-_kernver=5.10.13~ms19-1
+_kernver=5.10.15~ms20
 depends=("linux-moesyndrome=$_kernver")
 makedepends=("linux-moesyndrome-headers=$_kernver")
 options=('!buildflags' '!strip')
 source=("srandom::git+$url#commit=939c5e0980875b1c51b3cbb2b00ad91de6b90719")
 b2sums=('SKIP')
-_kernsrc=/usr/lib/modules/${_kernver/-*/+arch}/build
+_kernsrc=/usr/lib/modules/$_kernver+arch/build
 
 build() {
     make -C "$_kernsrc" M="$srcdir"/srandom modules
