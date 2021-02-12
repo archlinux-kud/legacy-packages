@@ -1,0 +1,12 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 25596b0..7b42dda 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -25,6 +25,7 @@ package() {
+   mkdir -p "${pkgdir:?}"/usr/{share/losslesscut,bin}
+   cd LosslessCut-linux
+   tar -cf - . | tar -C "$pkgdir/usr/share/losslesscut" -xvf -
++  chmod 4755 "$pkgdir/usr/share/losslesscut/chrome-sandbox"
+   ln -s /usr/share/losslesscut/losslesscut "$pkgdir"/usr/bin/losslesscut
+   install -Dm644 ../losslesscut.desktop "$pkgdir"/usr/share/applications/$pkgname.desktop
+   install -Dm644 ../icon.svg "$pkgdir"/usr/share/pixmaps/$_pkgname.svg
