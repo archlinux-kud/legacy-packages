@@ -1,50 +1,52 @@
-# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Maintainer: Albert I <kras@raphielgang.org>
+# Contributor: Sven-Hendrik Haase <svenstaro@gmail.com>
 # Contributor: hexchain <i@hexchain.org>
-pkgname=telegram-desktop-git
-pkgver=2.5.4.r1.gadc8d6a6d
+pkgname=tdesktop-x64
+pkgver=2.5.8.2
 pkgrel=1
-pkgdesc='Official Telegram Desktop client'
+pkgdesc='Third party Telegram Desktop client with various enhancements'
 arch=('x86_64')
-url="https://desktop.telegram.org/"
+url="https://github.com/TDesktop-x64"
 license=('GPL3')
 depends=('hunspell' 'ffmpeg' 'hicolor-icon-theme' 'lz4' 'minizip' 'openal'
          'qt5-imageformats' 'xxhash' 'libdbusmenu-qt5' 'kwayland' 'gtk3')
-makedepends=('cmake' 'git' 'ninja' 'python' 'range-v3' 'tl-expected' 'microsoft-gsl' 'libtg_owt-git')
+makedepends=('cmake' 'git' 'ninja' 'python' 'range-v3' 'tl-expected' 'microsoft-gsl' 'libtg_owt')
 optdepends=('ttf-opensans: default Open Sans font family')
 provides=("telegram-desktop")
 conflicts=("telegram-desktop")
-source=("tdesktop::git+https://github.com/telegramdesktop/tdesktop.git#tag=dev"
+# Use stable versions wherever possible
+source=("tdesktop::git+https://github.com/TDesktop-x64/tdesktop#tag=v$pkgver"
         "telegram-desktop-libtgvoip::git+https://github.com/telegramdesktop/libtgvoip"
-        "telegram-desktop-GSL::git+https://github.com/Microsoft/GSL.git"
-        "telegram-desktop-Catch::git+https://github.com/philsquared/Catch"
-        "telegram-desktop-xxHash::git+https://github.com/Cyan4973/xxHash.git"
+        "telegram-desktop-GSL::git+https://github.com/microsoft/GSL#tag=v3.1.0"
+        "telegram-desktop-Catch::git+https://github.com/catchorg/Catch2#tag=v2.13.4"
+        "telegram-desktop-xxHash::git+https://github.com/Cyan4973/xxHash#tag=v0.8.0"
         "telegram-desktop-rlottie::git+https://github.com/desktop-app/rlottie.git"
-        "telegram-desktop-lz4::git+https://github.com/lz4/lz4.git"
+        "telegram-desktop-lz4::git+https://github.com/lz4/lz4#tag=v1.9.3"
         "telegram-desktop-lib_crl::git+https://github.com/desktop-app/lib_crl.git"
         "telegram-desktop-lib_rpl::git+https://github.com/desktop-app/lib_rpl.git"
-        "telegram-desktop-lib_base::git+https://github.com/desktop-app/lib_base.git"
+        "telegram-desktop-lib_base::git+https://github.com/TDesktop-x64/lib_base"
         "telegram-desktop-codegen::git+https://github.com/desktop-app/codegen.git"
-        "telegram-desktop-lib_ui::git+https://github.com/desktop-app/lib_ui.git"
+        "telegram-desktop-lib_ui::git+https://github.com/TDesktop-x64/lib_ui"
         "telegram-desktop-lib_rlottie::git+https://github.com/desktop-app/lib_rlottie.git"
         "telegram-desktop-lib_lottie::git+https://github.com/desktop-app/lib_lottie.git"
         "telegram-desktop-lib_tl::git+https://github.com/desktop-app/lib_tl.git"
         "telegram-desktop-lib_spellcheck::git+https://github.com/desktop-app/lib_spellcheck"
         "telegram-desktop-lib_storage::git+https://github.com/desktop-app/lib_storage.git"
-        "telegram-desktop-cmake_helpers::git+https://github.com/desktop-app/cmake_helpers.git"
-        "telegram-desktop-expected::git+https://github.com/TartanLlama/expected"
-        "telegram-desktop-QR-Code-generator::git+https://github.com/nayuki/QR-Code-generator"
+        "telegram-desktop-cmake_helpers::git+https://github.com/TDesktop-x64/cmake_helpers"
+        "telegram-desktop-expected::git+https://github.com/TartanLlama/expected#tag=v1.0.0"
+        "telegram-desktop-QR-Code-generator::git+https://github.com/nayuki/QR-Code-generator#tag=v1.6.0"
         "telegram-desktop-lib_qr::git+https://github.com/desktop-app/lib_qr.git"
         "telegram-desktop-libdbusmenu-qt::git+https://github.com/desktop-app/libdbusmenu-qt.git"
-        "telegram-desktop-hunspell::git+https://github.com/hunspell/hunspell"
+        "telegram-desktop-hunspell::git+https://github.com/hunspell/hunspell#tag=v1.7.0"
         "telegram-desktop-materialdecoration::git+https://github.com/desktop-app/materialdecoration.git"
-        "telegram-desktop-range-v3::git+https://github.com/ericniebler/range-v3.git"
-        "telegram-desktop-fcitx-qt5::git+https://github.com/fcitx/fcitx-qt5.git"
-        "telegram-desktop-nimf::git+https://github.com/hamonikr/nimf.git"
-        "telegram-desktop-hime::git+https://github.com/hime-ime/hime.git"
-        "telegram-desktop-qt5ct::git+https://github.com/desktop-app/qt5ct.git"
-        "telegram-desktop-fcitx5-qt::git+https://github.com/fcitx/fcitx5-qt.git"
+        "telegram-desktop-range-v3::git+https://github.com/ericniebler/range-v3#tag=0.11.0"
+        "telegram-desktop-fcitx-qt5::git+https://github.com/fcitx/fcitx-qt5#tag=1.2.5"
+        "telegram-desktop-nimf::git+https://github.com/hamonikr/nimf#tag=1.3.0"
+        "telegram-desktop-hime::git+https://github.com/hime-ime/hime#tag=v0.9.11"
+        "telegram-desktop-qt5ct::git+https://github.com/desktop-app/qt5ct#commit=59be9d1d995348687702a18ce3d653c07389cfa2" # 1.2
+        "telegram-desktop-fcitx5-qt::git+https://github.com/fcitx/fcitx5-qt#tag=5.0.2"
         "telegram-desktop-lib_webrtc::git+https://github.com/desktop-app/lib_webrtc.git"
-        "telegram-desktop-tgcalls::git+https://github.com/TelegramMessenger/tgcalls.git"
+        "telegram-desktop-tgcalls::git+https://github.com/TDesktop-x64/tgcalls"
 )
 sha512sums=('SKIP'
             'SKIP'
@@ -78,10 +80,6 @@ sha512sums=('SKIP'
             'SKIP'
             'SKIP'
             'SKIP')
-pkgver() {
-    cd "$srcdir/tdesktop"
-    git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
-}
 
 prepare() {
     cd "$srcdir/tdesktop"
@@ -130,6 +128,7 @@ build() {
     # Turns out we're allowed to use the official API key that telegram uses for their snap builds:
     # https://github.com/telegramdesktop/tdesktop/blob/8fab9167beb2407c1153930ed03a4badd0c2b59f/snap/snapcraft.yaml#L87-L88
     # Thanks @primeos!
+    CXXFLAGS="$CXXFLAGS -fpermissive" \
     cmake . \
         -B build \
         -G Ninja \
