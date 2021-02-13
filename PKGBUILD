@@ -3,7 +3,7 @@
 pkgname=megacmd-dynamic
 pkgver=1.4.0
 _sdkver=3.7.3c
-pkgrel=1
+pkgrel=2
 pkgdesc='MEGA Command Line Interactive and Scriptable Application (dynamically linked version)'
 arch=(x86_64)
 url='https://mega.nz/cmd'
@@ -15,12 +15,10 @@ conflicts=(megacmd mega-sdk)
 source=(
     git+https://github.com/meganz/MEGAcmd.git#commit=4fc0787c44d1894a476355c147ad8c207333fe94
     git+https://github.com/meganz/sdk.git#commit=2337aca38daaca6deedd04d8ea400293503f00ff
-    100-megacmd-inotify-limit.conf
 )
 b2sums=(
     SKIP
     SKIP
-    517c0e77a99a8849957f676731af4be08a252adf86ded7e12f454a478cc7546304f6beaf64c32665ecc8035cbec63ab44f8a457268de9f3a9bd2c90ccfc63948
 )
 
 prepare() {
@@ -57,10 +55,7 @@ build() {
 
 package() {
     make -C MEGAcmd DESTDIR="$pkgdir" install
-
     # the Makefile installs bash completion scripts at wrong path
     mv "$pkgdir"/{usr/,}etc
-
-    install -Dm644 100-megacmd-inotify-limit.conf "$pkgdir"/etc/sysctl.d/100-megacmd-inotify-limit.conf
     install -Dm644 MEGAcmd/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 }
