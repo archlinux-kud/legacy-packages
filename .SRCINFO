@@ -6,9 +6,12 @@ pkgbase = hardened_malloc
 	arch = x86_64
 	license = MIT
 	checkdepends = python
+	makedepends = gcc>=8.3.0
 	makedepends = git
-	depends = gcc-libs
-	provides = libhardened_malloc.so
+	depends = gcc-libs>=8.3.0
+	depends = glibc>=2.28
+	provides = libhardened_malloc.so=5
+	options = !buildflags
 	source = git+https://github.com/GrapheneOS/hardened_malloc#tag=5?signed
 	validpgpkeys = 65EEFE022108E2B708CBFCF7F9E712E59AF5F22A
 	sha256sums = SKIP
