@@ -1,12 +1,12 @@
 diff --git a/.SRCINFO b/.SRCINFO
-index fb34076..36debe1 100644
+index fb34076..62aad4f 100644
 --- a/.SRCINFO
 +++ b/.SRCINFO
 @@ -1,6 +1,6 @@
  pkgbase = curl-http3
  	pkgdesc = An URL retrieval utility and library - compiled with HTTP/3 support - binary is called curl3
 -	pkgver = 7.73.0
-+	pkgver = 7.74.0
++	pkgver = 7.75.0
  	pkgrel = 1
  	url = https://curl.haxx.se
  	arch = x86_64
@@ -16,11 +16,11 @@ index fb34076..36debe1 100644
  	depends = libidn2.so
 -	source = https://curl.haxx.se/download/curl-7.73.0.tar.gz
 -	source = https://curl.haxx.se/download/curl-7.73.0.tar.gz.asc
-+	source = https://curl.haxx.se/download/curl-7.74.0.tar.gz
-+	source = https://curl.haxx.se/download/curl-7.74.0.tar.gz.asc
++	source = https://curl.haxx.se/download/curl-7.75.0.tar.gz
++	source = https://curl.haxx.se/download/curl-7.75.0.tar.gz.asc
  	validpgpkeys = 27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2
 -	sha512sums = 86996f7ce537cfc39be18a6a93af0524c7a878d9e003ce0106eb4ff6ce2dea99da1cb9af297b87f93b204b42a3d793198a6e01764aa2a06f5b6fe0623b008f88
-+	sha512sums = 4b61a23463315dce5529aa5f1dc7d21d7876347912c68855c9cfcb01e06492af1510975fafb213c67ac7b9764287767da69043a79376a4be366aa23ace09f163
++	sha512sums = ebef01be48e05f46f7d0605966d4c66391d5a51f6d102265647522f8f5df61b5440c930bd1b043d56968769869275123122826a9ec7fb3148c72a28ee32ce696
  	sha512sums = SKIP
  
  pkgname = curl-http3

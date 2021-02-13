@@ -1,12 +1,12 @@
 diff --git a/.SRCINFO b/.SRCINFO
-index d0ac0a4..24a114f 100644
+index d0ac0a4..65be46a 100644
 --- a/.SRCINFO
 +++ b/.SRCINFO
 @@ -1,6 +1,6 @@
  pkgbase = ttf-google-fonts-git
  	pkgdesc = TrueType fonts from the Google Fonts project (git version)
 -	pkgver = r2002.37e0f8a4
-+	pkgver = r2237.ebaa6a7a
++	pkgver = r2303.5fd232d8
  	pkgrel = 1
  	epoch = 1
  	url = https://github.com/google/fonts
@@ -23,7 +23,7 @@ index d0ac0a4..24a114f 100644
  	sha512sums = SKIP
  
 diff --git a/PKGBUILD b/PKGBUILD
-index d29a401..9e62ac9 100644
+index d29a401..d00e68b 100644
 --- a/PKGBUILD
 +++ b/PKGBUILD
 @@ -9,13 +9,14 @@
@@ -31,7 +31,7 @@ index d29a401..9e62ac9 100644
  
  pkgname=ttf-google-fonts-git
 -pkgver=r2002.37e0f8a4
-+pkgver=r2237.ebaa6a7a
++pkgver=r2303.5fd232d8
  pkgrel=1
  epoch=1
  pkgdesc="TrueType fonts from the Google Fonts project (git version)"
