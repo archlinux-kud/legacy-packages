@@ -1,8 +1,0 @@
-# ignore all files
-*
-
-# only include PKGBUILD contents
-!PKGBUILD
-!config.compilers
-!sign_modules.sh
-!x509.genkey
