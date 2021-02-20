@@ -2,7 +2,7 @@
 # Contributor: Sven-Hendrik Haase <svenstaro@gmail.com>
 # Contributor: hexchain <i@hexchain.org>
 pkgname=tdesktop-x64
-pkgver=2.5.8.2
+pkgver=2.5.9.1
 pkgrel=1
 pkgdesc='Third party Telegram Desktop client with various enhancements'
 arch=('x86_64')
@@ -44,7 +44,7 @@ source=("tdesktop::git+https://github.com/TDesktop-x64/tdesktop#tag=v$pkgver"
         "telegram-desktop-nimf::git+https://github.com/hamonikr/nimf#tag=1.3.0"
         "telegram-desktop-hime::git+https://github.com/hime-ime/hime#tag=v0.9.11"
         "telegram-desktop-qt5ct::git+https://github.com/desktop-app/qt5ct#commit=59be9d1d995348687702a18ce3d653c07389cfa2" # 1.2
-        "telegram-desktop-fcitx5-qt::git+https://github.com/fcitx/fcitx5-qt#tag=5.0.2"
+        "telegram-desktop-fcitx5-qt::git+https://github.com/fcitx/fcitx5-qt#tag=5.0.3"
         "telegram-desktop-lib_webrtc::git+https://github.com/desktop-app/lib_webrtc.git"
         "telegram-desktop-tgcalls::git+https://github.com/TDesktop-x64/tgcalls"
 )
