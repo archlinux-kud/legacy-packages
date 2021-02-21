@@ -4,7 +4,7 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=android-firmware-extractor-git
-pkgver=r134.f1df5de
+pkgver=r135.f424572
 pkgrel=1
 pkgdesc='Collection of tools to extract images from stock Android firmware'
 arch=(x86_64)
@@ -52,7 +52,7 @@ pkgver() {
 
 prepare() {
     # don't pull external tools everytime we execute the script, we package them here
-    sed -i '/extract_android_ota_payload/,+15d' "$srcdir"/Firmware_extractor/extractor.sh
+    sed -i '/\$toolsdir\/extract_android_ota_payload/,+17d' "$srcdir"/Firmware_extractor/extractor.sh
 }
 
 package() {

@@ -1,6 +1,6 @@
 pkgbase = android-firmware-extractor-git
 	pkgdesc = Collection of tools to extract images from stock Android firmware
-	pkgver = r134.f1df5de
+	pkgver = r135.f424572
 	pkgrel = 1
 	url = https://github.com/AndroidDumps/Firmware_extractor
 	arch = x86_64
