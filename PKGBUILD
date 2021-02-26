@@ -7,9 +7,9 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.10.17~ms21
+pkgver=5.10.18~ms21
 pkgrel=1
-pkgdesc='MoeSyndrome Kernel'
+pkgdesc='MoeSyndrome Kernel (LTS)'
 arch=(x86_64)
 url='https://github.com/krasCGQ/moesyndrome-kernel'
 license=(GPL2)
@@ -42,18 +42,18 @@ prepare() {
     local HASH
     cd $_srcname
 
-    HASH=$(grep -q 'MODULE_SIG is not set' "$_defconfig" && echo true || echo false)
+    HASH=$(grep -q 'MODULE_SIG is not set' "$_defconfig" && echo false || echo true)
     msg2 'Module signing status: %s' "$HASH"
     if $HASH; then
         # parse hash used to sign modules from defconfig
         HASH=$(grep SIG_SHA "$_defconfig" | sed -e s/.*._// -e s/=y//)
         # defaults to SHA1 if not found in defconfig
         [ -z "$HASH" ] && hash=SHA1
-        msg2 'Module signature hash algorithm used: %s' "${hash,,}"
+        msg2 'Module signature hash algorithm used: %s' "${HASH,,}"
 
         if [ ! -f certs/signing_key.pem ]; then
             msg2 'Generating an %s public/private key pair...' "$HASH"
-            openssl req -new -nodes -utf8 -${hash,,} -days 3650 -batch -x509 \
+            openssl req -new -nodes -utf8 -${HASH,,} -days 3650 -batch -x509 \
                 -config ../x509.genkey -outform PEM -out certs/signing_key.pem \
                 -keyout certs/signing_key.pem 2>/dev/null
         fi

@@ -1,6 +1,6 @@
 pkgbase = linux-moesyndrome
-	pkgdesc = MoeSyndrome Kernel
-	pkgver = 5.10.17~ms21
+	pkgdesc = MoeSyndrome Kernel (LTS)
+	pkgver = 5.10.18~ms21
 	pkgrel = 1
 	url = https://github.com/krasCGQ/moesyndrome-kernel
 	arch = x86_64
@@ -19,27 +19,27 @@ pkgbase = linux-moesyndrome
 	makedepends = llvm>=11.0.0
 	options = !buildflags
 	options = !strip
-	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel?signed#tag=5.10.17-ms21
+	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel?signed#tag=5.10.18-ms21
 	source = x509.genkey
 	validpgpkeys = 4D4209B115B5643C3E753A9317E9D95B6620AF67
 	b2sums = SKIP
 	b2sums = 835cf07cf8d45e349e6c683306d680b976b8add6c21c6cb0ec4bc380521e8b0f83386ce5dae7942126ef389f72ee6d73c914cc98c167bdb580b46cd838a94f8d
 
 pkgname = linux-moesyndrome
-	pkgdesc = MoeSyndrome Kernel - kernel and modules
+	pkgdesc = MoeSyndrome Kernel (LTS) - kernel and modules
 	depends = coreutils
 	depends = kmod
 	depends = initramfs
 	optdepends = crda: to set the correct wireless channels of your country
 	optdepends = linux-firmware: firmware images needed for some devices
-	provides = linux-moesyndrome=5.10.17~ms21
+	provides = linux-moesyndrome=5.10.18~ms21
 	provides = VIRTUALBOX-GUEST-MODULES
 	provides = WIREGUARD-MODULE
 
 pkgname = linux-moesyndrome-headers
-	pkgdesc = Header and scripts for building modules for MoeSyndrome Kernel
+	pkgdesc = Header and scripts for building modules for MoeSyndrome Kernel (LTS)
 	depends = clang>=11.0.0
 	depends = lld>=11.0.0
 	depends = llvm>=11.0.0
-	provides = linux-moesyndrome-headers=5.10.17~ms21
+	provides = linux-moesyndrome-headers=5.10.18~ms21
 
