@@ -1,6 +1,6 @@
 pkgbase = tdesktop-x64
 	pkgdesc = Third party Telegram Desktop client with various enhancements
-	pkgver = 2.5.9.1
+	pkgver = 2.6.1.1
 	pkgrel = 1
 	url = https://github.com/TDesktop-x64
 	arch = x86_64
@@ -27,7 +27,7 @@ pkgbase = tdesktop-x64
 	optdepends = ttf-opensans: default Open Sans font family
 	provides = telegram-desktop
 	conflicts = telegram-desktop
-	source = tdesktop::git+https://github.com/TDesktop-x64/tdesktop#tag=v2.5.9.1
+	source = tdesktop::git+https://github.com/TDesktop-x64/tdesktop#tag=v2.6.1.1
 	source = telegram-desktop-libtgvoip::git+https://github.com/telegramdesktop/libtgvoip
 	source = telegram-desktop-GSL::git+https://github.com/microsoft/GSL#tag=v3.1.0
 	source = telegram-desktop-Catch::git+https://github.com/catchorg/Catch2#tag=v2.13.4
