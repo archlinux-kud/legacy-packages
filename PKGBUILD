@@ -2,12 +2,12 @@
 
 pkgname=srandom-moesyndrome
 pkgver=1.38.0
-pkgrel=11
+pkgrel=12
 pkgdesc='Kernel modules for the srandom for linux-moesyndrome'
 arch=(x86_64)
 url='https://github.com/josenk/srandom'
 license=(GPL3)
-_kernver=5.10.17~ms21
+_kernver=5.10.18~ms21
 depends=("linux-moesyndrome=$_kernver")
 makedepends=("linux-moesyndrome-headers=$_kernver")
 options=('!buildflags' '!strip')
