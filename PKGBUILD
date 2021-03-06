@@ -7,7 +7,7 @@
 # Author: Albert I <kras@raphielgang.org>
 
 pkgbase=linux-moesyndrome
-pkgver=5.10.19~ms22
+pkgver=5.10.19~ms23
 pkgrel=1
 pkgdesc='MoeSyndrome Kernel (LTS)'
 arch=(x86_64)
