@@ -1,6 +1,6 @@
 pkgbase = linux-moesyndrome
 	pkgdesc = MoeSyndrome Kernel (LTS)
-	pkgver = 5.10.19~ms23
+	pkgver = 5.10.32~ms23
 	pkgrel = 1
 	url = https://github.com/krasCGQ/moesyndrome-kernel
 	arch = x86_64
@@ -19,7 +19,7 @@ pkgbase = linux-moesyndrome
 	makedepends = llvm>=11.0.0
 	options = !buildflags
 	options = !strip
-	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel?signed#tag=5.10.19-ms23
+	source = linux::git+https://github.com/krasCGQ/moesyndrome-kernel?signed#tag=5.10.32-ms23
 	source = x509.genkey
 	validpgpkeys = 4D4209B115B5643C3E753A9317E9D95B6620AF67
 	b2sums = SKIP
@@ -32,7 +32,7 @@ pkgname = linux-moesyndrome
 	depends = initramfs
 	optdepends = crda: to set the correct wireless channels of your country
 	optdepends = linux-firmware: firmware images needed for some devices
-	provides = linux-moesyndrome=5.10.19~ms23
+	provides = linux-moesyndrome=5.10.32~ms23
 	provides = VIRTUALBOX-GUEST-MODULES
 	provides = WIREGUARD-MODULE
 
@@ -41,5 +41,5 @@ pkgname = linux-moesyndrome-headers
 	depends = clang>=11.0.0
 	depends = lld>=11.0.0
 	depends = llvm>=11.0.0
-	provides = linux-moesyndrome-headers=5.10.19~ms23
+	provides = linux-moesyndrome-headers=5.10.32~ms23
 
