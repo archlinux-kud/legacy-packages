@@ -1,0 +1,20 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 83da8f7..3b47a36 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -7,7 +7,6 @@ pkgdesc="File archiver with a high compression ratio"
+ url="https://www.7-zip.org"
+ license=(LGPL)
+ arch=(x86_64 i686 aarch64 armv7h)
+-conflicts=(p7zip)
+ source_x86_64=(https://www.7-zip.org/a/7z2101-linux-x64.tar.xz)
+ source_i686=(https://www.7-zip.org/a/7z2101-linux-x86.tar.xz)
+ source_aarch64=(https://www.7-zip.org/a/7z2101-linux-arm64.tar.xz)
+@@ -19,7 +18,6 @@ sha256sums_armv7h=('a142caaa9f9c66f70ede239ed8c953978eee0c7ab1c3b932ca0655197782
+ 
+ package() {
+ 	install -Dt "${pkgdir}"/usr/bin -m0755 7zz
+-	ln -sf 7zz "${pkgdir}"/usr/bin/7z
+ 	install -Dt "${pkgdir}"/usr/share/licenses/${pkgname} -m0644 License.txt
+ 	install -Dt "${pkgdir}"/usr/share/doc/${pkgname} -m0644 History.txt readme.txt
+ 	cp -r MANUAL "${pkgdir}"/usr/share/doc/${pkgname}/manual

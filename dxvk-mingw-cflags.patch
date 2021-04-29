@@ -1,0 +1,16 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 1901da9..ca48725 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -25,6 +25,11 @@ sha256sums=(
+ )
+ 
+ prepare() {
++    CFLAGS="${CFLAGS/ -O*([0-3sz])/}"
++    CFLAGS="${CFLAGS/-D_FORTIFY_SOURCE=2,/}"
++    CFLAGS="${CFLAGS/ -fstack-clash-protection/}"
++    CXXFLAGS="$CFLAGS"
++
+     cd dxvk
+     # Uncomment to enable dxvk async patch.
+     # Enable at your own risk. If you don't know what it is,
