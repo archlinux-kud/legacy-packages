@@ -1,15 +1,13 @@
 pkgbase = zfs-moesyndrome
 	pkgdesc = Kernel modules for the Zettabyte File System for linux-moesyndrome
-	pkgver = 2.0.0_rc6
+	pkgver = 2.1.0_rc4
 	pkgrel = 1
 	url = https://www.zfsonlinux.org
 	arch = x86_64
 	license = CDDL
-	makedepends = clang
-	makedepends = linux-moesyndrome-headers=5.8.18~ms13-1
-	makedepends = lld
-	depends = linux-moesyndrome=5.8.18~ms13-1
-	depends = zfs-utils=2.0.0_rc6
+	makedepends = linux-moesyndrome-headers=5.10.33~ms23
+	depends = linux-moesyndrome=5.10.33~ms23
+	depends = zfs-utils
 	provides = spl
 	provides = zfs
 	conflicts = spl-dkms
@@ -19,10 +17,11 @@ pkgbase = zfs-moesyndrome
 	conflicts = zfs-dkms-rc
 	options = !buildflags
 	options = !strip
-	source = https://github.com/openzfs/zfs/releases/download/zfs-2.0.0-rc6/zfs-2.0.0-rc6.tar.gz
-	source = https://github.com/openzfs/zfs/releases/download/zfs-2.0.0-rc6/zfs-2.0.0-rc6.tar.gz.asc
+	source = https://github.com/openzfs/zfs/releases/download/zfs-2.1.0-rc4/zfs-2.1.0-rc4.tar.gz
+	source = https://github.com/openzfs/zfs/releases/download/zfs-2.1.0-rc4/zfs-2.1.0-rc4.tar.gz.asc
+	validpgpkeys = 4F3BA9AB6D1F8D683DC2DFB56AD860EED4598027
 	validpgpkeys = C33DF142657ED1F7C328A2960AB9E991C6AF658B
-	b2sums = e7a91d980940998a7312d48a43c07561e3b1aa72cc6f88eb534cb39b5e18de4280964ba7f690b63f5e2dd3cfdeb57d718d7389f8ab2062ff7bb6e8bb4174801a
+	b2sums = b15b641ad322b7a50a5942500ef7c26f85074ef2672747f7391fcc785c3564c23fa5d49d51a146d284309905b4f1e1f96bb1e48f5cd1aeaebe6c55bc74a1f46f
 	b2sums = SKIP
 
 pkgname = zfs-moesyndrome

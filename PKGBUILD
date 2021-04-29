@@ -5,26 +5,27 @@
 # ZFS on Linux couldn't be implemented into kernel directly.
 
 pkgname=zfs-moesyndrome
-_zfsver=2.0.0-rc6
+_zfsver=2.1.0-rc4
 pkgver=${_zfsver/-/_}
 pkgrel=1
 pkgdesc='Kernel modules for the Zettabyte File System for linux-moesyndrome'
 arch=(x86_64)
 url='https://www.zfsonlinux.org'
 license=(CDDL)
-_kernver=5.8.18~ms13-2
+_kernver=5.10.33~ms23
 depends=("linux-moesyndrome=$_kernver" zfs-utils)
 makedepends=("linux-moesyndrome-headers=$_kernver")
 provides=(spl zfs)
 conflicts=(spl-dkms{,-git} zfs-dkms{,-{git,rc}})
 options=('!buildflags' '!strip')
 source=("https://github.com/openzfs/zfs/releases/download/zfs-$_zfsver/zfs-$_zfsver.tar.gz"{,.asc})
-b2sums=(e7a91d980940998a7312d48a43c07561e3b1aa72cc6f88eb534cb39b5e18de4280964ba7f690b63f5e2dd3cfdeb57d718d7389f8ab2062ff7bb6e8bb4174801a
+b2sums=(b15b641ad322b7a50a5942500ef7c26f85074ef2672747f7391fcc785c3564c23fa5d49d51a146d284309905b4f1e1f96bb1e48f5cd1aeaebe6c55bc74a1f46f
         SKIP)
-validpgpkeys=(C33DF142657ED1F7C328A2960AB9E991C6AF658B)
-
-_moever=${_kernver/-*/+arch}
-_kernsrc=/usr/lib/modules/$_moever/build
+validpgpkeys=(
+    4F3BA9AB6D1F8D683DC2DFB56AD860EED4598027 # Tony Hutter (GPG key for signing ZFS releases) <hutter2@llnl.gov>
+    C33DF142657ED1F7C328A2960AB9E991C6AF658B # Brian Behlendorf <behlendorf1@llnl.gov>
+)
+_kernsrc=/usr/lib/modules/$_kernver+arch/build
 
 prepare() {
     cd "$srcdir/zfs-${_zfsver/-rc*/}"
