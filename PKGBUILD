@@ -1,24 +1,27 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=megacmd-dynamic
-pkgver=1.4.0
-_sdkver=3.7.3c
-pkgrel=2
+pkgver=1.4.1
+_sdkver=3.7.3h
+pkgrel=1
 pkgdesc='MEGA Command Line Interactive and Scriptable Application (dynamically linked version)'
 arch=(x86_64)
 url='https://mega.nz/cmd'
 license=(BSD-2-Clause GPL3)
-depends=(c-ares crypto++ ffmpeg freeimage libsodium libuv mediainfo sqlite zlib)
+depends=(crypto++ freeimage libmediainfo libsodium libuv sqlite zlib
+         libavcodec.so libavformat.so libavutil.so libcares.so libswscale.so)
 optdepends=('bash-completion: for completion script')
 provides=("megacmd=$pkgver" "mega-sdk=$_sdkver")
 conflicts=(megacmd mega-sdk)
 source=(
-    git+https://github.com/meganz/MEGAcmd.git#commit=4fc0787c44d1894a476355c147ad8c207333fe94
-    git+https://github.com/meganz/sdk.git#commit=2337aca38daaca6deedd04d8ea400293503f00ff
+    git+https://github.com/meganz/MEGAcmd.git#commit=ef6cdeaf2d289d487c77f2231af45a1677dfb566
+    git+https://github.com/meganz/sdk.git#commit=0e79b2739f695d08efed5a61bbf44362e127c30b
+    libavformat58.patch
 )
 b2sums=(
     SKIP
     SKIP
+    909f810df6402af8c533b02b0b36a59d9ccbc06c6b3b851676b2691b752fdb7cb0ca9c50c14dea138d7c192cdc58d61c35e5621495e6488f6e4fe09169f5c2c3
 )
 
 prepare() {
@@ -29,6 +32,10 @@ prepare() {
     git config submodule.sdk.url ../sdk
     git submodule update sdk
 
+    cd sdk
+    patch -Np1 -i "$srcdir"/libavformat58.patch
+
+    cd ..
     ./autogen.sh
 }
 

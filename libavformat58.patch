@@ -1,0 +1,24 @@
+diff --git a/src/gfx/freeimage.cpp b/src/gfx/freeimage.cpp
+index 16f4f2cbb..b27ef6c02 100644
+--- a/src/gfx/freeimage.cpp
++++ b/src/gfx/freeimage.cpp
+@@ -188,7 +188,6 @@ bool GfxProcFreeImage::readbitmapFfmpeg(FileAccess* fa, string* imagePath, int s
+ 
+     // Force seeking to key frames
+     formatContext->seek2any = false;
+-    videoStream->skip_to_keyframe = true;
+     if (decoder->capabilities & CAP_TRUNCATED)
+     {
+         codecContext.flags |= CAP_TRUNCATED;
+diff --git a/src/gfx/qt.cpp b/src/gfx/qt.cpp
+index bc26177c5..da1281fcb 100644
+--- a/src/gfx/qt.cpp
++++ b/src/gfx/qt.cpp
+@@ -1215,7 +1215,6 @@ QImageReader *GfxProcQT::readbitmapFfmpeg(int &w, int &h, int &orientation, QStr
+ 
+     // Force seeking to key frames
+     formatContext->seek2any = false;
+-    videoStream->skip_to_keyframe = true;
+     if (decoder->capabilities & CAP_TRUNCATED)
+     {
+         codecContext.flags |= CAP_TRUNCATED;
