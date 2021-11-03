@@ -1,4 +1,4 @@
-pkgbase = tdesktop-x64
+pkgbase = 64gram-desktop
 	pkgdesc = Third party Telegram Desktop client with various enhancements
 	pkgver = 3.1.11.2
 	pkgrel = 1
@@ -39,6 +39,7 @@ pkgbase = tdesktop-x64
 	optdepends = xdg-desktop-portal: desktop integration
 	provides = telegram-desktop
 	conflicts = telegram-desktop
+	replaces = tdesktop-x64
 	source = tdesktop::git+https://github.com/TDesktop-x64/tdesktop.git#tag=v3.1.11.2
 	source = telegram-desktop-libtgvoip::git+https://github.com/telegramdesktop/libtgvoip.git#commit=373e41668b265864f8976b83bb66dd6e9a583915
 	source = telegram-desktop-GSL::git+https://github.com/microsoft/GSL.git#commit=1999b48a519196711f0d03af3b7eedd49fcc6db3
@@ -106,4 +107,4 @@ pkgbase = tdesktop-x64
 	b2sums = SKIP
 	b2sums = SKIP
 
-pkgname = tdesktop-x64
+pkgname = 64gram-desktop

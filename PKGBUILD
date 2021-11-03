@@ -1,7 +1,7 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 # Contributor: Sven-Hendrik Haase <svenstaro@gmail.com>
 # Contributor: hexchain <i@hexchain.org>
-pkgname=tdesktop-x64
+pkgname=64gram-desktop
 pkgver=3.1.11.2
 pkgrel=1
 pkgdesc='Third party Telegram Desktop client with various enhancements'
@@ -18,6 +18,7 @@ optdepends=('gtk3: GTK environment integration'
             'xdg-desktop-portal: desktop integration')
 provides=("telegram-desktop")
 conflicts=("telegram-desktop")
+replaces=("tdesktop-x64")
 source=("tdesktop::git+https://github.com/TDesktop-x64/tdesktop.git#tag=v$pkgver"
         "telegram-desktop-libtgvoip::git+https://github.com/telegramdesktop/libtgvoip.git#commit=373e41668b265864f8976b83bb66dd6e9a583915"
         "telegram-desktop-GSL::git+https://github.com/microsoft/GSL.git#commit=1999b48a519196711f0d03af3b7eedd49fcc6db3"
