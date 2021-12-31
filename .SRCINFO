@@ -1,38 +1,43 @@
 pkgbase = android-firmware-extractor-git
-	pkgdesc = Collection of tools to extract images from stock Android firmware
-	pkgver = r135.f424572
+	pkgdesc = Collection of tools to extract images from stock Android firmware (git version)
+	pkgver = r146.0b82502
 	pkgrel = 1
-	url = https://github.com/AndroidDumps/Firmware_extractor
+	url = https://dumps.tadiphone.dev/dumps
 	arch = x86_64
 	license = GPL3
+	license = MIT
+	license = Apache
 	license = custom
 	depends = brotli
 	depends = lz4
 	depends = p7zip
-	depends = perl-rename
+	depends = tar
+	depends = util-linux
 	depends = python>=3.6.0
-	depends = python2
+	depends = python2>=2.7
 	depends = python-argparse
-	depends = python-zstandard
 	depends = python-protobuf>=3.6.0
-	depends = python-docopt
 	depends = python-pycryptodome
-	depends = python2-argparse
+	depends = python-zstandard
+	optdepends = python2-argparse: for update_payload_extractor and unkdz scripts
+	provides = android-firmware-extractor
+	conflicts = android-firmware-extractor
 	options = !strip
 	options = libtool
 	options = staticlibs
 	options = !zipman
 	options = !purge
-	source = git+https://github.com/AndroidDumps/Firmware_extractor
-	source = git+https://github.com/cyxx/extract_android_ota_payload
-	source = git+https://github.com/bkerler/oppo_ozip_decrypt
-	source = git+https://github.com/erfanoabdi/update_payload_extractor
+	source = git+https://github.com/AndroidDumps/Firmware_extractor.git
+	source = git+https://github.com/cyxx/extract_android_ota_payload.git
+	source = git+https://github.com/bkerler/oppo_ozip_decrypt.git
+	source = git+https://github.com/erfanoabdi/update_payload_extractor.git
 	source = fw-extractor.sh
+	source = fw-patcher.sh
 	b2sums = SKIP
 	b2sums = SKIP
 	b2sums = SKIP
 	b2sums = SKIP
 	b2sums = fac57da161e40c621b6698b8e27836e3fcb91a57ca309e4f43c167255889a9aed3b297d2c573394c4fffa11ca5038ee54888df1bd383a88eb14cd51189e35b5f
+	b2sums = d60a3219c83438fca464d294e8a5a3f807e825fd41019aefde9e515ca79550ec295d3669f1ffc4cdad45c1b3932d3c8dfc646d6217531efeb767967d0b666a2a
 
 pkgname = android-firmware-extractor-git
-
