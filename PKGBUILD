@@ -1,27 +1,29 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=megacmd-dynamic
-pkgver=1.4.1
-_sdkver=3.7.3h
+pkgver=1.5.0b
+_sdkver=3.9.11b
 pkgrel=1
 pkgdesc='MEGA Command Line Interactive and Scriptable Application (dynamically linked version)'
 arch=(x86_64)
 url='https://mega.nz/cmd'
 license=(BSD-2-Clause GPL3)
-depends=(crypto++ freeimage libmediainfo libsodium libuv sqlite zlib
-         libavcodec.so libavformat.so libavutil.so libcares.so libswscale.so)
+depends=(
+    crypto++ freeimage libmediainfo libsodium libuv openssl pcre sqlite zlib
+    libavcodec.so libavformat.so libavutil.so libcares.so libcurl.so libreadline.so libswscale.so
+)
 optdepends=('bash-completion: for completion script')
 provides=("megacmd=$pkgver" "mega-sdk=$_sdkver")
 conflicts=(megacmd mega-sdk)
 source=(
-    git+https://github.com/meganz/MEGAcmd.git#commit=ef6cdeaf2d289d487c77f2231af45a1677dfb566
-    git+https://github.com/meganz/sdk.git#commit=0e79b2739f695d08efed5a61bbf44362e127c30b
-    libavformat58.patch
+    "git+https://github.com/meganz/MEGAcmd.git#tag=${pkgver}_Linux"
+    'git+https://github.com/meganz/sdk.git#commit=f6438d55fa6b1ef54eb2b8832a1da7502a56df13'
+    'ffmpeg.patch' # fix compile with newer FFmpeg versions
 )
 b2sums=(
-    SKIP
-    SKIP
-    909f810df6402af8c533b02b0b36a59d9ccbc06c6b3b851676b2691b752fdb7cb0ca9c50c14dea138d7c192cdc58d61c35e5621495e6488f6e4fe09169f5c2c3
+    'SKIP'
+    'SKIP'
+    'a8b7a49237a0594ca33b30eccc9350ac298514aa4afc37fe7701cc7790f201566d45ac13c2a77a2084166f086d6c288d952c0e931ae1e514f012e56ae67ef2b4'
 )
 
 prepare() {
@@ -32,10 +34,10 @@ prepare() {
     git config submodule.sdk.url ../sdk
     git submodule update sdk
 
-    cd sdk
-    patch -Np1 -i "$srcdir"/libavformat58.patch
+    pushd sdk
+    patch -Np1 -i "$srcdir"/ffmpeg.patch
+    popd
 
-    cd ..
     ./autogen.sh
 }
 
@@ -44,18 +46,24 @@ build() {
 
     CPPFLAGS="$CPPFLAGS -DREQUIRE_HAVE_FFMPEG -DREQUIRE_HAVE_LIBUV -DREQUIRE_USE_MEDIAINFO -DREQUIRE_USE_PCRE" \
     ./configure --prefix=/usr \
+        --disable-curl-checks \
         --disable-examples \
+        --disable-silent-rules \
         --without-libraw \
         --with-cares \
         --with-cryptopp \
         --with-curl \
+        --with-ffmpeg \
         --with-freeimage \
         --with-libmediainfo \
-        --with-libsodium \
         --with-libuv \
         --with-libzen \
+        --with-openssl \
         --with-pcre \
-        --with-readline
+        --with-readline \
+        --with-sodium \
+        --with-sqlite \
+        --with-zlib
 
     make
 }

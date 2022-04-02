@@ -1,6 +1,6 @@
 pkgbase = megacmd-dynamic
 	pkgdesc = MEGA Command Line Interactive and Scriptable Application (dynamically linked version)
-	pkgver = 1.4.1
+	pkgver = 1.5.0b
 	pkgrel = 1
 	url = https://mega.nz/cmd
 	arch = x86_64
@@ -11,24 +11,27 @@ pkgbase = megacmd-dynamic
 	depends = libmediainfo
 	depends = libsodium
 	depends = libuv
+	depends = openssl
+	depends = pcre
 	depends = sqlite
 	depends = zlib
 	depends = libavcodec.so
 	depends = libavformat.so
 	depends = libavutil.so
 	depends = libcares.so
+	depends = libcurl.so
+	depends = libreadline.so
 	depends = libswscale.so
 	optdepends = bash-completion: for completion script
-	provides = megacmd=1.4.1
-	provides = mega-sdk=3.7.3h
+	provides = megacmd=1.5.0b
+	provides = mega-sdk=3.9.11b
 	conflicts = megacmd
 	conflicts = mega-sdk
-	source = git+https://github.com/meganz/MEGAcmd.git#commit=ef6cdeaf2d289d487c77f2231af45a1677dfb566
-	source = git+https://github.com/meganz/sdk.git#commit=0e79b2739f695d08efed5a61bbf44362e127c30b
-	source = libavformat58.patch
+	source = git+https://github.com/meganz/MEGAcmd.git#tag=1.5.0b_Linux
+	source = git+https://github.com/meganz/sdk.git#commit=f6438d55fa6b1ef54eb2b8832a1da7502a56df13
+	source = ffmpeg.patch
 	b2sums = SKIP
 	b2sums = SKIP
-	b2sums = 909f810df6402af8c533b02b0b36a59d9ccbc06c6b3b851676b2691b752fdb7cb0ca9c50c14dea138d7c192cdc58d61c35e5621495e6488f6e4fe09169f5c2c3
+	b2sums = a8b7a49237a0594ca33b30eccc9350ac298514aa4afc37fe7701cc7790f201566d45ac13c2a77a2084166f086d6c288d952c0e931ae1e514f012e56ae67ef2b4
 
 pkgname = megacmd-dynamic
-
