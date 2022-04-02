@@ -1,0 +1,16 @@
+diff --git a/configure.ac b/configure.ac
+index 77c1150f1..1d70bf853 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1724,7 +1724,10 @@ AC_ARG_WITH(pdfium,
+       pdfium=false
+     ;;
+     yes)
+-      AC_CHECK_HEADERS([fpdfview.h],, [
++      AC_CHECK_HEADERS([pdfium/fpdfview.h], [
++          PDF_CXXFLAGS="-I/usr/include/pdfium"
++          PDF_CPPFLAGS="-I/usr/include/pdfium"
++      ], [
+           AC_MSG_ERROR([fpdfview.h header not found or not usable])
+       ])
+       AC_CHECK_LIB([pdfium], [main], [PDF_LIBS="-lpdfium"], [

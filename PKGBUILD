@@ -3,13 +3,13 @@
 pkgname=megacmd-dynamic
 pkgver=1.5.0b
 _sdkver=3.9.11b
-pkgrel=1
+pkgrel=2
 pkgdesc='MEGA Command Line Interactive and Scriptable Application (dynamically linked version)'
 arch=(x86_64)
 url='https://mega.nz/cmd'
 license=(BSD-2-Clause GPL3)
 depends=(
-    crypto++ freeimage libmediainfo libsodium libuv openssl pcre sqlite zlib
+    crypto++ freeimage libmediainfo libpdfium libsodium libuv openssl pcre sqlite zlib
     libavcodec.so libavformat.so libavutil.so libcares.so libcurl.so libreadline.so libswscale.so
 )
 optdepends=('bash-completion: for completion script')
@@ -19,11 +19,13 @@ source=(
     "git+https://github.com/meganz/MEGAcmd.git#tag=${pkgver}_Linux"
     'git+https://github.com/meganz/sdk.git#commit=f6438d55fa6b1ef54eb2b8832a1da7502a56df13'
     'ffmpeg.patch' # fix compile with newer FFmpeg versions
+    'pdfium.patch' # libpdfium-nojs has headers on /usr/include/pdfium
 )
 b2sums=(
     'SKIP'
     'SKIP'
     'a8b7a49237a0594ca33b30eccc9350ac298514aa4afc37fe7701cc7790f201566d45ac13c2a77a2084166f086d6c288d952c0e931ae1e514f012e56ae67ef2b4'
+    '5650db077305e3d8ef49629437a6cdb0abad56232b1d7f364e4214157a715841406e16b45cfce87bea8ad903a6d1d3db0cbf89ada3e2e47f42bfd19414012bea'
 )
 
 prepare() {
@@ -36,6 +38,7 @@ prepare() {
 
     pushd sdk
     patch -Np1 -i "$srcdir"/ffmpeg.patch
+    patch -Np1 -i "$srcdir"/pdfium.patch
     popd
 
     ./autogen.sh
@@ -44,7 +47,7 @@ prepare() {
 build() {
     cd MEGAcmd
 
-    CPPFLAGS="$CPPFLAGS -DREQUIRE_HAVE_FFMPEG -DREQUIRE_HAVE_LIBUV -DREQUIRE_USE_MEDIAINFO -DREQUIRE_USE_PCRE" \
+    CPPFLAGS="$CPPFLAGS -DREQUIRE_HAVE_FFMPEG -DREQUIRE_HAVE_LIBUV -DREQUIRE_HAVE_PDFIUM -DREQUIRE_USE_MEDIAINFO -DREQUIRE_USE_PCRE" \
     ./configure --prefix=/usr \
         --disable-curl-checks \
         --disable-examples \
@@ -60,6 +63,7 @@ build() {
         --with-libzen \
         --with-openssl \
         --with-pcre \
+        --with-pdfium \
         --with-readline \
         --with-sodium \
         --with-sqlite \
