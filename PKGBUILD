@@ -1,23 +1,26 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
-pkgname=megacmd-dynamic
-pkgver=1.5.0b
-_sdkver=3.9.11b
-pkgrel=2
-pkgdesc='MEGA Command Line Interactive and Scriptable Application (dynamically linked version)'
-arch=(x86_64)
+pkgname=megacmd
+pkgver=1.5.1
+_sdkver=3.9.11d
+pkgrel=1
+pkgdesc='MEGA Command Line Interactive and Scriptable Application'
+arch=('x86_64')
 url='https://mega.nz/cmd'
-license=(BSD-2-Clause GPL3)
+license=('GPL3' 'custom:BSD-2-Clause')
 depends=(
-    crypto++ freeimage libmediainfo libpdfium libsodium libuv openssl pcre sqlite zlib
-    libavcodec.so libavformat.so libavutil.so libcares.so libcurl.so libreadline.so libswscale.so
+    'crypto++' 'freeimage' 'libmediainfo' 'libpdfium'
+    'libsodium' 'libuv' 'openssl' 'pcre' 'sqlite' 'zlib'
+    'libavcodec.so' 'libavformat.so' 'libavutil.so' 'libcares.so'
+    'libcurl.so' 'libreadline.so' 'libswscale.so'
 )
 optdepends=('bash-completion: for completion script')
 provides=("megacmd=$pkgver" "mega-sdk=$_sdkver")
-conflicts=(megacmd mega-sdk)
+replaces=('megacmd-dynamic')
+conflicts=('megacmd' 'mega-sdk')
 source=(
     "git+https://github.com/meganz/MEGAcmd.git#tag=${pkgver}_Linux"
-    'git+https://github.com/meganz/sdk.git#commit=f6438d55fa6b1ef54eb2b8832a1da7502a56df13'
+    'git+https://github.com/meganz/sdk.git#commit=a1d391d6a9b747892e8033d60ce1f795d181df3c'
     'ffmpeg.patch' # fix compile with newer FFmpeg versions
     'pdfium.patch' # libpdfium-nojs has headers on /usr/include/pdfium
 )

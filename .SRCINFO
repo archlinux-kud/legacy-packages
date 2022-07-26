@@ -1,11 +1,11 @@
-pkgbase = megacmd-dynamic
-	pkgdesc = MEGA Command Line Interactive and Scriptable Application (dynamically linked version)
-	pkgver = 1.5.0b
-	pkgrel = 2
+pkgbase = megacmd
+	pkgdesc = MEGA Command Line Interactive and Scriptable Application
+	pkgver = 1.5.1
+	pkgrel = 1
 	url = https://mega.nz/cmd
 	arch = x86_64
-	license = BSD-2-Clause
 	license = GPL3
+	license = custom:BSD-2-Clause
 	depends = crypto++
 	depends = freeimage
 	depends = libmediainfo
@@ -24,12 +24,13 @@ pkgbase = megacmd-dynamic
 	depends = libreadline.so
 	depends = libswscale.so
 	optdepends = bash-completion: for completion script
-	provides = megacmd=1.5.0b
-	provides = mega-sdk=3.9.11b
+	provides = megacmd=1.5.1
+	provides = mega-sdk=3.9.11d
 	conflicts = megacmd
 	conflicts = mega-sdk
-	source = git+https://github.com/meganz/MEGAcmd.git#tag=1.5.0b_Linux
-	source = git+https://github.com/meganz/sdk.git#commit=f6438d55fa6b1ef54eb2b8832a1da7502a56df13
+	replaces = megacmd-dynamic
+	source = git+https://github.com/meganz/MEGAcmd.git#tag=1.5.1_Linux
+	source = git+https://github.com/meganz/sdk.git#commit=a1d391d6a9b747892e8033d60ce1f795d181df3c
 	source = ffmpeg.patch
 	source = pdfium.patch
 	b2sums = SKIP
@@ -37,4 +38,4 @@ pkgbase = megacmd-dynamic
 	b2sums = a8b7a49237a0594ca33b30eccc9350ac298514aa4afc37fe7701cc7790f201566d45ac13c2a77a2084166f086d6c288d952c0e931ae1e514f012e56ae67ef2b4
 	b2sums = 5650db077305e3d8ef49629437a6cdb0abad56232b1d7f364e4214157a715841406e16b45cfce87bea8ad903a6d1d3db0cbf89ada3e2e47f42bfd19414012bea
 
-pkgname = megacmd-dynamic
+pkgname = megacmd
