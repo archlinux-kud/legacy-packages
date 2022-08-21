@@ -3,7 +3,7 @@
 
 pkgname=hardened_malloc
 pkgver=11
-pkgrel=2
+pkgrel=3
 pkgdesc="Hardened allocator designed for modern systems"
 arch=('x86_64')
 url="https://github.com/GrapheneOS/hardened_malloc"
