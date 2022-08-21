@@ -3,15 +3,14 @@
 
 pkgname=hardened_malloc
 pkgver=11
-pkgrel=1
+pkgrel=2
 pkgdesc="Hardened allocator designed for modern systems"
 arch=('x86_64')
 url="https://github.com/GrapheneOS/hardened_malloc"
-license=('MIT')
+license=('custom:MIT')
 depends=('gcc-libs>=10.2.0' 'glibc>=2.31' 'openssh>=8.1')
 makedepends=('gcc>=10.2.0' 'git')
 checkdepends=('python')
-options=('!buildflags')
 provides=("libhardened_malloc.so=$pkgver" "libhardened_malloc-light.so=$pkgver")
 source=("git+https://github.com/GrapheneOS/$pkgname#tag=$pkgver?signed")
 sha256sums=('SKIP')
@@ -25,8 +24,7 @@ build() {
 }
 
 check() {
-  cd "$pkgname"
-  make CONFIG_WERROR=false test
+  make -C "$pkgname" test
 }
 
 package() {
