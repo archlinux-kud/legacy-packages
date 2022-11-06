@@ -1,7 +1,7 @@
 pkgbase = megacmd
 	pkgdesc = MEGA Command Line Interactive and Scriptable Application
 	pkgver = 1.5.1
-	pkgrel = 1
+	pkgrel = 2
 	url = https://mega.nz/cmd
 	arch = x86_64
 	license = GPL3
@@ -30,7 +30,7 @@ pkgbase = megacmd
 	conflicts = mega-sdk
 	replaces = megacmd-dynamic
 	source = git+https://github.com/meganz/MEGAcmd.git#tag=1.5.1_Linux
-	source = git+https://github.com/meganz/sdk.git#commit=a1d391d6a9b747892e8033d60ce1f795d181df3c
+	source = meganz-sdk::git+https://github.com/meganz/sdk.git#commit=a1d391d6a9b747892e8033d60ce1f795d181df3c
 	source = ffmpeg.patch
 	source = pdfium.patch
 	b2sums = SKIP

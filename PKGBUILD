@@ -3,7 +3,7 @@
 pkgname=megacmd
 pkgver=1.5.1
 _sdkver=3.9.11d
-pkgrel=1
+pkgrel=2
 pkgdesc='MEGA Command Line Interactive and Scriptable Application'
 arch=('x86_64')
 url='https://mega.nz/cmd'
@@ -20,7 +20,7 @@ replaces=('megacmd-dynamic')
 conflicts=('megacmd' 'mega-sdk')
 source=(
     "git+https://github.com/meganz/MEGAcmd.git#tag=${pkgver}_Linux"
-    'git+https://github.com/meganz/sdk.git#commit=a1d391d6a9b747892e8033d60ce1f795d181df3c'
+    'meganz-sdk::git+https://github.com/meganz/sdk.git#commit=a1d391d6a9b747892e8033d60ce1f795d181df3c'
     'ffmpeg.patch' # fix compile with newer FFmpeg versions
     'pdfium.patch' # libpdfium-nojs has headers on /usr/include/pdfium
 )
@@ -32,11 +32,14 @@ b2sums=(
 )
 
 prepare() {
+    # file:/// protocol now defaults to user for security reasons
+    export GIT_ALLOW_PROTOCOL=file
+
     cd MEGAcmd
 
     # init SDK
     git submodule init sdk
-    git config submodule.sdk.url ../sdk
+    git config submodule.sdk.url ../meganz-sdk
     git submodule update sdk
 
     pushd sdk
