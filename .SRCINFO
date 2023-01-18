@@ -1,7 +1,7 @@
 pkgbase = hardened_malloc
 	pkgdesc = Hardened allocator designed for modern systems
 	pkgver = 11
-	pkgrel = 3
+	pkgrel = 4
 	url = https://github.com/GrapheneOS/hardened_malloc
 	arch = x86_64
 	license = custom:MIT
