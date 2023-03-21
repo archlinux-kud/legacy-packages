@@ -1,9 +1,9 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=megacmd
-pkgver=1.5.1
-_sdkver=3.9.11d
-pkgrel=2
+pkgver=1.6.0
+_sdkver=4.16.0b
+pkgrel=1
 pkgdesc='MEGA Command Line Interactive and Scriptable Application'
 arch=('x86_64')
 url='https://mega.nz/cmd'
@@ -15,19 +15,19 @@ depends=(
     'libcurl.so' 'libreadline.so' 'libswscale.so'
 )
 optdepends=('bash-completion: for completion script')
-provides=("megacmd=$pkgver" "mega-sdk=$_sdkver")
+provides=("mega-sdk=${_sdkver}" 'libmega.so')
 replaces=('megacmd-dynamic')
-conflicts=('megacmd' 'mega-sdk')
+conflicts=('megacmd-dynamic' 'mega-sdk')
 source=(
-    "git+https://github.com/meganz/MEGAcmd.git#tag=${pkgver}_Linux"
-    'meganz-sdk::git+https://github.com/meganz/sdk.git#commit=a1d391d6a9b747892e8033d60ce1f795d181df3c'
+    "MEGAcmd::git+https://github.com/meganz/MEGAcmd.git#tag=${pkgver}_Linux"
+    "meganz-sdk::git+https://github.com/meganz/sdk.git#tag=v${_sdkver}"
     'ffmpeg.patch' # fix compile with newer FFmpeg versions
     'pdfium.patch' # libpdfium-nojs has headers on /usr/include/pdfium
 )
 b2sums=(
     'SKIP'
     'SKIP'
-    'a8b7a49237a0594ca33b30eccc9350ac298514aa4afc37fe7701cc7790f201566d45ac13c2a77a2084166f086d6c288d952c0e931ae1e514f012e56ae67ef2b4'
+    'f3ff19d916fbf6ec46e1f9e81c7c3111f143ebe5670804da91859ec304a46662812c00d2bba3d818e68f9798e161f78d7e2ea041766fbb3a5b7ab904e07ab1c2'
     '5650db077305e3d8ef49629437a6cdb0abad56232b1d7f364e4214157a715841406e16b45cfce87bea8ad903a6d1d3db0cbf89ada3e2e47f42bfd19414012bea'
 )
 
