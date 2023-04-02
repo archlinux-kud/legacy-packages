@@ -1,13 +1,13 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=megacmd
-pkgver=1.6.0
-_sdkver=4.16.0b
+pkgver=1.6.1
+_sdkver=4.17.1a
 pkgrel=1
 pkgdesc='MEGA Command Line Interactive and Scriptable Application'
 arch=('x86_64')
 url='https://mega.nz/cmd'
-license=('GPL3' 'custom:BSD-2-Clause')
+license=('BSD' 'GPL3')
 depends=(
     'crypto++' 'freeimage' 'libmediainfo' 'libpdfium'
     'libsodium' 'libuv' 'openssl' 'pcre' 'sqlite' 'zlib'
@@ -43,8 +43,8 @@ prepare() {
     git submodule update sdk
 
     pushd sdk
-    patch -Np1 -i "$srcdir"/ffmpeg.patch
-    patch -Np1 -i "$srcdir"/pdfium.patch
+    patch -Np1 -i "$srcdir/ffmpeg.patch"
+    patch -Np1 -i "$srcdir/pdfium.patch"
     popd
 
     ./autogen.sh
@@ -82,5 +82,7 @@ package() {
     make -C MEGAcmd DESTDIR="$pkgdir" install
     # the Makefile installs bash completion scripts at wrong path
     mv "$pkgdir"/{usr/,}etc
-    install -Dm644 MEGAcmd/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+
+    # copy BSD license file for included mega-sdk
+    install -Dm644 MEGAcmd/sdk/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE.sdk"
 }
