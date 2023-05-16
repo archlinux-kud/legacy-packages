@@ -1,8 +1,8 @@
 # Maintainer: Albert I <kras@raphielgang.org>
 
 pkgname=megacmd
-pkgver=1.6.1
-_sdkver=4.17.1a
+pkgver=1.6.3
+_sdkver=4.17.1d
 pkgrel=1
 pkgdesc='MEGA Command Line Interactive and Scriptable Application'
 arch=('x86_64')

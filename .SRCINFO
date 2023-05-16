@@ -1,6 +1,6 @@
 pkgbase = megacmd
 	pkgdesc = MEGA Command Line Interactive and Scriptable Application
-	pkgver = 1.6.1
+	pkgver = 1.6.3
 	pkgrel = 1
 	url = https://mega.nz/cmd
 	arch = x86_64
@@ -24,13 +24,13 @@ pkgbase = megacmd
 	depends = libreadline.so
 	depends = libswscale.so
 	optdepends = bash-completion: for completion script
-	provides = mega-sdk=4.17.1a
+	provides = mega-sdk=4.17.1d
 	provides = libmega.so
 	conflicts = megacmd-dynamic
 	conflicts = mega-sdk
 	replaces = megacmd-dynamic
-	source = MEGAcmd::git+https://github.com/meganz/MEGAcmd.git#tag=1.6.1_Linux
-	source = meganz-sdk::git+https://github.com/meganz/sdk.git#tag=v4.17.1a
+	source = MEGAcmd::git+https://github.com/meganz/MEGAcmd.git#tag=1.6.3_Linux
+	source = meganz-sdk::git+https://github.com/meganz/sdk.git#tag=v4.17.1d
 	source = ffmpeg.patch
 	source = pdfium.patch
 	b2sums = SKIP
