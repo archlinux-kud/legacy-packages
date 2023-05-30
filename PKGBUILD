@@ -3,7 +3,7 @@
 pkgname=megacmd
 pkgver=1.6.3
 _sdkver=4.17.1d
-pkgrel=1
+pkgrel=2
 pkgdesc='MEGA Command Line Interactive and Scriptable Application'
 arch=('x86_64')
 url='https://mega.nz/cmd'
