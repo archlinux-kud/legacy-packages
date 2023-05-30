@@ -1,7 +1,7 @@
 pkgbase = hardened_malloc
 	pkgdesc = Hardened allocator designed for modern systems
 	pkgver = 13.qpr1.r0.gd3152b8
-	pkgrel = 1
+	pkgrel = 2
 	epoch = 1
 	url = https://github.com/GrapheneOS/hardened_malloc
 	arch = x86_64
