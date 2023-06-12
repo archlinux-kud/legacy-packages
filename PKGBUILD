@@ -4,23 +4,23 @@
 _pkgname=hardened_malloc
 cpuopt=${_cpuopt:+$(echo "${_cpuopt}" | sed s/-/_/g)}
 pkgname=${_pkgname}${_cpuopt:+-${cpuopt}}
-pkgver=13.qpr1.r0.gd3152b8
+pkgver=13.qpr1.r11.g2d302f7
 _pkgver=${pkgver/.*/}
-pkgrel=2
+pkgrel=1
 epoch=1
 pkgdesc="Hardened allocator designed for modern systems"
 arch=('x86_64')
 url="https://github.com/GrapheneOS/hardened_malloc"
 license=('MIT')
 # https://github.com/GrapheneOS/hardened_malloc#dependencies
-depends=('gcc-libs>=10.2.0' 'glibc>=2.31')
-makedepends=('gcc>=10.2.0' 'git' 'linux-api-headers>=5.10')
+depends=('gcc-libs>=12.2.0' 'glibc>=2.36')
+makedepends=('gcc>=12.2.0' 'git' 'linux-api-headers>=6.1')
 # https://github.com/GrapheneOS/hardened_malloc#compatibility; not really required
 optdepends=('openssh: mprotect PROT_READ|PROT_WRITE syscalls in seccomp-bpf filter')
 checkdepends=('python')
 provides=("libhardened_malloc.so=${_pkgver}" "libhardened_malloc-light.so=${_pkgver}")
 # use latest commit that passes CI tests: https://github.com/GrapheneOS/hardened_malloc/actions
-source=("git+https://github.com/GrapheneOS/${_pkgname}#commit=d3152b8e8ff5070f69e7c991d34f32a429e6a894")
+source=("git+https://github.com/GrapheneOS/${_pkgname}#commit=2d302f7d85944bcaa1ce6419a4c51732f76daaa6")
 sha256sums=('SKIP')
 # only used when it matches versioned tags
 validpgpkeys=('65EEFE022108E2B708CBFCF7F9E712E59AF5F22A') # Daniel Micay <danielmicay@gmail.com>

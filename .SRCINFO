@@ -1,21 +1,21 @@
 pkgbase = hardened_malloc
 	pkgdesc = Hardened allocator designed for modern systems
-	pkgver = 13.qpr1.r0.gd3152b8
-	pkgrel = 2
+	pkgver = 13.qpr1.r11.g2d302f7
+	pkgrel = 1
 	epoch = 1
 	url = https://github.com/GrapheneOS/hardened_malloc
 	arch = x86_64
 	license = MIT
 	checkdepends = python
-	makedepends = gcc>=10.2.0
+	makedepends = gcc>=12.2.0
 	makedepends = git
-	makedepends = linux-api-headers>=5.10
-	depends = gcc-libs>=10.2.0
-	depends = glibc>=2.31
+	makedepends = linux-api-headers>=6.1
+	depends = gcc-libs>=12.2.0
+	depends = glibc>=2.36
 	optdepends = openssh: mprotect PROT_READ|PROT_WRITE syscalls in seccomp-bpf filter
 	provides = libhardened_malloc.so=13
 	provides = libhardened_malloc-light.so=13
-	source = git+https://github.com/GrapheneOS/hardened_malloc#commit=d3152b8e8ff5070f69e7c991d34f32a429e6a894
+	source = git+https://github.com/GrapheneOS/hardened_malloc#commit=2d302f7d85944bcaa1ce6419a4c51732f76daaa6
 	validpgpkeys = 65EEFE022108E2B708CBFCF7F9E712E59AF5F22A
 	sha256sums = SKIP
 
