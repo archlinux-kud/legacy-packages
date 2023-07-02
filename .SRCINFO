@@ -1,7 +1,7 @@
 pkgbase = megacmd
 	pkgdesc = MEGA Command Line Interactive and Scriptable Application
 	pkgver = 1.6.3
-	pkgrel = 2
+	pkgrel = 3
 	url = https://mega.nz/cmd
 	arch = x86_64
 	license = BSD
@@ -33,9 +33,13 @@ pkgbase = megacmd
 	source = meganz-sdk::git+https://github.com/meganz/sdk.git#tag=v4.17.1d
 	source = ffmpeg.patch
 	source = pdfium.patch
+	sha512sums = SKIP
+	sha512sums = SKIP
+	sha512sums = 45ad4d0a50057e4500e5ef312691d958b96a20905b9dbe7851da0411f6da20ae287a9aca275bae30689ee38a4ea5dd881c3ddc3e1db736f4b3d1052335917fb1
+	sha512sums = 8fbf76a670c2923fe61de46b159128180cf69caead90ef8bc62c2829a8ca94846127149863089f9c572fcb998229244f828230791fd51b8339698732704c94f6
 	b2sums = SKIP
 	b2sums = SKIP
-	b2sums = f3ff19d916fbf6ec46e1f9e81c7c3111f143ebe5670804da91859ec304a46662812c00d2bba3d818e68f9798e161f78d7e2ea041766fbb3a5b7ab904e07ab1c2
-	b2sums = 5650db077305e3d8ef49629437a6cdb0abad56232b1d7f364e4214157a715841406e16b45cfce87bea8ad903a6d1d3db0cbf89ada3e2e47f42bfd19414012bea
+	b2sums = 1d902c55fa8c5ceb5a225d1eceff3b15d8c62cb72c232a78d902c8afcd45a8d0f87e906cf21a7331aa287cd40926e9ab7d411a1fcfc7060db72f8116814938aa
+	b2sums = 3c140752bd1be91525888ee88048ab0df9aa1834096773301f9672f6d4e1651a88c6318e1e5dc5349f47292ca1adf2778223c10a973f43bb7c8a997972b18109
 
 pkgname = megacmd

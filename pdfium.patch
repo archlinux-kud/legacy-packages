@@ -1,8 +1,8 @@
 diff --git a/configure.ac b/configure.ac
-index 77c1150f1..1d70bf853 100644
+index d7d3139cc..8f0ca18c9 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1724,7 +1724,10 @@ AC_ARG_WITH(pdfium,
+@@ -1742,7 +1742,10 @@ AC_ARG_WITH(pdfium,
        pdfium=false
      ;;
      yes)
